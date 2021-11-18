@@ -8,7 +8,7 @@ contract("SecretSanta - gas check", (accounts) => {
     const ss = await SecretSanta.deployed();
 
     const registerTx = await ss.register({ from: accounts[0] });
-    console.log(`Gas used for "register": ${registerTx.receipt.gasUsed} GWEI`);
+    console.log(`Gas used for "register": ${registerTx.receipt.gasUsed}`);
 
     for (let i = 1; i < accounts.length; i += 1) {
       await ss.register({ from: accounts[i] });
@@ -19,7 +19,7 @@ contract("SecretSanta - gas check", (accounts) => {
       gasPrice: 0,
     });
     console.log(
-      `Gas used for "closeRegistration" after ${accounts.length} registrations: ${closeRegistrationTx.receipt.gasUsed} GWEI`
+      `Gas used for "closeRegistration" after ${accounts.length} registrations: ${closeRegistrationTx.receipt.gasUsed}`
     );
   });
 });

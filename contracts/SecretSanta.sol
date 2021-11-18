@@ -8,6 +8,7 @@ contract SecretSanta {
   mapping(address => bool) private isParticipant;
   address[] private participants;
   mapping(address => address) private giftAssignments;
+  mapping(address => uint256) private participantSeed;
 
   constructor() {
     owner = msg.sender;
@@ -31,12 +32,11 @@ contract SecretSanta {
 
     isRegistrationOpen = false;
 
-    uint256 randomness = uint256(keccak256(abi.encodePacked(block.timestamp)));
     uint256 mLength = participants.length - 1;
 
     for (uint256 i = 0; i < mLength - 1; i++) {
-      uint256 n = (i + randomness) % (mLength + 1);
       address temp = participants[i];
+      uint256 n = (i + participantSeed[temp]) % (mLength + 1);
       participants[n] = participants[i];
       participants[i] = temp;
     }
@@ -51,6 +51,11 @@ contract SecretSanta {
     require(isRegistrationOpen == true);
     require(isParticipant[msg.sender] != true);
 
+    participantSeed[msg.sender] = uint256(
+      keccak256(
+        abi.encodePacked(block.timestamp, msg.sender, participants.length)
+      )
+    );
     isParticipant[msg.sender] = true;
     participants.push(msg.sender);
   }
