@@ -56,37 +56,4 @@ contract("SecretSanta - registration", (accounts) => {
     assert.notEqual(err, null);
     assert.equal(await ss.getParticipantCount(), 1);
   });
-
-  it("should allow a participant to see their giftee once registration is closed", async () => {
-    await ss.register({ from: accounts[1] });
-    await ss.register({ from: accounts[2] });
-    assert.equal(await ss.getParticipantCount(), 2);
-
-    let err = null;
-    try {
-      await ss.getAssignedGiftee({ from: accounts[1] });
-    } catch (error) {
-      err = error;
-    }
-    assert.notEqual(err, null);
-
-    await ss.closeRegistration({ from: owner });
-
-    assert.equal(
-      await ss.getAssignedGiftee({ from: accounts[1] }),
-      accounts[2]
-    );
-    assert.equal(
-      await ss.getAssignedGiftee({ from: accounts[2] }),
-      accounts[1]
-    );
-
-    err = null;
-    try {
-      await ss.getAssignedGiftee({ from: accounts[3] });
-    } catch (error) {
-      err = error;
-    }
-    assert.notEqual(err, null);
-  });
 });

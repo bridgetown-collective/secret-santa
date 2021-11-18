@@ -1,11 +1,13 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.4.16 <0.9.0;
 
 contract SecretSanta {
   address public owner;
   bool public isRegistrationOpen = true;
 
-  mapping(address => bool) private participants;
-  address[] private giftChain;
+  mapping(address => bool) private isParticipant;
+  address[] private participants;
+  mapping(address => address) private giftAssignments;
 
   constructor() {
     owner = msg.sender;
@@ -25,47 +27,56 @@ contract SecretSanta {
 
   function closeRegistration() public onlyOwner {
     require(isRegistrationOpen == true);
+    require(participants.length > 1);
+
     isRegistrationOpen = false;
+
+    uint256 randomness = uint256(keccak256(abi.encodePacked(block.timestamp)));
+    uint256 mLength = participants.length - 1;
+
+    for (uint256 i = 0; i < mLength - 1; i++) {
+      uint256 n = (i + randomness) % (mLength + 1);
+      address temp = participants[i];
+      participants[n] = participants[i];
+      participants[i] = temp;
+    }
+
+    for (uint256 i = 0; i < mLength; i++) {
+      giftAssignments[participants[i]] = participants[i + 1];
+    }
+    giftAssignments[participants[mLength]] = participants[0];
   }
 
   function register() public {
     require(isRegistrationOpen == true);
-    require(participants[msg.sender] != true);
+    require(isParticipant[msg.sender] != true);
 
-    participants[msg.sender] = true;
-
-    // @TODO: randomize this insertion
-    giftChain.push(msg.sender);
+    isParticipant[msg.sender] = true;
+    participants.push(msg.sender);
   }
 
   function deregister() public {
     require(isRegistrationOpen == true);
-    require(participants[msg.sender] == true);
+    require(isParticipant[msg.sender] == true);
 
-    participants[msg.sender] = false;
+    isParticipant[msg.sender] = false;
 
-    // @TODO: remove from giftChain
+    for (uint256 i = 0; i < participants.length; i++) {
+      if (participants[i] == msg.sender) {
+        delete participants[i];
+        break;
+      }
+    }
   }
 
   function getParticipantCount() public view returns (uint256) {
-    return giftChain.length;
+    return participants.length;
   }
 
   function getAssignedGiftee() public view returns (address) {
     require(isRegistrationOpen == false);
-    require(participants[msg.sender] == true);
+    require(isParticipant[msg.sender] == true);
 
-    for (uint256 i = 0; i < giftChain.length; i++) {
-      if (giftChain[i] == msg.sender) {
-        if (i < giftChain.length - 1) {
-          return giftChain[i + 1];
-        }
-
-        return giftChain[0];
-      }
-    }
-
-    // @TODO: work out corner cases - this shouldn't be possible though
-    return msg.sender;
+    return giftAssignments[msg.sender];
   }
 }
