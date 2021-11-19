@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 
-describe.only("SecretSanta - Registration", async function () {
+describe("SecretSanta - Registration", async function () {
   let rs = null;
   let ss = null;
   let owner = null;
