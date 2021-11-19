@@ -1,59 +1,61 @@
-const SecretSanta = artifacts.require("SecretSanta");
+const { expect } = require("chai");
 
-const { web3 } = SecretSanta;
-
-contract("SecretSanta - registration", (accounts) => {
-  const [owner] = accounts;
-
+describe("SecretSanta - Registration", async function () {
   let ss = null;
+  let owner = null;
+  let accounts = null;
 
   beforeEach(async () => {
-    ss = await SecretSanta.new();
+    const SecretSanta = await hre.ethers.getContractFactory("SecretSanta");
+    accounts = await hre.ethers.getSigners();
+    [owner] = accounts;
+    ss = await SecretSanta.deploy();
   });
 
   it("should be deployable and set the owner", async () => {
-    assert.equal(await ss.owner(), owner);
-    assert.notEqual(await ss.owner(), accounts[1]);
-    assert.equal(await ss.isRegistrationOpen(), true);
+    expect(await ss.owner()).to.equal(owner.address);
+    expect(await ss.owner()).to.not.equal(accounts[1]);
+    expect(await ss.isRegistrationOpen()).to.equal(true);
   });
 
   it("should allow registration, when open", async () => {
-    assert.equal(await ss.isRegistrationOpen(), true);
+    expect(await ss.isRegistrationOpen()).to.equal(true);
 
-    await ss.register({ from: accounts[1] });
-    await ss.register({ from: accounts[2] });
-    assert.equal(await ss.getParticipantCount(), 2);
+    await ss.connect(accounts[1]).register();
+    await ss.connect(accounts[2]).register();
+    expect(await ss.getParticipantCount()).to.equal(2);
+    console.log('get here');
 
-    await ss.closeRegistration({ from: owner });
-    assert.equal(await ss.isRegistrationOpen(), false);
+    await ss.connect(owner).closeRegistration();
+    expect(await ss.isRegistrationOpen()).to.equal(false);
 
     let err = null;
     try {
-      await ss.register({ from: accounts[3] });
+      await ss.connect(accounts[3]).register();
     } catch (error) {
       err = error;
     }
-    assert.notEqual(err, null);
-    assert.equal(await ss.getParticipantCount(), 2);
+    expect(err).to.not.equal(null);
+    expect(await ss.getParticipantCount()).to.equal(2);
 
-    await ss.openRegistration({ from: owner });
-    assert.equal(await ss.isRegistrationOpen(), true);
+    await ss.connect(owner).openRegistration();
+    expect(await ss.isRegistrationOpen()).to.equal(true);
 
-    await ss.register({ from: accounts[3] });
-    assert.equal(await ss.getParticipantCount(), 3);
+    await ss.connect(accounts[3]).register();
+    expect(await ss.getParticipantCount()).to.equal(3);
   });
 
   it("should prevent duplicate registration", async () => {
-    await ss.register({ from: accounts[1] });
-    assert.equal(await ss.getParticipantCount(), 1);
+    await ss.connect(accounts[1]).register();
+    expect(await ss.getParticipantCount()).to.equal(1);
 
     let err = null;
     try {
-      await ss.register({ from: accounts[1] });
+      await ss.connect(accounts[1]).register();
     } catch (error) {
       err = error;
     }
-    assert.notEqual(err, null);
-    assert.equal(await ss.getParticipantCount(), 1);
+    expect(err).to.not.equal(null);
+    expect(await ss.getParticipantCount()).to.equal(1);
   });
 });

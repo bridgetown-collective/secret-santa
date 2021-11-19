@@ -1,46 +1,45 @@
-const SecretSanta = artifacts.require("SecretSanta");
+const { expect } = require("chai");
 
-const { web3 } = SecretSanta;
-
-contract("SecretSanta - gifting", (accounts) => {
-  const [owner] = accounts;
-
+describe("SecretSanta - gifting", async () => {
   let ss = null;
+  let owner = null;
+  let accounts = null;
 
   beforeEach(async () => {
-    ss = await SecretSanta.new();
+    const SecretSanta = await hre.ethers.getContractFactory("SecretSanta");
+    accounts = await hre.ethers.getSigners();
+    [owner] = accounts;
+    ss = await SecretSanta.deploy();
   });
 
   it("should allow a participant to see their giftee once registration is closed", async () => {
-    await ss.register({ from: accounts[1] });
-    await ss.register({ from: accounts[2] });
-    assert.equal(await ss.getParticipantCount(), 2);
+    await ss.connect(accounts[1]).register();
+    await ss.connect(accounts[2]).register();
+    expect(await ss.getParticipantCount()).to.equal(2);
 
     let err = null;
     try {
-      await ss.getAssignedGiftee({ from: accounts[1] });
+      await ss.connect(accounts[1]).getAssignedGiftee();
     } catch (error) {
       err = error;
     }
-    assert.notEqual(err, null);
+    expect(err).to.not.equal(null);
 
-    await ss.closeRegistration({ from: owner });
+    await ss.connect(owner).closeRegistration();
 
-    assert.equal(
-      await ss.getAssignedGiftee({ from: accounts[1] }),
-      accounts[2]
+    expect(await ss.connect(accounts[1]).getAssignedGiftee()).to.equal(
+      accounts[2].address
     );
-    assert.equal(
-      await ss.getAssignedGiftee({ from: accounts[2] }),
-      accounts[1]
+    expect(await ss.connect(accounts[2]).getAssignedGiftee()).to.equal(
+      accounts[1].address
     );
 
     err = null;
     try {
-      await ss.getAssignedGiftee({ from: accounts[3] });
+      await ss.connect(accounts[3]).getAssignedGiftee();
     } catch (error) {
       err = error;
     }
-    assert.notEqual(err, null);
+    expect(err).to.not.equal(null);
   });
 });

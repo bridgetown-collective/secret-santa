@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.16 <0.9.0;
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import "hardhat/console.sol";
 
-contract SecretSanta {
+contract SecretSanta is ERC721Holder {
   address public owner;
   bool public isRegistrationOpen = true;
 
@@ -12,6 +14,7 @@ contract SecretSanta {
 
   constructor() {
     owner = msg.sender;
+    // console.log('O hai - Constructed');
   }
 
   modifier onlyOwner() {
@@ -30,21 +33,29 @@ contract SecretSanta {
     require(isRegistrationOpen == true);
     require(participants.length > 1);
 
+    // console.log('Closing Registration');
+
     isRegistrationOpen = false;
 
-    uint256 mLength = participants.length - 1;
+    uint256 mLength = participants.length;
+
 
     for (uint256 i = 0; i < mLength - 1; i++) {
-      address temp = participants[i];
-      uint256 n = (i + participantSeed[temp]) % (mLength + 1);
-      participants[n] = participants[i];
-      participants[i] = temp;
+      address participantAddr = participants[i];
+      uint256 n = i + (participantSeed[participantAddr] % (mLength - i));
+
+      // console.log('Swapping participants', i, 'and', n);
+
+      participants[i] = participants[n];
+      participants[n] = participantAddr;
     }
 
-    for (uint256 i = 0; i < mLength; i++) {
+    for (uint256 i = 0; i < mLength - 1; i++) {
       giftAssignments[participants[i]] = participants[i + 1];
+      // console.log('Gifter:', participants[i], ' for Giftee:', participants[i+1]);
     }
-    giftAssignments[participants[mLength]] = participants[0];
+    giftAssignments[participants[mLength-1]] = participants[0];
+
   }
 
   function register() public {
