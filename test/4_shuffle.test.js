@@ -9,7 +9,6 @@ describe("SecretSanta", function () {
     const accounts = await hre.ethers.getSigners();
 
     for (const account of accounts) {
-      console.log(account.address);
       const registerTx = await secretSanta.connect(account).register();
     }
 
@@ -31,7 +30,6 @@ describe("SecretSanta", function () {
     const accounts = await hre.ethers.getSigners();
 
     for (const account of accounts) {
-      console.log(account.address);
       const registerTx = await secretSanta.connect(account).register();
     }
 

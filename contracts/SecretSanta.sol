@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.16 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "hardhat/console.sol";
 
 contract SecretSanta is ERC721Holder {
@@ -94,5 +95,12 @@ contract SecretSanta is ERC721Holder {
     require(isParticipant[msg.sender] == true);
 
     return giftAssignments[msg.sender];
+  }
+
+  function giftNFT(
+    address nftAddress,
+    uint256 nftID
+  ) external {
+      IERC721(nftAddress).transferFrom(msg.sender, address(this), nftID);
   }
 }
