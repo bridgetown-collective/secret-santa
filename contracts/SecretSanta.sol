@@ -101,6 +101,13 @@ contract SecretSanta is ERC721Holder {
     address nftAddress,
     uint256 nftID
   ) external {
+      // require check on owner? or should we rely on approval?
       IERC721(nftAddress).transferFrom(msg.sender, address(this), nftID);
+
+      // update state to say that giftees present is claimable
   }
+
+  // TODO:
+  // function isGiftClaimable() {}
+  // function claimGift() {}
 }
