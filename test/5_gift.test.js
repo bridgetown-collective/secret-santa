@@ -30,7 +30,7 @@ describe("SecretSanta - Registration", async function () {
     console.log(rs.address)
     await rs.connect(accounts[1]).approve(ss.address, 0);
     await ss.connect(accounts[1]).giftNFT(rs.address, 0);
-    expect(await rs.ownerOf(0)).to.equal(rs.address)
+    expect(await rs.ownerOf(0)).to.equal(ss.address)
   })
 
 });
