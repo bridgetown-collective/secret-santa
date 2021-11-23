@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "hardhat compile",
-    "test": "hardhat test",
-    "next-dev": "next dev",
-    "next-build": "next build",
-    "next-start": "next start"
+    "hat-build": "hardhat compile",
+    "hat-test": "hardhat test",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
   },
   "author": "",
   "license": "ISC",
