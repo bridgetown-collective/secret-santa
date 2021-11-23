@@ -28,17 +28,11 @@ const HatComponent = styled(props => {
     case roll <= 0.4:
       variant = "cardboard_core_hand_horns"
       break;
-    case roll <= 0.43:
-      variant = "ushanka"
-      break;
     case roll <= 0.45:
       variant = "cardboard_core_reindeer_horns"
       break;
     case roll <= 0.48:
       variant = "two_hairs"
-      break;
-    case roll <= 0.5:
-      variant = "cardboard_core_ushanka"
       break;
     case roll <= 0.53:
       variant = "traditional"

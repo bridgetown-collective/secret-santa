@@ -25,9 +25,6 @@ const BodyComponent = styled(props => {
     case roll <= 0.4:
       variant = "santa_red_suspenders_no_shirt_nipples"
       break;
-    case roll <= 0.45:
-      variant = "sweater_soviet"
-      break;
     case roll <= 0.5:
       variant = "sweater_trees"
       break;
