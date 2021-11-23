@@ -12,12 +12,12 @@ describe("SecretSanta - Registration", async function () {
     accounts = await hre.ethers.getSigners();
     [owner] = accounts;
     ss = await SecretSanta.deploy();
-    rs = await RagingSantas.deploy("RagingSantas", "SNTA")
+    rs = await RagingSantas.deploy();
   });
 
   it('should allow gifting', async () =>  {
     // acquire an NFT
-    await rs.connect(accounts[1]).mint(accounts[1].address)
+    await rs.connect(accounts[1]).mint(1)
     expect(await rs.ownerOf(0)).to.equal(accounts[1].address)
 
     await ss.connect(accounts[1]).register();
