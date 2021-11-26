@@ -20,6 +20,8 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     // Provenance hash proving random distribution
     string public provenanceHash;
 
+    uint256 private nonce;
+
     bool public mintActive;
     uint256 private constant maxPerTx = 10;
     uint256 private constant maxPerWallet = 30;
@@ -54,10 +56,15 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         numberReserved = reserved;
         mintPrice = 0.03 ether;
         maxSupply = supply;
+        nonce = 42;
     }
     
     function activateMint() public onlyOwner {
         mintActive = true;
+    }
+
+    function numGiftsLeft() public view virtual returns (uint256) {
+        return giftsLeft.length;
     }
     
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
@@ -68,18 +75,9 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         require((_balances[_msgSender()] + qty) <= maxPerWallet, "Mint: Max tokens per wallet exceeded");
         require(msg.value >= qty * mintPrice, "Mint: Insufficient Funds For This Transaction");
 
-
         // Handle Gifts
         require(nftAddresses.length == qty, "Mint: Invalid gift parameters");
         require(nftTokenIds.length == qty, "Mint: Invalid gift parameters");
-
-        // Receive Gift
-        // Record Gift
-
-        ////Handle ETH transactions
-
-        //uint256 cashIn = msg.value;
-        //uint256 cashChange = cashIn - (qty * price);
 
         uint256 firstMintTokenId = numberMinted; //Store the starting value of the mint batch
 
@@ -89,13 +87,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
             _safeMint(_msgSender(), firstMintTokenId + i);
             numberMinted++;
         }
-
         _balances[_msgSender()] += qty;
-
-        //if (cashChange > 0){
-        //    (bool success, ) = msg.sender.call{value: cashChange}("");
-        //    require(success, "Mint: unable to send change to user");
-        //}
     }
 
     function _receiveGift(
@@ -104,14 +96,45 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       address nftAddress,
       uint256 nftTokenId
     ) internal virtual {
-      // 
-
       // Do the Transfer
       IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
 
       // Write it down
       _gifts[tokenId] = Gift(nftAddress, tokenId, from, address(0));
       giftsLeft.push(_gifts[tokenId]);
+    }
+
+    function claimGifts(uint256[] memory tokenId) external {
+      // Can Claim At All
+      // Does Sender own these tokens?
+      // Have these tokens been claimed yet?
+      // Are there enough gifts left?
+
+      // Generate a "" random number
+      uint256 tries = 3;
+      while ( tries > 0) {
+        uint256 rn = uint256(
+          keccak256(
+            abi.encodePacked(block.timestamp, msg.sender, giftsLeft.length, tokenId.length, nonce)
+          )
+        );
+        Gift memory giftToClaim = giftsLeft[rn % giftsLeft.length];
+
+        console.log(rn);
+        console.log('Should give out gift', giftToClaim.nftAddress);
+        console.log('tokenId', giftToClaim.tokenId);
+        console.log('gifter Addy', giftToClaim.gifter);
+
+        if (true)  {
+          // Do the Transfer
+          IERC721(giftToClaim.nftAddress).transferFrom(address(this), _msgSender(), giftToClaim.tokenId);
+          tries = 0;
+        } else {
+          tries--;
+        }
+
+        nonce += 1;
+      }
     }
 
      /**
