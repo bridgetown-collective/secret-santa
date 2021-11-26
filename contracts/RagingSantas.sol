@@ -60,8 +60,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         mintActive = true;
     }
     
-    //function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
-    function mint(uint256 qty) external payable {
+    function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
         // Handle Santa Mint
         require(mintActive, "Mint: Minting is not open yet!");
         require((qty + numberReserved + numberMinted) <= maxSupply, "Mint: Minting has sold out!");
@@ -69,25 +68,50 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         require((_balances[_msgSender()] + qty) <= maxPerWallet, "Mint: Max tokens per wallet exceeded");
         require(msg.value >= qty * mintPrice, "Mint: Insufficient Funds For This Transaction");
 
-        // Handle Gift
 
-        uint256 mintSeedValue = numberMinted; //Store the starting value of the mint batch
+        // Handle Gifts
+        require(nftAddresses.length == qty, "Mint: Invalid gift parameters");
+        require(nftTokenIds.length == qty, "Mint: Invalid gift parameters");
+
+        // Receive Gift
+        // Record Gift
 
         ////Handle ETH transactions
 
         //uint256 cashIn = msg.value;
         //uint256 cashChange = cashIn - (qty * price);
 
+        uint256 firstMintTokenId = numberMinted; //Store the starting value of the mint batch
+
         //send tokens
         for(uint256 i = 0; i < qty; i++) {
-            _safeMint(_msgSender(), mintSeedValue + i);
-            numberMinted ++;
+            _receiveGift(firstMintTokenId + i, _msgSender(), nftAddresses[i], nftTokenIds[i]);
+            _safeMint(_msgSender(), firstMintTokenId + i);
+            numberMinted++;
         }
+
+        _balances[_msgSender()] += qty;
 
         //if (cashChange > 0){
         //    (bool success, ) = msg.sender.call{value: cashChange}("");
         //    require(success, "Mint: unable to send change to user");
         //}
+    }
+
+    function _receiveGift(
+      uint256 tokenId,
+      address from,
+      address nftAddress,
+      uint256 nftTokenId
+    ) internal virtual {
+      // 
+
+      // Do the Transfer
+      IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
+
+      // Write it down
+      _gifts[tokenId] = Gift(nftAddress, tokenId, from, address(0));
+      giftsLeft.push(_gifts[tokenId]);
     }
 
      /**
