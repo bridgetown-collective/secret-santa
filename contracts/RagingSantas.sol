@@ -104,36 +104,47 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       giftsLeft.push(_gifts[tokenId]);
     }
 
-    function claimGifts(uint256[] memory tokenId) external {
+    function claimGifts(uint256[] memory tokenIds) external {
       // Can Claim At All
       // Does Sender own these tokens?
       // Have these tokens been claimed yet?
       // Are there enough gifts left?
 
-      // Generate a "" random number
-      uint256 tries = 3;
-      while ( tries > 0) {
-        uint256 rn = uint256(
-          keccak256(
-            abi.encodePacked(block.timestamp, msg.sender, giftsLeft.length, tokenId.length, nonce)
-          )
-        );
-        Gift memory giftToClaim = giftsLeft[rn % giftsLeft.length];
+      // Iterate through RagingSanta token Ids
+      for(uint256 i = 0; i < tokenIds.length; i++) {
+        uint256 tokenId = tokenIds[i];
 
-        console.log(rn);
-        console.log('Should give out gift', giftToClaim.nftAddress);
-        console.log('tokenId', giftToClaim.tokenId);
-        console.log('gifter Addy', giftToClaim.gifter);
+        // Our mechanism to avoid randomly selecting our own gifts is to have a
+        // fixed number of reattempts at a random number, and with all likelihood
+        // we can find a gift that isn't your own (only an edge case to consider
+        // when the remaining gift pool shrinks)
+        uint256 tries = 3;
+        while ( tries > 0) {
+          uint256 rn = uint256(
+            keccak256(
+              abi.encodePacked(block.timestamp, msg.sender, giftsLeft.length, tokenId, nonce)
+            )
+          );
+          Gift memory giftToClaim = giftsLeft[rn % giftsLeft.length];
 
-        if (true)  {
+          console.log(rn);
+          console.log('Should give out gift', giftToClaim.nftAddress);
+          console.log('tokenId', giftToClaim.tokenId);
+          console.log('gifter Addy', giftToClaim.gifter);
+
+          // Check to make sure it's not your own gift
+          if (giftToClaim.gifter == _msgSender()) {
+            nonce++;
+            tries--;
+            continue;
+          }
+
           // Do the Transfer
           IERC721(giftToClaim.nftAddress).transferFrom(address(this), _msgSender(), giftToClaim.tokenId);
-          tries = 0;
-        } else {
-          tries--;
+          _gifts[tokenId].giftee = _msgSender();
+          delete giftsLeft[rn % giftsLeft.length];
+          break;
         }
-
-        nonce += 1;
       }
     }
 
