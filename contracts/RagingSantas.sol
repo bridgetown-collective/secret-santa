@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
-
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "hardhat/console.sol";
@@ -21,9 +20,13 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     // Provenance hash proving random distribution
     string public provenanceHash;
 
-    uint256 private constant maxSupply = 9999;
-    uint256 private constant maxPerTxn = 10;
+    bool public mintActive;
+    uint256 private constant maxPerTx = 10;
+    uint256 private constant maxPerWallet = 30;
+    uint256 public maxSupply;
+    uint256 public mintPrice;
     uint256 public numberMinted;
+    uint256 public numberReserved; // For Giveaways
 
     struct Gift {
       address nftAddress;
@@ -32,9 +35,8 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       address giftee;
     }
 
-    mapping(address => bool) private isParticipant;
-    mapping(address => uint256) private _balances;
     mapping(uint256 => address) private _owners;
+    mapping(address => uint256) private _balances;
     mapping(uint256 => Gift) private _gifts;
 
     // Mapping from token ID to approved address
@@ -43,23 +45,36 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
 
+    // The Gift Pool
     Gift[] public giftsLeft;
 
-    constructor()
-    {}
-
-
+    constructor(uint256 supply, uint256 reserved)
+    {
+        mintActive = false;
+        numberReserved = reserved;
+        mintPrice = 0.03 ether;
+        maxSupply = supply;
+    }
     
+    function activateMint() public onlyOwner {
+        mintActive = true;
+    }
+    
+    //function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
     function mint(uint256 qty) external payable {
-        //require(mintActive);
-        //require((qty + reservedTokens + numberMinted) < totalTokens, "Mint: Not enough availability");
-        //require(qty <= maxPerTx, "Mint: Max tokens per transaction exceeded");
-        //require((_tokensMintedby[_msgSender()] + qty) <= maxPerWallet, "Mint: Max tokens per wallet exceeded");
-        //require(msg.value >= qty * price, "Mint: Insufficient Funds");
+        // Handle Santa Mint
+        require(mintActive, "Mint: Minting is not open yet!");
+        require((qty + numberReserved + numberMinted) <= maxSupply, "Mint: Minting has sold out!");
+        require(qty <= maxPerTx, "Mint: Max tokens per transaction exceeded");
+        require((_balances[_msgSender()] + qty) <= maxPerWallet, "Mint: Max tokens per wallet exceeded");
+        require(msg.value >= qty * mintPrice, "Mint: Insufficient Funds For This Transaction");
+
+        // Handle Gift
 
         uint256 mintSeedValue = numberMinted; //Store the starting value of the mint batch
 
         ////Handle ETH transactions
+
         //uint256 cashIn = msg.value;
         //uint256 cashChange = cashIn - (qty * price);
 
