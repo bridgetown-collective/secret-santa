@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const HeadComponent = styled((props) => {
+const HeadComponent = styled(props => {
   const roll = props.rnd.rb(0, 1);
 
   let variant = "blue_elf_ears";
@@ -35,6 +35,7 @@ const HeadComponent = styled((props) => {
     <ReactSVG
       src={`assets/raging-santas/3000_face_${variant}.svg`}
       renumerateIRIElements={false}
+      wrapper="svg"
       {...props}
     />
   );
@@ -50,11 +51,7 @@ const HeadComponent = styled((props) => {
 
 const HeadS = ({ seed }) => {
   const rnd = new RND(parseInt((104002 * seed).toString()));
-  return (
-    <>
-      <HeadComponent rnd={rnd} />
-    </>
-  );
+  return <HeadComponent rnd={rnd} />;
 };
 
 const Head = HeadS;

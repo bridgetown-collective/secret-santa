@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const BrowsComponent = styled((props) => {
+const BrowsComponent = styled(props => {
   const roll = props.rnd.rb(0, 1);
 
   let variant = "bushy_black";
@@ -17,6 +17,7 @@ const BrowsComponent = styled((props) => {
     <ReactSVG
       src={`assets/raging-santas/6000_brows_${variant}.svg`}
       renumerateIRIElements={false}
+      wrapper="svg"
       {...props}
     />
   );
@@ -32,11 +33,7 @@ const BrowsComponent = styled((props) => {
 
 const BrowsS = ({ seed }) => {
   const rnd = new RND(parseInt((79182 * seed).toString()));
-  return (
-    <>
-      <BrowsComponent rnd={rnd} />
-    </>
-  );
+  return <BrowsComponent rnd={rnd} />;
 };
 
 const Brows = BrowsS;

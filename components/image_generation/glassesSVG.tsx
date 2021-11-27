@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const GlassesComponent = styled((props) => {
+const GlassesComponent = styled(props => {
   const roll = props.rnd.rb(0, 1);
 
   let variant = "googly_eyes";
@@ -26,6 +26,7 @@ const GlassesComponent = styled((props) => {
     <ReactSVG
       src={`assets/raging-santas/8100_glasses_${variant}.svg`}
       renumerateIRIElements={false}
+      wrapper="svg"
       {...props}
     />
   );
@@ -41,11 +42,7 @@ const GlassesComponent = styled((props) => {
 
 const GlassesS = ({ seed }) => {
   const rnd = new RND(parseInt((150992 * seed).toString()));
-  return (
-    <>
-      <GlassesComponent rnd={rnd} />
-    </>
-  );
+  return <GlassesComponent rnd={rnd} />;
 };
 
 const Glasses = GlassesS;

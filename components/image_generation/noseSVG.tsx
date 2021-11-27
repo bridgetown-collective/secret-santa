@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const NoseComponent = styled((props) => {
+const NoseComponent = styled(props => {
   const roll = props.rnd.rb(0, 1);
 
   let variant = "red_paper_texture";
@@ -14,6 +14,7 @@ const NoseComponent = styled((props) => {
     <ReactSVG
       src={`assets/raging-santas/9000_nose_${variant}.svg`}
       renumerateIRIElements={false}
+      wrapper="svg"
       {...props}
     />
   );
@@ -29,11 +30,7 @@ const NoseComponent = styled((props) => {
 
 const NoseS = ({ seed }) => {
   const rnd = new RND(parseInt((703182 * seed).toString()));
-  return (
-    <>
-      <NoseComponent rnd={rnd} />
-    </>
-  );
+  return <NoseComponent rnd={rnd} />;
 };
 
 const Nose = NoseS;

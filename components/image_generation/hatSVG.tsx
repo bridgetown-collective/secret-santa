@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const HatComponent = styled((props) => {
+const HatComponent = styled(props => {
   const roll = props.rnd.rb(0, 1);
 
   let variant = "camoflauge";
@@ -74,6 +74,7 @@ const HatComponent = styled((props) => {
     <ReactSVG
       src={`assets/raging-santas/4000_hat_${variant}.svg`}
       renumerateIRIElements={false}
+      wrapper="svg"
       {...props}
     />
   );
@@ -89,11 +90,7 @@ const HatComponent = styled((props) => {
 
 const HatS = ({ seed }) => {
   const rnd = new RND(parseInt((1222242 * seed).toString()));
-  return (
-    <>
-      <HatComponent rnd={rnd} />
-    </>
-  );
+  return <HatComponent rnd={rnd} />;
 };
 
 const Hat = HatS;

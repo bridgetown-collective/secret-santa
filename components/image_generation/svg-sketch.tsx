@@ -15,7 +15,7 @@ import Head from "./headSVG";
 import Mouth from "./mouthSVG";
 import Nose from "./noseSVG";
 
-const CanvasDiv = styled.div`
+const CanvasDiv = styled.svg`
   border: 0.0625rem solid black;
   border-radius: 0.25rem;
   width: 30rem;
@@ -37,7 +37,12 @@ const SvgSketch = ({ seed }: { seed: number }): JSX.Element => {
   const hasGlasses = roll < 0.1;
 
   return (
-    <CanvasDiv key="0">
+    <CanvasDiv
+      key="0"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlnsXlink="http://www.w3.org/1999/xlink"
+      viewBox="0 0 800 800"
+    >
       <Background seed={seed} />
       <Body seed={seed} />
       <Head seed={seed} />

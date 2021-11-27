@@ -20,6 +20,7 @@ const BeardComponent = styled((props) => {
     <ReactSVG
       src={`assets/raging-santas/7000_beard_${variant}.svg`}
       renumerateIRIElements={false}
+      wrapper="svg"
       {...props}
     />
   );
@@ -36,9 +37,7 @@ const BeardComponent = styled((props) => {
 const BeardS = ({ seed }) => {
   const rnd = new RND(parseInt((166382 * seed).toString()));
   return (
-    <>
       <BeardComponent rnd={rnd} />
-    </>
   );
 };
 
