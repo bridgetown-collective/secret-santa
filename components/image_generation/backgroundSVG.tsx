@@ -2,16 +2,16 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const BackgroundComponent = styled(props => {
-  const roll = props.rnd.rb(0,1) 
+const BackgroundComponent = styled((props) => {
+  const roll = props.rnd.rb(0, 1);
 
-  let color = "baby_blue"
+  let color = "baby_blue";
   switch (true) {
     case roll < 0.333:
-      color = "green"
+      color = "green";
       break;
     case roll < 0.666:
-      color = "pink"
+      color = "pink";
       break;
     default:
   }
@@ -19,14 +19,14 @@ const BackgroundComponent = styled(props => {
   return (
     <>
       <ReactSVG
-        src={`assets/1000_background_${color}.svg`}
+        src={`assets/raging-santas/1000_background_${color}.svg`}
         renumerateIRIElements={false}
         {...props}
       />
     </>
   );
 })`
-  position:absolute;
+  position: absolute;
   left: 0;
   top: 0;
 
@@ -36,7 +36,7 @@ const BackgroundComponent = styled(props => {
 `;
 
 const BackgroundS = ({ seed }) => {
-  const rnd = new RND(parseInt(142442 * seed));
+  const rnd = new RND(parseInt((142442 * seed).toString()));
   return (
     <>
       <BackgroundComponent rnd={rnd} />

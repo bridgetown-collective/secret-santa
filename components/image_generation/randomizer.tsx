@@ -1,5 +1,7 @@
 class RND {
-  constructor(seed) {
+  private seed: number;
+
+  constructor(seed: number) {
     this.seed = seed;
   }
 
@@ -27,7 +29,7 @@ class RND {
       // And swap it with the current element.
       [array[currentIndex], array[randomIndex]] = [
         array[randomIndex],
-        array[currentIndex]
+        array[currentIndex],
       ];
     }
 

@@ -2,29 +2,29 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const MouthComponent = styled(props => {
-  const roll = props.rnd.rb(0,1) 
+const MouthComponent = styled((props) => {
+  const roll = props.rnd.rb(0, 1);
 
-  let variant = "canine_teeth"
+  let variant = "canine_teeth";
   switch (true) {
     case roll <= 0.333:
-      variant = "gold_teeth"
+      variant = "gold_teeth";
       break;
     case roll <= 0.666:
-      variant = "missing_teeth"
+      variant = "missing_teeth";
       break;
     default:
   }
 
   return (
     <ReactSVG
-      src={`assets/8000_mouth_${variant}.svg`}
+      src={`assets/raging-santas/8000_mouth_${variant}.svg`}
       renumerateIRIElements={false}
       {...props}
     />
   );
 })`
-  position:absolute;
+  position: absolute;
   left: 0;
   top: 0;
 
@@ -34,7 +34,7 @@ const MouthComponent = styled(props => {
 `;
 
 const MouthS = ({ seed }) => {
-  const rnd = new RND(parseInt(97713 * seed));
+  const rnd = new RND(parseInt((97713 * seed).toString()));
   return (
     <>
       <MouthComponent rnd={rnd} />

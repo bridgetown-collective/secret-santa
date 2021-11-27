@@ -2,83 +2,83 @@ import styled, { css } from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const HatComponent = styled(props => {
-  const roll = props.rnd.rb(0,1) 
+const HatComponent = styled((props) => {
+  const roll = props.rnd.rb(0, 1);
 
-  let variant = "camoflauge"
+  let variant = "camoflauge";
   switch (true) {
     case roll <= 0.1:
-      variant = "bald"
+      variant = "bald";
       break;
     case roll <= 0.2:
-      variant = "burglar_mask"
+      variant = "burglar_mask";
       break;
     case roll <= 0.25:
-      variant = "cardboard_core"
+      variant = "cardboard_core";
       break;
     case roll <= 0.3:
-      variant = "cardboard_core_burglar_mask"
+      variant = "cardboard_core_burglar_mask";
       break;
     case roll <= 0.33:
-      variant = "ushanka_gingerbread_wreath"
+      variant = "ushanka_gingerbread_wreath";
       break;
     case roll <= 0.35:
-      variant = "cardboard_core_devil_horns"
+      variant = "cardboard_core_devil_horns";
       break;
     case roll <= 0.4:
-      variant = "cardboard_core_hand_horns"
+      variant = "cardboard_core_hand_horns";
       break;
     case roll <= 0.45:
-      variant = "cardboard_core_reindeer_horns"
+      variant = "cardboard_core_reindeer_horns";
       break;
     case roll <= 0.48:
-      variant = "two_hairs"
+      variant = "two_hairs";
       break;
     case roll <= 0.53:
-      variant = "traditional"
+      variant = "traditional";
       break;
     case roll <= 0.55:
-      variant = "devil_horns"
+      variant = "devil_horns";
       break;
     case roll <= 0.6:
-      variant = "energy_dome"
+      variant = "energy_dome";
       break;
     case roll <= 0.63:
-      variant = "reindeer_horns_half_mask"
+      variant = "reindeer_horns_half_mask";
       break;
     case roll <= 0.65:
-      variant = "hunting"
+      variant = "hunting";
       break;
     case roll <= 0.7:
-      variant = "jester"
+      variant = "jester";
       break;
     case roll <= 0.75:
-      variant = "mohawk"
+      variant = "mohawk";
       break;
     case roll <= 0.8:
-      variant = "fez"
+      variant = "red_fez";
       break;
     case roll <= 0.85:
-      variant = "red_triangle"
+      variant = "red_triangle";
       break;
-    case roll <= 0.90:
-      variant = "reindeer_hand_horns_half_mask"
+    case roll <= 0.9:
+      variant = "reindeer_hand_horns_half_mask";
       break;
     case roll <= 0.95:
-      variant = "reindeer_horns"
+      variant = "reindeer_horns";
       break;
     default:
   }
 
   return (
     <ReactSVG
-      src={`assets/4000_hat_${variant}.svg`}
+      src={`assets/raging-santas/4000_hat_${variant}.svg`}
       renumerateIRIElements={false}
       {...props}
     />
   );
 })`
-  position:absolute;
+  position: absolute;
   left: 0;
   top: 0;
 
@@ -88,7 +88,7 @@ const HatComponent = styled(props => {
 `;
 
 const HatS = ({ seed }) => {
-  const rnd = new RND(parseInt(1222242 * seed));
+  const rnd = new RND(parseInt((1222242 * seed).toString()));
   return (
     <>
       <HatComponent rnd={rnd} />
