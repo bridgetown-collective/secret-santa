@@ -47,17 +47,6 @@ const isDisjointWithAll = function (objects, object) {
   return disjoints.length == 0 || disjoints.every((x) => x);
 };
 
-const FaceLeftX = (seed, width) => {
-  console.log("seed", seed, "width", width);
-  console.log(seed * (canvasWidth - width));
-  return seed * (canvasWidth - width);
-};
-const FaceTopY = (seed, height) => {
-  console.log("seed", seed, "height", height);
-  console.log(seed * (canvasHeight - height));
-  return seed * (canvasHeight - height);
-};
-
 const generateShapes = function (seed, n, initialShapes) {
   //console.log('*********NewCall of generateShapes********')
   //console.log('seed', seed)

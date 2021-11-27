@@ -1,8 +1,8 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const BackgroundComponent = styled(props => {
+const BackgroundComponent = styled((props) => {
   const roll = props.rnd.rb(0, 1);
 
   let color = "baby_blue";

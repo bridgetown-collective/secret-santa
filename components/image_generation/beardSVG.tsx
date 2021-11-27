@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
@@ -36,9 +36,7 @@ const BeardComponent = styled((props) => {
 
 const BeardS = ({ seed }) => {
   const rnd = new RND(parseInt((166382 * seed).toString()));
-  return (
-      <BeardComponent rnd={rnd} />
-  );
+  return <BeardComponent rnd={rnd} />;
 };
 
 const Beard = BeardS;

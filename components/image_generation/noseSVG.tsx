@@ -1,10 +1,8 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const NoseComponent = styled(props => {
-  const roll = props.rnd.rb(0, 1);
-
+const NoseComponent = styled((props) => {
   let variant = "red_paper_texture";
   switch (true) {
     default:

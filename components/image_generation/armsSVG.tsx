@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { ReactSVG } from "react-svg";
 import RND from "./randomizer";
 
-const ArmsComponent = styled(props => {
+const ArmsComponent = styled((props) => {
   const roll = props.rnd.rb(0, 1);
 
   let variant = "black";

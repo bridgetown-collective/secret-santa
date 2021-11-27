@@ -4,16 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "generate-svgs": "ts-node -O '{\"jsx\": \"react-jsx\"}' scripts/saveSvg.ts",
     "hat-build": "hardhat compile",
     "hat-test": "hardhat test",
-    "dev": "next dev",
-    "build": "next build",
     "start": "next start"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@bridgetown-collective/paris": "^0.1.10",
+    "@bridgetown-collective/paris": "^0.1.12",
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@openzeppelin/contracts": "^4.3.3",
@@ -38,6 +39,7 @@
     "babel-plugin-styled-components": "^1.13.2",
     "postcss": "^8.3.11",
     "tailwindcss": "^2.2.19",
+    "ts-node": "^10.4.0",
     "typescript": "^4.4.2"
   }
 }
