@@ -1,9 +1,19 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const GlassesComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Glasses(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const glasses = getAssetMap(svgMap, "8100_glasses_", [
+    "googly_eyes",
+    "googly_eyes_different_size",
+    "ski_goggles",
+    "wire_square",
+  ]);
+
+  const rnd = new RND(150992 * seed);
+  const roll = rnd.rb(0, 1);
 
   let variant = "googly_eyes";
   switch (true) {
@@ -22,29 +32,5 @@ const GlassesComponent = styled((props) => {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/8100_glasses_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const GlassesS = ({ seed }) => {
-  const rnd = new RND(parseInt((150992 * seed).toString()));
-  return <GlassesComponent rnd={rnd} />;
-};
-
-const Glasses = GlassesS;
-
-export default Glasses;
+  return glasses[variant];
+}

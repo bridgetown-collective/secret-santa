@@ -6,7 +6,7 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "generate-svgs": "ts-node -O '{\"jsx\": \"react-jsx\"}' scripts/saveSvg.ts",
+    "generate-svgs": "ts-node scripts/saveSvg.ts",
     "hat-build": "hardhat compile",
     "hat-test": "hardhat test",
     "start": "next start"
@@ -32,6 +32,7 @@
     "web3": "^1.3.6"
   },
   "devDependencies": {
+    "@types/node": "^16.11.10",
     "@types/react": "^17.0.37",
     "@types/styled-jsx": "^3.4.4",
     "@types/web3": "^1.2.2",

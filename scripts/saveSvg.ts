@@ -1,13 +1,7 @@
-import React from "react";
-import { renderToString } from "react-dom/server";
 import fs from "fs";
+import path from "path";
 
-import SvgSketch from "../components/image_generation/svg-sketch";
+import { getSVGMap } from "../components/image_generation/common";
+import { RagingSantaSVGString } from "../components/image_generation/svg-sketch";
 
-function renderToStringLol() {
-  const sketch = React.createElement(SvgSketch, { seed: 0.825 });
-
-  return renderToString(sketch);
-}
-
-fs.writeFileSync("out.svg", renderToStringLol());
+fs.writeFileSync("out.svg", RagingSantaSVGString(0.425, getSVGMap(fs, path)));

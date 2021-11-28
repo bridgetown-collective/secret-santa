@@ -1,9 +1,18 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const BeardComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Beard(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const beards = getAssetMap(svgMap, "7000_beard_", [
+    "green_bow",
+    "traditional",
+    "falling_off",
+  ]);
+
+  const rnd = new RND(166382 * seed);
+  const roll = rnd.rb(0, 1);
 
   let variant = "green_bow";
   switch (true) {
@@ -16,29 +25,5 @@ const BeardComponent = styled((props) => {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/7000_beard_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const BeardS = ({ seed }) => {
-  const rnd = new RND(parseInt((166382 * seed).toString()));
-  return <BeardComponent rnd={rnd} />;
-};
-
-const Beard = BeardS;
-
-export default Beard;
+  return beards[variant];
+}

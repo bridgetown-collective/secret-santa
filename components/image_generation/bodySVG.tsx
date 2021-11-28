@@ -1,9 +1,30 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const BodyComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Body(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const bodies = getAssetMap(svgMap, "2000_body_", [
+    "cardboard",
+    "sweater_camoflauge",
+    "santa_red_suspenders_no_shirt_nipples_hair",
+    "wreath_buttons",
+    "santa_belt",
+    "sweater_trees",
+    "santa_red_suspenders_no_shirt_nipples",
+    "sweater_orange_hunting",
+    "santa_red_suspenders",
+    "sweater_diamond_ornament_belt",
+    "santa_red_suspenders_no_shirt",
+    "sweater_diamond",
+    "blue",
+    "sweater_chanukah",
+    "santa_red",
+  ]);
+
+  const rnd = new RND(123122 * seed);
+  const roll = rnd.rb(0, 1);
 
   let variant = "cardboard";
   switch (true) {
@@ -55,29 +76,5 @@ const BodyComponent = styled((props) => {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/2000_body_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const BodyS = ({ seed }) => {
-  const rnd = new RND(parseInt((123122 * seed).toString()));
-  return <BodyComponent rnd={rnd} />;
-};
-
-const Body = BodyS;
-
-export default Body;
+  return bodies[variant];
+}

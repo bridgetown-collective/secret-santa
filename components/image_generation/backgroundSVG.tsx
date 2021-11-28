@@ -1,39 +1,29 @@
-//import styled from "styled-components";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
-//import { renderToString } from "react-dom/server";
 
-// Todo: would be great to dynamically load the svg after it's been determined
-// @ts-ignore
-import greenBackground from "../../public/assets/raging-santas/1000_background_green.svg";
-// @ts-ignore
-import blueBackground from "../../public/assets/raging-santas/1000_background_baby_blue.svg";
-// @ts-ignore
-import pinkBackground from "../../public/assets/raging-santas/1000_background_pink.svg";
+export default function Body(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const backgrounds = getAssetMap(svgMap, "1000_background_", [
+    "baby_blue",
+    "green",
+    "pink",
+  ]);
 
-const BackgroundComponent = props => {
-  const roll = props.rnd.rb(0, 1);
+  const rnd = new RND(142442 * seed);
+  const roll = rnd.rb(0, 1);
 
-  let color = blueBackground;
+  let variant = "baby_blue";
   switch (true) {
     case roll < 0.333:
-      color = greenBackground;
+      variant = "green";
       break;
     case roll < 0.666:
-      color = pinkBackground;
+      variant = "pink";
       break;
     default:
   }
 
-  // Want to return pure string but renderToString escapes the html stuff
-  // return renderToString(color);
-  return color;
+  return backgrounds[variant];
 }
-
-const BackgroundS = ({ seed }) => {
-  const rnd = new RND(parseInt((142442 * seed).toString()));
-  return BackgroundComponent({rnd});
-};
-
-const Background = BackgroundS;
-
-export default Background;
