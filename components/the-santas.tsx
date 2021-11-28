@@ -22,7 +22,7 @@ const THE_TEAM: Record<string, { bio: string; seed: number }> = {
 
 const SCALE = 0.4;
 
-export default function TheSantas() {
+export default function TheSantas({ svgMap }) {
   return (
     <div id="the-santas" className="flex flex-col">
       <p className="text-4xl">The Santas</p>
@@ -31,7 +31,7 @@ export default function TheSantas() {
         {Object.entries(THE_TEAM).map(([handle, { bio, seed }]) => (
           <div key={handle} className="a-santa inline-block m-4">
             <div className="inline-block">
-              <SvgSketch seed={seed} />
+              <SvgSketch seed={seed} svgMap={svgMap} />
             </div>
             <h3>{handle}</h3>
             <p>{bio}</p>
