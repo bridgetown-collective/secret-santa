@@ -21,5 +21,11 @@
     "incremental": true
   },
   "include": ["next-env.d.ts", "components", "pages", "scripts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "public/assets/raging-santas/*"],
+  "ts-node": {
+    "compilerOptions": {
+      "jsx": "react-jsx",
+      "typeRoots": ["./types"]
+    }
+  }
 }
