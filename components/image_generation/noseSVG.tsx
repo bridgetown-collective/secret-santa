@@ -1,36 +1,15 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
-import RND from "./randomizer";
+import { getAssetMap } from "./common";
 
-const NoseComponent = styled((props) => {
+export default function Nose(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const noses = getAssetMap(svgMap, "9000_nose_", ["red_paper_texture"]);
+
   let variant = "red_paper_texture";
   switch (true) {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/9000_nose_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const NoseS = ({ seed }) => {
-  const rnd = new RND(parseInt((703182 * seed).toString()));
-  return <NoseComponent rnd={rnd} />;
-};
-
-const Nose = NoseS;
-
-export default Nose;
+  return noses[variant];
+}

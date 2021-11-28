@@ -1,9 +1,36 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const HatComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Hat(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const hats = getAssetMap(svgMap, "4000_hat_", [
+    "camoflauge",
+    "bald",
+    "burglar_mask",
+    "cardboard_core",
+    "cardboard_core_burglar_mask",
+    "ushanka_gingerbread_wreath",
+    "cardboard_core_devil_horns",
+    "cardboard_core_hand_horns",
+    "cardboard_core_reindeer_horns",
+    "two_hairs",
+    "traditional",
+    "devil_horns",
+    "energy_dome",
+    "reindeer_horns_half_mask",
+    "hunting",
+    "jester",
+    "mohawk",
+    "red_fez",
+    "red_triangle",
+    "reindeer_hand_horns_half_mask",
+    "reindeer_horns",
+  ]);
+
+  const rnd = new RND(1222242 * seed);
+  const roll = rnd.rb(0, 1);
 
   let variant = "camoflauge";
   switch (true) {
@@ -70,29 +97,5 @@ const HatComponent = styled((props) => {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/4000_hat_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const HatS = ({ seed }) => {
-  const rnd = new RND(parseInt((1222242 * seed).toString()));
-  return <HatComponent rnd={rnd} />;
-};
-
-const Hat = HatS;
-
-export default Hat;
+  return hats[variant];
+}

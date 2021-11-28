@@ -1,9 +1,14 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const ArmsComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Arms(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const arms = getAssetMap(svgMap, "5100_arms_", ["black", "popsicle_sticks"]);
+
+  const rnd = new RND(150992 * seed);
+  const roll = rnd.rb(0, 1);
 
   let variant = "black";
   switch (true) {
@@ -13,29 +18,5 @@ const ArmsComponent = styled((props) => {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/5100_Arms_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const ArmsS = ({ seed }) => {
-  const rnd = new RND(parseInt((150992 * seed).toString()));
-  return <ArmsComponent rnd={rnd} />;
-};
-
-const Arms = ArmsS;
-
-export default Arms;
+  return arms[variant];
+}

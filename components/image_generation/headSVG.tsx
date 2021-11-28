@@ -1,9 +1,23 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const HeadComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Head(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const heads = getAssetMap(svgMap, "3000_face_", [
+    "blue_elf_ears",
+    "blue_round_ears",
+    "brown_elf_ears",
+    "brown_round_ears",
+    "peach_elf_ears",
+    "peach_round_ears",
+    "yellow_elf_ears",
+    "yellow_round_ears",
+  ]);
+
+  const rnd = new RND(104002 * seed);
+  const roll = rnd.rb(0, 1);
 
   let variant = "blue_elf_ears";
   switch (true) {
@@ -31,29 +45,5 @@ const HeadComponent = styled((props) => {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/3000_face_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const HeadS = ({ seed }) => {
-  const rnd = new RND(parseInt((104002 * seed).toString()));
-  return <HeadComponent rnd={rnd} />;
-};
-
-const Head = HeadS;
-
-export default Head;
+  return heads[variant];
+}

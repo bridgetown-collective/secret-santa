@@ -1,9 +1,24 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const EyesComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Eyes(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const eyes = getAssetMap(svgMap, "5000_eyes_", [
+    "dots",
+    "mixed",
+    "pacman",
+    "black",
+    "wreaths",
+    "black_white_inside",
+    "squinty_black",
+    "squinty_gingerbread_man",
+    "squinty_red",
+  ]);
+
+  const rnd = new RND(1576642 * seed);
+  const roll = rnd.rb(0, 1);
 
   let variant = "dots";
   switch (true) {
@@ -34,29 +49,5 @@ const EyesComponent = styled((props) => {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/5000_eyes_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const EyesS = ({ seed }) => {
-  const rnd = new RND(parseInt((1576642 * seed).toString()));
-  return <EyesComponent rnd={rnd} />;
-};
-
-const Eyes = EyesS;
-
-export default Eyes;
+  return eyes[variant];
+}

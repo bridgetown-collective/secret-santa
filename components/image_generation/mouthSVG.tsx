@@ -1,9 +1,18 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const MouthComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Mouth(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const mouths = getAssetMap(svgMap, "8000_mouth_", [
+    "canine_teeth",
+    "gold_teeth",
+    "missing_teeth",
+  ]);
+
+  const rnd = new RND(97713 * seed);
+  const roll = rnd.rb(0, 1);
 
   let variant = "canine_teeth";
   switch (true) {
@@ -16,29 +25,5 @@ const MouthComponent = styled((props) => {
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/8000_mouth_${variant}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const MouthS = ({ seed }) => {
-  const rnd = new RND(parseInt((97713 * seed).toString()));
-  return <MouthComponent rnd={rnd} />;
-};
-
-const Mouth = MouthS;
-
-export default Mouth;
+  return mouths[variant];
+}

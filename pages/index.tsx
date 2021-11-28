@@ -1,10 +1,22 @@
+import fs from "fs";
+import path from "path";
 import "styled-jsx";
 
 import About from "../components/about";
+import { getSVGMap } from "../components/image_generation/common";
 import Mint from "../components/mint";
 import TheSantas from "../components/the-santas";
 
-export default function Home() {
+export function getStaticProps() {
+  return {
+    props: {
+      // @NOTE: this has to be done server side to leverage fs
+      svgMap: getSVGMap(fs, path),
+    },
+  };
+}
+
+export default function Home({ svgMap }) {
   return (
     <div className="container">
       <div className="section flex-col text-center">
@@ -23,7 +35,7 @@ export default function Home() {
       </div>
 
       <div className="section">
-        <TheSantas />
+        <TheSantas svgMap={svgMap} />
       </div>
 
       <style jsx>{`

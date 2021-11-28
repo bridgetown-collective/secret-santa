@@ -1,8 +1,11 @@
+import fs from "fs";
+import path from "path";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
+import { getSVGMap } from "../components/image_generation/common";
 import SvgSketch from "../components/image_generation/svg-sketch";
 
 function getQueryVariable(variable: string): string {
@@ -17,7 +20,16 @@ function getQueryVariable(variable: string): string {
   return "";
 }
 
-const WrappedSvgSketch = (): JSX.Element => {
+export function getStaticProps() {
+  return {
+    props: {
+      // @NOTE: this has to be done server side to leverage fs
+      svgMap: getSVGMap(fs, path),
+    },
+  };
+}
+
+const WrappedSvgSketch = ({ svgMap }): JSX.Element => {
   const [seed, setSeed] = useState<number>(0.74);
 
   // Read the url query param: `seed`
@@ -39,12 +51,12 @@ const WrappedSvgSketch = (): JSX.Element => {
         onChange={setSeed}
         style={{ marginBottom: "2rem" }}
       />
-      <SvgSketch seed={seed} />
+      <SvgSketch seed={seed} svgMap={svgMap} />
     </>
   );
 };
 
-export default function Demo() {
+export default function Demo({ svgMap }) {
   return (
     <div
       id="body"
@@ -56,7 +68,7 @@ export default function Demo() {
       <div>
         <header>
           <>
-            <WrappedSvgSketch />
+            <WrappedSvgSketch svgMap={svgMap} />
           </>
         </header>
       </div>

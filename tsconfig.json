@@ -20,6 +20,11 @@
     "noEmit": false,
     "incremental": true
   },
-  "include": ["next-env.d.ts", "components", "pages", "scripts"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "types", "components", "pages", "scripts"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "compilerOptions": {
+      "jsx": "react-jsx"
+    }
+  }
 }

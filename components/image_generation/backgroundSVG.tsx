@@ -1,44 +1,29 @@
-import styled from "styled-components";
-import { ReactSVG } from "react-svg";
+import { getAssetMap } from "./common";
 import RND from "./randomizer";
 
-const BackgroundComponent = styled((props) => {
-  const roll = props.rnd.rb(0, 1);
+export default function Body(
+  seed: number,
+  svgMap: Record<string, string>
+): string {
+  const backgrounds = getAssetMap(svgMap, "1000_background_", [
+    "baby_blue",
+    "green",
+    "pink",
+  ]);
 
-  let color = "baby_blue";
+  const rnd = new RND(142442 * seed);
+  const roll = rnd.rb(0, 1);
+
+  let variant = "baby_blue";
   switch (true) {
     case roll < 0.333:
-      color = "green";
+      variant = "green";
       break;
     case roll < 0.666:
-      color = "pink";
+      variant = "pink";
       break;
     default:
   }
 
-  return (
-    <ReactSVG
-      src={`assets/raging-santas/1000_background_${color}.svg`}
-      renumerateIRIElements={false}
-      wrapper="svg"
-      {...props}
-    />
-  );
-})`
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  svg {
-    height: 478px;
-  }
-`;
-
-const BackgroundS = ({ seed }) => {
-  const rnd = new RND(parseInt((142442 * seed).toString()));
-  return <BackgroundComponent rnd={rnd} />;
-};
-
-const Background = BackgroundS;
-
-export default Background;
+  return backgrounds[variant];
+}
