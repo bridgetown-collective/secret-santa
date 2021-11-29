@@ -56,7 +56,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     mapping(address => mapping(address => bool)) private _operatorApprovals;
 
     // The Gift Pool
-    Gift[] public giftsLeft;
+    uint256[] public giftsLeftByTokenId;
 
     constructor(uint256 supply, uint256 reserved)
     {
@@ -77,30 +77,29 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     }
 
     function numGiftsLeft() public view virtual returns (uint256) {
-        return giftsLeft.length;
+        return giftsLeftByTokenId.length;
     }
     
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
-        // Handle Santa Mint
+        // Validate Mint
         require(mintActive, "Mint: Minting is not open yet!");
         require((qty + numberReserved + numberMinted) <= maxSupply, "Mint: Minting has sold out!");
         require(qty <= maxPerTx, "Mint: Max tokens per transaction exceeded");
         require((_balances[_msgSender()] + qty) <= maxPerWallet, "Mint: Max tokens per wallet exceeded");
         require(msg.value >= qty * mintPrice, "Mint: Insufficient Funds For This Transaction");
 
-        // Handle Gifts
+        // Validate Gifts
         require(nftAddresses.length == qty, "Mint: Invalid gift parameters");
         require(nftTokenIds.length == qty, "Mint: Invalid gift parameters");
 
         uint256 firstMintTokenId = numberMinted; //Store the starting value of the mint batch
 
-        //send tokens
+        // Do the Thing
         for(uint256 i = 0; i < qty; i++) {
             _addGiftToPool(firstMintTokenId + i, _msgSender(), nftAddresses[i], nftTokenIds[i]);
             _safeMint(_msgSender(), firstMintTokenId + i);
             numberMinted++;
         }
-        _balances[_msgSender()] += qty;
     }
 
     function _addGiftToPool(
@@ -109,12 +108,12 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       address nftAddress,
       uint256 nftTokenId
     ) internal virtual {
-      // Do the Transfer
+      // Do the Transfer. Will fail if this contract is not approved
       IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
 
       // Write it down
       _giftsGiven[tokenId] = Gift(nftAddress, tokenId, from, address(0), address(0));
-      giftsLeft.push(_giftsGiven[tokenId]);
+      giftsLeftByTokenId.push(tokenId);
     }
 
     function claimGifts(uint256[] memory tokenIds) external {
@@ -146,17 +145,16 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
 
         uint256 rn = uint256(
           keccak256(
-            abi.encodePacked(blockhash(block.number - 1), giftsLeft.length, tokenId, nonce)
+            abi.encodePacked(blockhash(block.number - 1), giftsLeftByTokenId.length, tokenId, nonce)
           )
         );
 
-        uint256 giftIndexToTry = rn % giftsLeft.length;
-        Gift memory giftToClaim = giftsLeft[giftIndexToTry];
+        uint256 giftIndexToTry = rn % giftsLeftByTokenId.length;
+        Gift memory giftToClaim = _giftsGiven[giftsLeftByTokenId[giftIndexToTry]];
         uint8 tries = 0;
 
         // If theres no external giftee
         if (!wasDelegated) {
-
           // Check to make sure it's not your own gift
           while (giftToClaim.gifter == gifteeAddress && tries < maxTries) {
             console.log('giftIndexToTry', giftIndexToTry);
@@ -165,8 +163,8 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
             console.log('gifter Addy', giftToClaim.gifter);
             console.log('who is giftee', gifteeAddress);
 
-            giftIndexToTry = (giftIndexToTry + 1) % giftsLeft.length;
-            giftToClaim = giftsLeft[giftIndexToTry];
+            giftIndexToTry = (giftIndexToTry + 1) % giftsLeftByTokenId.length;
+            giftToClaim = _giftsGiven[giftsLeftByTokenId[giftIndexToTry]];
             nonce++;
             tries++;
           }
@@ -179,7 +177,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         // Do the Transfer
         nonce++;
         IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.tokenId);
-        delete giftsLeft[giftIndexToTry];
+        delete giftsLeftByTokenId[giftIndexToTry];
         _giftsGiven[giftToClaim.tokenId].giftee = gifteeAddress;
         _tokenIdOfClaimedGift[tokenId] = giftToClaim.tokenId;
 
