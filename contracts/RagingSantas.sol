@@ -23,8 +23,10 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     uint256 private nonce;
 
     bool public mintActive;
+    bool public claimActive;
     uint256 private constant maxPerTx = 10;
     uint256 private constant maxPerWallet = 30;
+    uint256 private constant maxTries = 20;
     uint256 public maxSupply;
     uint256 public mintPrice;
     uint256 public numberMinted;
@@ -39,7 +41,12 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
 
     mapping(uint256 => address) private _owners;
     mapping(address => uint256) private _balances;
-    mapping(uint256 => Gift) private _gifts;
+
+    // Mapping from token ID to gifted gift
+    mapping(uint256 => Gift) private _giftsGiven;
+
+    // Mapping from token ID (to make a claim) to token ID tied to claimed gift
+    mapping(uint256 => uint256) private _tokenIdOfClaimedGift;
 
     // Mapping from token ID to approved address
     mapping(uint256 => address) private _tokenApprovals;
@@ -53,6 +60,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     constructor(uint256 supply, uint256 reserved)
     {
         mintActive = false;
+        claimActive = false;
         numberReserved = reserved;
         mintPrice = 0.03 ether;
         maxSupply = supply;
@@ -61,6 +69,10 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     
     function activateMint() public onlyOwner {
         mintActive = true;
+    }
+
+    function activateClaim() public onlyOwner {
+        claimActive = true;
     }
 
     function numGiftsLeft() public view virtual returns (uint256) {
@@ -83,14 +95,14 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
 
         //send tokens
         for(uint256 i = 0; i < qty; i++) {
-            _receiveGift(firstMintTokenId + i, _msgSender(), nftAddresses[i], nftTokenIds[i]);
+            _addGiftToPool(firstMintTokenId + i, _msgSender(), nftAddresses[i], nftTokenIds[i]);
             _safeMint(_msgSender(), firstMintTokenId + i);
             numberMinted++;
         }
         _balances[_msgSender()] += qty;
     }
 
-    function _receiveGift(
+    function _addGiftToPool(
       uint256 tokenId,
       address from,
       address nftAddress,
@@ -100,51 +112,65 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
 
       // Write it down
-      _gifts[tokenId] = Gift(nftAddress, tokenId, from, address(0));
-      giftsLeft.push(_gifts[tokenId]);
+      _giftsGiven[tokenId] = Gift(nftAddress, tokenId, from, address(0));
+      giftsLeft.push(_giftsGiven[tokenId]);
     }
 
     function claimGifts(uint256[] memory tokenIds) external {
       // Can Claim At All
-      // Does Sender own these tokens?
-      // Have these tokens been claimed yet?
-      // Are there enough gifts left?
+        require(claimActive, "Claim: Claiming Period has not started yet!");
 
       // Iterate through RagingSanta token Ids
       for(uint256 i = 0; i < tokenIds.length; i++) {
         uint256 tokenId = tokenIds[i];
 
+        // Does Sender own these tokens?
+        require(_owners[tokenId] == _msgSender(), "Claim: Sender is not the owner of this token.");
+
+        // Have these tokens been claimed yet?
+        require(_tokenIdOfClaimedGift[tokenId] == 0, "Claim: Gift has already been claimed");
+
+        // Are there enough gifts left?
+
         // Our mechanism to avoid randomly selecting our own gifts is to have a
         // fixed number of reattempts at a random number, and with all likelihood
         // we can find a gift that isn't your own (only an edge case to consider
         // when the remaining gift pool shrinks)
-        uint256 tries = 3;
-        while ( tries > 0) {
-          uint256 rn = uint256(
-            keccak256(
-              abi.encodePacked(block.timestamp, msg.sender, giftsLeft.length, tokenId, nonce)
-            )
-          );
-          Gift memory giftToClaim = giftsLeft[rn % giftsLeft.length];
+        uint256 rn = uint256(
+          keccak256(
+            abi.encodePacked(blockhash(block.number-1), giftsLeft.length, tokenId, nonce)
+          )
+        );
 
-          console.log(rn);
+        uint256 giftIndexToTry = rn % giftsLeft.length;
+        Gift memory giftToClaim = giftsLeft[giftIndexToTry];
+
+        uint8 tries = 0;
+
+        // Check to make sure it's not your own gift
+        while (giftToClaim.gifter == _msgSender() && tries < maxTries) {
+          console.log('giftIndexToTry', giftIndexToTry);
           console.log('Should give out gift', giftToClaim.nftAddress);
           console.log('tokenId', giftToClaim.tokenId);
           console.log('gifter Addy', giftToClaim.gifter);
+          console.log('who am i', _msgSender());
 
-          // Check to make sure it's not your own gift
-          if (giftToClaim.gifter == _msgSender()) {
-            nonce++;
-            tries--;
-            continue;
-          }
-
-          // Do the Transfer
-          IERC721(giftToClaim.nftAddress).transferFrom(address(this), _msgSender(), giftToClaim.tokenId);
-          _gifts[tokenId].giftee = _msgSender();
-          delete giftsLeft[rn % giftsLeft.length];
-          break;
+          giftIndexToTry = (giftIndexToTry + 1) % giftsLeft.length;
+          giftToClaim = giftsLeft[giftIndexToTry];
+          nonce++;
+          tries++;
         }
+
+        require(giftToClaim.gifter != _msgSender(), "Could not find a valid gift to claim!");
+
+        console.log('landed on gift fron ', giftToClaim.gifter);
+
+        // Do the Transfer
+        nonce++;
+        IERC721(giftToClaim.nftAddress).transferFrom(address(this), _msgSender(), giftToClaim.tokenId);
+        delete giftsLeft[giftIndexToTry];
+        _giftsGiven[giftToClaim.tokenId].giftee = _msgSender();
+        _tokenIdOfClaimedGift[tokenId] = giftToClaim.tokenId;
       }
     }
 

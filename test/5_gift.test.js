@@ -105,11 +105,11 @@ describe("SecretSanta - Registration", async function () {
 
     it("should allow minting multiple", async () => {
       await dc.connect(accounts[1]).mint(accounts[1].address)
-      dc.connect(accounts[1]).approve(rs.address, 0);
-      dc.connect(accounts[1]).approve(rs.address, 1);
+      await dc.connect(accounts[1]).approve(rs.address, 0);
+      await dc.connect(accounts[1]).approve(rs.address, 2);
 
       await rs.connect(accounts[0]).activateMint();
-      await rs.connect(accounts[1]).mint(2, [dc.address, dc.address], [0, 1], {
+      await rs.connect(accounts[1]).mint(2, [dc.address, dc.address], [0, 2], {
         from: accounts[1].address,
         value: parseUnits(".06", "ether")
       })
@@ -122,7 +122,7 @@ describe("SecretSanta - Registration", async function () {
       expect(await rs.numGiftsLeft()).to.equal(2);
     });
 
-    it.only("should allow minting if all conditions are met", async () => {
+    it("should allow minting if all conditions are met", async () => {
       // Verify account owns the first token of dummy collection
       expect(accounts[1].address).to.equal(await dc.ownerOf(0))
       expect(accounts[2].address).to.equal(await dc.ownerOf(1))
@@ -145,8 +145,6 @@ describe("SecretSanta - Registration", async function () {
 
       expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
       expect(await rs.ownerOf(1)).to.equal(accounts[2].address);
-
-      await rs.connect(accounts[1]).claimGifts([0])
     });
   })
 

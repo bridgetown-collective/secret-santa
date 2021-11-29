@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 
-describe("SecretSanta - Registration", async function () {
+describe.skip("SecretSanta - Registration", async function () {
   let ss = null;
   let owner = null;
   let accounts = null;

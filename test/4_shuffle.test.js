@@ -1,6 +1,6 @@
 const { expect } = require("chai");
 
-describe("SecretSanta", function () {
+describe.skip("SecretSanta", function () {
   it("Should Deploy And Shuffle", async function () {
     const SecretSanta  = await hre.ethers.getContractFactory("SecretSanta");
     const secretSanta = await SecretSanta.deploy();
