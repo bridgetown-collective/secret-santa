@@ -37,6 +37,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       uint256 tokenId;
       address gifter;
       address giftee;
+      address gifteeDelegator;
     }
 
     mapping(uint256 => address) private _owners;
@@ -112,65 +113,79 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
 
       // Write it down
-      _giftsGiven[tokenId] = Gift(nftAddress, tokenId, from, address(0));
+      _giftsGiven[tokenId] = Gift(nftAddress, tokenId, from, address(0), address(0));
       giftsLeft.push(_giftsGiven[tokenId]);
     }
 
     function claimGifts(uint256[] memory tokenIds) external {
+      console.log('senderHere', _msgSender());
+      this.claimGifts(tokenIds, _msgSender());
+    }
+
+    function claimGifts(uint256[] memory tokenIds, address gifteeAddress) external {
+      console.log('senderOverHere', _msgSender());
+      console.log('txOrigin', tx.origin);
+      console.log('gifteeAddress', gifteeAddress);
       // Can Claim At All
-        require(claimActive, "Claim: Claiming Period has not started yet!");
+      require(claimActive, "Claim: Claiming Period has not started yet!");
 
       // Iterate through RagingSanta token Ids
       for(uint256 i = 0; i < tokenIds.length; i++) {
         uint256 tokenId = tokenIds[i];
 
+        console.log('tokenId', tokenId);
+        console.log('owner', _owners[tokenId]);
+        console.log('sender', _msgSender());
+        bool wasDelegated = tx.origin != gifteeAddress;
+        console.log('wasDelegated', wasDelegated);
         // Does Sender own these tokens?
-        require(_owners[tokenId] == _msgSender(), "Claim: Sender is not the owner of this token.");
+        require(_owners[tokenId] == tx.origin, "Claim: Tx Origin is not the owner of this token.");
 
         // Have these tokens been claimed yet?
         require(_tokenIdOfClaimedGift[tokenId] == 0, "Claim: Gift has already been claimed");
 
-        // Are there enough gifts left?
-
-        // Our mechanism to avoid randomly selecting our own gifts is to have a
-        // fixed number of reattempts at a random number, and with all likelihood
-        // we can find a gift that isn't your own (only an edge case to consider
-        // when the remaining gift pool shrinks)
         uint256 rn = uint256(
           keccak256(
-            abi.encodePacked(blockhash(block.number-1), giftsLeft.length, tokenId, nonce)
+            abi.encodePacked(blockhash(block.number - 1), giftsLeft.length, tokenId, nonce)
           )
         );
 
         uint256 giftIndexToTry = rn % giftsLeft.length;
         Gift memory giftToClaim = giftsLeft[giftIndexToTry];
-
         uint8 tries = 0;
 
-        // Check to make sure it's not your own gift
-        while (giftToClaim.gifter == _msgSender() && tries < maxTries) {
-          console.log('giftIndexToTry', giftIndexToTry);
-          console.log('Should give out gift', giftToClaim.nftAddress);
-          console.log('tokenId', giftToClaim.tokenId);
-          console.log('gifter Addy', giftToClaim.gifter);
-          console.log('who am i', _msgSender());
+        // If theres no external giftee
+        if (!wasDelegated) {
 
-          giftIndexToTry = (giftIndexToTry + 1) % giftsLeft.length;
-          giftToClaim = giftsLeft[giftIndexToTry];
-          nonce++;
-          tries++;
+          // Check to make sure it's not your own gift
+          while (giftToClaim.gifter == gifteeAddress && tries < maxTries) {
+            console.log('giftIndexToTry', giftIndexToTry);
+            console.log('Should give out gift', giftToClaim.nftAddress);
+            console.log('tokenId', giftToClaim.tokenId);
+            console.log('gifter Addy', giftToClaim.gifter);
+            console.log('who is giftee', gifteeAddress);
+
+            giftIndexToTry = (giftIndexToTry + 1) % giftsLeft.length;
+            giftToClaim = giftsLeft[giftIndexToTry];
+            nonce++;
+            tries++;
+          }
+
+          require(giftToClaim.gifter != gifteeAddress, "Could not find a valid gift to claim!");
         }
 
-        require(giftToClaim.gifter != _msgSender(), "Could not find a valid gift to claim!");
-
-        console.log('landed on gift fron ', giftToClaim.gifter);
+        console.log('landed on gift from ', giftToClaim.gifter);
 
         // Do the Transfer
         nonce++;
-        IERC721(giftToClaim.nftAddress).transferFrom(address(this), _msgSender(), giftToClaim.tokenId);
+        IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.tokenId);
         delete giftsLeft[giftIndexToTry];
-        _giftsGiven[giftToClaim.tokenId].giftee = _msgSender();
+        _giftsGiven[giftToClaim.tokenId].giftee = gifteeAddress;
         _tokenIdOfClaimedGift[tokenId] = giftToClaim.tokenId;
+
+        if (wasDelegated) {
+          _giftsGiven[giftToClaim.tokenId].gifteeDelegator = tx.origin;
+        }
       }
     }
 
