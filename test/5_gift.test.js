@@ -1,6 +1,13 @@
 const { expect } = require("chai");
 const { parseUnits } = require("ethers").utils;
 
+async function expectTokenOwnedToBe(rs, address, expectedArr) {
+  let tokensOwned = await rs.tokensOwned(address);
+  tokensOwned = tokensOwned.map((x) => Number(x.toString()))
+  expect(tokensOwned.length).to.equal(expectedArr.length);
+  expect(tokensOwned).deep.to.equal(expectedArr);
+}
+
 describe("SecretSanta - Registration", async function () {
   let rs = null;
   let ss = null;
@@ -51,6 +58,9 @@ describe("SecretSanta - Registration", async function () {
 
     const numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("0");
+
+
+    await expectTokenOwnedToBe(rs, accounts[1].address, [])
   });
 
   it("should not allow minting if insufficient entry fee gift", async () => {
@@ -120,6 +130,8 @@ describe("SecretSanta - Registration", async function () {
       expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
       expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
       expect(await rs.numGiftsLeft()).to.equal(2);
+
+      await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1])
     });
 
     it("should allow minting if all conditions are met", async () => {
@@ -145,6 +157,9 @@ describe("SecretSanta - Registration", async function () {
 
       expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
       expect(await rs.ownerOf(1)).to.equal(accounts[2].address);
+
+      await expectTokenOwnedToBe(rs, accounts[1].address, [0])
+      await expectTokenOwnedToBe(rs, accounts[2].address, [1])
     });
   })
 

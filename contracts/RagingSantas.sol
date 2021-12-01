@@ -40,8 +40,11 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       address gifteeDelegator;
     }
 
+    // Mapping from token ID to owner address
     mapping(uint256 => address) private _owners;
-    mapping(address => uint256) private _balances;
+
+    // Mapping from address to specific tokens Owned
+    mapping(address => uint256[]) public _tokensOwned;
 
     // Mapping from token ID to gifted gift
     mapping(uint256 => Gift) private _giftsGiven;
@@ -85,7 +88,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         require(mintActive, "Mint: Minting is not open yet!");
         require((qty + numberReserved + numberMinted) <= maxSupply, "Mint: Minting has sold out!");
         require(qty <= maxPerTx, "Mint: Max tokens per transaction exceeded");
-        require((_balances[_msgSender()] + qty) <= maxPerWallet, "Mint: Max tokens per wallet exceeded");
+        require((_tokensOwned[_msgSender()].length + qty) <= maxPerWallet, "Mint: Max tokens per wallet exceeded");
         require(msg.value >= qty * mintPrice, "Mint: Insufficient Funds For This Transaction");
 
         // Validate Gifts
@@ -155,6 +158,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
 
         // If theres no external giftee
         if (!wasDelegated) {
+
           // Check to make sure it's not your own gift
           while (giftToClaim.gifter == gifteeAddress && tries < maxTries) {
             console.log('giftIndexToTry', giftIndexToTry);
@@ -177,8 +181,12 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         // Do the Transfer
         nonce++;
         IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.tokenId);
-        delete giftsLeftByTokenId[giftIndexToTry];
+
+        // Remove gift from giftsLeft
+        giftsLeftByTokenId[giftIndexToTry] = giftsLeftByTokenId[giftsLeftByTokenId.length - 1];
+        giftsLeftByTokenId.pop();
         _giftsGiven[giftToClaim.tokenId].giftee = gifteeAddress;
+
         _tokenIdOfClaimedGift[tokenId] = giftToClaim.tokenId;
 
         if (wasDelegated) {
@@ -192,7 +200,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
      */
     function balanceOf(address owner) public view virtual override returns (uint256) {
         require(owner != address(0), "ERC721: balance query for the zero address");
-        return _balances[owner];
+        return _tokensOwned[owner].length;
     }
 
     /**
@@ -202,6 +210,14 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         address owner = _owners[tokenId];
         require(owner != address(0), "ERC721: owner query for nonexistent token");
         return owner;
+    }
+
+     /**
+     * @dev See {IERC721-balanceOf}.
+     */
+    function tokensOwned(address owner) public view virtual returns (uint[] memory) {
+        require(owner != address(0), "ERC721: balance query for the zero address");
+        return _tokensOwned[owner];
     }
 
     /**
@@ -332,7 +348,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
 
         _beforeTokenTransfer(address(0), to, tokenId);
 
-        _balances[to] += 1;
+        _tokensOwned[to].push(tokenId);
         _owners[tokenId] = to;
 
         emit Transfer(address(0), to, tokenId);
@@ -415,8 +431,17 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         // Clear approvals from the previous owner
         _approve(address(0), tokenId);
 
-        _balances[from] -= 1;
-        _balances[to] += 1;
+        // Remove tokenId from _tokensOwned[from]
+        for(uint8 i = 0; i < _tokensOwned[from].length; i++) {
+            if (_tokensOwned[from][i] == tokenId) {
+              _tokensOwned[from][i] = _tokensOwned[from][_tokensOwned[from].length - 1];
+              _tokensOwned[from].pop();
+              break;
+            }
+        }
+
+        // Add tokenId to _tokensOwned[to]
+        _tokensOwned[to].push(tokenId);
         _owners[tokenId] = to;
 
         emit Transfer(from, to, tokenId);

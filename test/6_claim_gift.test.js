@@ -89,6 +89,9 @@ describe("SecretSanta - Claiming", async function () {
     expect(accounts[1].address).to.not.equal(await dc.ownerOf(0));
     expect(accounts[1].address).to.equal(await dc.ownerOf(1));
 
+    expect(await dc.ownerOf(0)).to.not.equal(accounts[1].address);
+    expect(await dc.ownerOf(1)).to.equal(accounts[1].address);
+
     await expect(
       rs.connect(accounts[1])["claimGifts(uint256[])"]([0])
     ).to.be.revertedWith(
