@@ -1,5 +1,6 @@
 const { expect } = require("chai");
 const { parseUnits } = require("ethers").utils;
+const { AddressZero } = require("ethers").constants;
 
 async function expectTokenOwnedToBe(rs, address, expectedArr) {
   let tokensOwned = await rs.tokensOwned(address);
@@ -160,6 +161,41 @@ describe("SecretSanta - Registration", async function () {
 
       await expectTokenOwnedToBe(rs, accounts[1].address, [0])
       await expectTokenOwnedToBe(rs, accounts[2].address, [1])
+    });
+
+    it("should keep giftpool up to date", async () => {
+      // Verify account owns the first token of dummy collection
+      expect(accounts[1].address).to.equal(await dc.ownerOf(0))
+      expect(accounts[2].address).to.equal(await dc.ownerOf(1))
+
+      // Approve RagingSanta for gifting this token (to happen in webUI)
+      dc.connect(accounts[1]).approve(rs.address, 0);
+      dc.connect(accounts[2]).approve(rs.address, 1);
+
+      await rs.connect(accounts[0]).activateMint();
+
+      await rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+        from: accounts[2].address,
+        value: parseUnits(".03", "ether")
+      });
+
+      await rs.connect(accounts[1]).mint(1, [dc.address], [0], {
+        from: accounts[1].address,
+        value: parseUnits(".03", "ether")
+      });
+
+      await expectTokenOwnedToBe(rs, accounts[1].address, [1])
+      await expectTokenOwnedToBe(rs, accounts[2].address, [0])
+
+      let giftInPoolToken = Number((await rs.giftPoolTokens(0)).toString())
+      expect(giftInPoolToken).to.equal(0)
+
+      const gift = await rs.getGiftByProviderToken(giftInPoolToken);
+      expect(gift.nftAddress).to.equal(dc.address);
+      expect(gift.nftTokenId).to.equal(1);
+      expect(gift.gifter).to.equal(accounts[2].address);
+      expect(gift.giftee).to.equal(AddressZero);
+      expect(gift.gifteeDelegator).to.equal(AddressZero);
     });
   })
 

@@ -1,5 +1,6 @@
 const { expect } = require("chai");
 const { parseUnits, getAddress } = require("ethers").utils;
+const { AddressZero } = require("ethers").constants;
 
 describe("SecretSanta - Claiming", async function () {
   let rs = null;
@@ -114,5 +115,45 @@ describe("SecretSanta - Claiming", async function () {
     expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.contain(
       accounts[3].address
     );
+  });
+
+  it("should keep giftpool up to date upon claim", async () => {
+    expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.not.contain(
+      accounts[3].address
+    );
+
+    let giftInPoolToken = Number((await rs.giftPoolTokens(0)).toString())
+    expect(giftInPoolToken).to.equal(0)
+
+    let gift = await rs.getGiftByProviderToken(giftInPoolToken);
+    expect(gift.nftAddress).to.equal(dc.address);
+    expect(gift.nftTokenId).to.equal(0);
+    expect(gift.gifter).to.equal(accounts[1].address);
+    expect(gift.giftee).to.equal(AddressZero);
+    expect(gift.gifteeDelegator).to.equal(AddressZero);
+
+    await rs.connect(owner).activateClaim();
+    await rs
+      .connect(accounts[1])
+      ["claimGifts(uint256[])"]([0])
+
+    expect(accounts[1].address).to.not.equal(await dc.ownerOf(0));
+    expect(accounts[1].address).to.equal(await dc.ownerOf(1));
+    expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.contain(
+      accounts[1].address
+    );
+
+    // this is not determinstic - bc its a delegator theres a 50/50 chance
+    giftInPoolToken = Number((await rs.giftPoolTokens(0)).toString())
+    expect(giftInPoolToken).to.equal(0)
+
+    gift = await rs.getGiftByProviderToken(giftInPoolToken);
+    expect(gift.nftAddress).to.equal(dc.address);
+    expect(gift.nftTokenId).to.equal(0);
+    expect(gift.gifter).to.equal(accounts[1].address);
+    expect(gift.giftee).to.equal(AddressZero);
+    expect(gift.gifteeDelegator).to.equal(AddressZero);
+
+    /// TODOOO
   });
 });

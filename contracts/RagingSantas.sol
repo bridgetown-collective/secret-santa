@@ -33,8 +33,9 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     uint256 public numberReserved; // For Giveaways
 
     struct Gift {
+      uint256 providerTokenId;
       address nftAddress;
-      uint256 tokenId;
+      uint256 nftTokenId;
       address gifter;
       address giftee;
       address gifteeDelegator;
@@ -115,7 +116,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
 
       // Write it down
-      _giftsByTokenId[tokenId] = Gift(nftAddress, tokenId, from, address(0), address(0));
+      _giftsByTokenId[tokenId] = Gift(tokenId, nftAddress, nftTokenId, from, address(0), address(0));
       giftPoolTokens.push(tokenId);
     }
 
@@ -163,7 +164,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
           while (giftToClaim.gifter == gifteeAddress && tries < maxTries) {
             console.log('giftIndexToTry', giftIndexToTry);
             console.log('Should give out gift', giftToClaim.nftAddress);
-            console.log('tokenId', giftToClaim.tokenId);
+            console.log('tokenId', giftToClaim.providerTokenId);
             console.log('gifter Addy', giftToClaim.gifter);
             console.log('who is giftee', gifteeAddress);
 
@@ -180,20 +181,20 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
 
         // Do the Transfer
         nonce++;
-        IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.tokenId);
+        IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.nftTokenId);
 
-        // Remove gift from giftsLeft
+        // Remove gift from pool
         giftPoolTokens[giftIndexToTry] = giftPoolTokens[giftPoolTokens.length - 1];
         giftPoolTokens.pop();
 
         // Update the gift object
-        _giftsByTokenId[giftToClaim.tokenId].giftee = gifteeAddress;
+        _giftsByTokenId[giftToClaim.providerTokenId].giftee = gifteeAddress;
         if (wasDelegated) {
-          _giftsByTokenId[giftToClaim.tokenId].gifteeDelegator = tx.origin;
+          _giftsByTokenId[giftToClaim.providerTokenId].gifteeDelegator = tx.origin;
         }
 
         // Map Token to Token
-        _claimToProviderTokenId[tokenId] = giftToClaim.tokenId;
+        _claimToProviderTokenId[tokenId] = giftToClaim.providerTokenId;
       }
     }
 
@@ -220,6 +221,15 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     function tokensOwned(address owner) public view virtual returns (uint[] memory) {
         require(owner != address(0), "ERC721: balance query for the zero address");
         return _tokensOwned[owner];
+    }
+
+     /**
+     * @dev See {IERC721-balanceOf}.
+     */
+    function getGiftByProviderToken(uint256 tokenId) public view virtual returns (Gift memory) {
+        address owner = _owners[tokenId];
+        require(owner != address(0), "ERC721: balance query for the zero address");
+        return _giftsByTokenId[tokenId];
     }
 
     /**
