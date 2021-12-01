@@ -99,7 +99,7 @@ describe("SecretSanta - Claiming", async function () {
     );
   });
 
-  it("should let someone set a gifteeAddress not their own", async () => {
+  it("should let someone send their gift to a wallet of choice", async () => {
     expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.not.contain(
       accounts[3].address
     );

@@ -47,10 +47,10 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     mapping(address => uint256[]) public _tokensOwned;
 
     // Mapping from token ID to gifted gift
-    mapping(uint256 => Gift) private _giftsGiven;
+    mapping(uint256 => Gift) private _giftsByTokenId;
 
     // Mapping from token ID (to make a claim) to token ID tied to claimed gift
-    mapping(uint256 => uint256) private _tokenIdOfClaimedGift;
+    mapping(uint256 => uint256) private _claimToProviderTokenId;
 
     // Mapping from token ID to approved address
     mapping(uint256 => address) private _tokenApprovals;
@@ -59,7 +59,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     mapping(address => mapping(address => bool)) private _operatorApprovals;
 
     // The Gift Pool
-    uint256[] public giftsLeftByTokenId;
+    uint256[] public giftPoolTokens;
 
     constructor(uint256 supply, uint256 reserved)
     {
@@ -80,7 +80,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     }
 
     function numGiftsLeft() public view virtual returns (uint256) {
-        return giftsLeftByTokenId.length;
+        return giftPoolTokens.length;
     }
     
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
@@ -115,8 +115,8 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
 
       // Write it down
-      _giftsGiven[tokenId] = Gift(nftAddress, tokenId, from, address(0), address(0));
-      giftsLeftByTokenId.push(tokenId);
+      _giftsByTokenId[tokenId] = Gift(nftAddress, tokenId, from, address(0), address(0));
+      giftPoolTokens.push(tokenId);
     }
 
     function claimGifts(uint256[] memory tokenIds) external {
@@ -140,26 +140,26 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         console.log('sender', _msgSender());
         bool wasDelegated = tx.origin != gifteeAddress;
         console.log('wasDelegated', wasDelegated);
+
         // Does Sender own these tokens?
         require(_owners[tokenId] == tx.origin, "Claim: Tx Origin is not the owner of this token.");
 
         // Have these tokens been claimed yet?
-        require(_tokenIdOfClaimedGift[tokenId] == 0, "Claim: Gift has already been claimed");
+        require(_claimToProviderTokenId[tokenId] == 0, "Claim: Gift has already been claimed");
 
         uint256 rn = uint256(
           keccak256(
-            abi.encodePacked(blockhash(block.number - 1), giftsLeftByTokenId.length, tokenId, nonce)
+            abi.encodePacked(blockhash(block.number - 1), giftPoolTokens.length, tokenId, nonce)
           )
         );
 
-        uint256 giftIndexToTry = rn % giftsLeftByTokenId.length;
-        Gift memory giftToClaim = _giftsGiven[giftsLeftByTokenId[giftIndexToTry]];
+        uint256 giftIndexToTry = rn % giftPoolTokens.length;
+        Gift memory giftToClaim = _giftsByTokenId[giftPoolTokens[giftIndexToTry]];
         uint8 tries = 0;
 
         // If theres no external giftee
+        // Try not to gift you your own gift
         if (!wasDelegated) {
-
-          // Check to make sure it's not your own gift
           while (giftToClaim.gifter == gifteeAddress && tries < maxTries) {
             console.log('giftIndexToTry', giftIndexToTry);
             console.log('Should give out gift', giftToClaim.nftAddress);
@@ -167,8 +167,8 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
             console.log('gifter Addy', giftToClaim.gifter);
             console.log('who is giftee', gifteeAddress);
 
-            giftIndexToTry = (giftIndexToTry + 1) % giftsLeftByTokenId.length;
-            giftToClaim = _giftsGiven[giftsLeftByTokenId[giftIndexToTry]];
+            giftIndexToTry = (giftIndexToTry + 1) % giftPoolTokens.length;
+            giftToClaim = _giftsByTokenId[giftPoolTokens[giftIndexToTry]];
             nonce++;
             tries++;
           }
@@ -183,15 +183,17 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.tokenId);
 
         // Remove gift from giftsLeft
-        giftsLeftByTokenId[giftIndexToTry] = giftsLeftByTokenId[giftsLeftByTokenId.length - 1];
-        giftsLeftByTokenId.pop();
-        _giftsGiven[giftToClaim.tokenId].giftee = gifteeAddress;
+        giftPoolTokens[giftIndexToTry] = giftPoolTokens[giftPoolTokens.length - 1];
+        giftPoolTokens.pop();
 
-        _tokenIdOfClaimedGift[tokenId] = giftToClaim.tokenId;
-
+        // Update the gift object
+        _giftsByTokenId[giftToClaim.tokenId].giftee = gifteeAddress;
         if (wasDelegated) {
-          _giftsGiven[giftToClaim.tokenId].gifteeDelegator = tx.origin;
+          _giftsByTokenId[giftToClaim.tokenId].gifteeDelegator = tx.origin;
         }
+
+        // Map Token to Token
+        _claimToProviderTokenId[tokenId] = giftToClaim.tokenId;
       }
     }
 
