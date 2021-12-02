@@ -21,7 +21,7 @@ export function getStaticProps() {
 
 export default function Home({ svgMap }) {
   return (
-    <div className="inline-flex flex-col self-center mb-24">
+    <div className="inline-flex flex-col self-center m-6 mb-24">
       <div className="section flex-col text-center">
         <p className="text-6xl alt-font">Raging Santas NFT</p>
         <p className="text-xl">

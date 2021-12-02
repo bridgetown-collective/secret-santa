@@ -136,10 +136,10 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
       for(uint256 i = 0; i < tokenIds.length; i++) {
         uint256 tokenId = tokenIds[i];
 
+        bool wasDelegated = tx.origin != gifteeAddress;
         console.log('tokenId', tokenId);
         console.log('owner', _owners[tokenId]);
         console.log('sender', _msgSender());
-        bool wasDelegated = tx.origin != gifteeAddress;
         console.log('wasDelegated', wasDelegated);
 
         // Does Sender own these tokens?
