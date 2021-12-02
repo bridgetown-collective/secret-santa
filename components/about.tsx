@@ -1,12 +1,14 @@
-import Link from "next/link";
-
 export default function About() {
   return (
     <div>
-      <p className="text-2xl m-2">Information about the project coming soon</p>
-      <Link href="/the-pool">
-        <button>Dive into the Gift Pool</button>
-      </Link>
+      <p className="text-2xl">
+        Do you like NFTs? Do you Rage for Christmas? Do you enjoy both giving
+        AND receiving presents?
+      </p>
+      <p className="text-l my-2">
+        If so, come participate in <i>this</i> rager - the first ever NFT Secret
+        Santa Swap!
+      </p>
     </div>
   );
 }
