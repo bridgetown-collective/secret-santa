@@ -20,8 +20,7 @@ describe("SecretSanta - Registration", async function () {
     accounts = await hre.ethers.getSigners();
     [owner] = accounts;
     const numSupply = 2;
-    const numReserve = 0;
-    rs = await RagingSantas.deploy(numSupply, numReserve);
+    rs = await RagingSantas.deploy(numSupply);
   });
 
   it("should not allow minting if minting hasnt been activated", async () => {

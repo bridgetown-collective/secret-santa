@@ -48,7 +48,6 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     uint256 public maxSupply;
     uint256 public mintPrice;
     uint256 public numberMinted;
-    uint256 public numberReserved; // For Giveaways
 
     string private _baseURI;
     uint256 private nonce;
@@ -86,11 +85,10 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     // The Gift Pool
     uint256[] public giftPoolTokens;
 
-    constructor(uint256 supply, uint256 reserved)
+    constructor(uint256 supply)
     {
         mintActive = false;
         claimActive = false;
-        numberReserved = reserved;
         mintPrice = 0.03 ether;
         maxSupply = supply;
         nonce = 42;
@@ -111,6 +109,10 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     function setBaseURI(string memory newURI) public onlyOwner {
         _baseURI = newURI;
     }
+
+    function setProvenanceHash(string memory newHash) public onlyOwner {
+        provenanceHash = newHash;
+    }
     
     function tokenURI(uint256 tokenId) external view returns (string memory){
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
@@ -124,7 +126,7 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
         // Validate Mint
         require(mintActive, "Minting Inactive");
-        require((qty + numberReserved + numberMinted) <= maxSupply, "Mint Sold Out");
+        require((qty + numberMinted) <= maxSupply, "Mint Sold Out");
         require(qty <= maxPerTx, "Exceeded Max Per Txn");
         require((_tokensOwned[_msgSender()].length + qty) <= maxPerWallet, "Exceed Max Per Wallet");
         require(msg.value >= qty * mintPrice, "Insufficient Funds");

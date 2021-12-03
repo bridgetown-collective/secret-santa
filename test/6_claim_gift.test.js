@@ -15,8 +15,7 @@ describe("SecretSanta - Claiming", async function () {
     [owner] = accounts;
 
     const numSupply = 4;
-    const numReserve = 0;
-    rs = await RagingSantas.deploy(numSupply, numReserve);
+    rs = await RagingSantas.deploy(numSupply);
 
     const DummyCollection = await hre.ethers.getContractFactory(
       "DummyCollection"
