@@ -7,7 +7,30 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "hardhat/console.sol";
 
-contract RagingSantas is IERC721, Ownable, AccessControl {
+
+
+abstract contract Functional {
+    function toString(uint256 value) internal pure returns (string memory) {
+        if (value == 0) {
+            return "0";
+        }
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
+    }
+}
+
+contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     using SafeMath for uint256;
     using Address for address;
 
@@ -19,18 +42,19 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
 
     // Provenance hash proving random distribution
     string public provenanceHash;
-
-    uint256 private nonce;
-
     bool public mintActive;
     bool public claimActive;
-    uint256 private constant maxPerTx = 10;
-    uint256 private constant maxPerWallet = 30;
-    uint256 private constant maxTries = 20;
+
     uint256 public maxSupply;
     uint256 public mintPrice;
     uint256 public numberMinted;
     uint256 public numberReserved; // For Giveaways
+
+    string private _baseURI;
+    uint256 private nonce;
+    uint256 private constant maxPerTx = 10;
+    uint256 private constant maxPerWallet = 30;
+    uint256 private constant maxTries = 20;
 
     struct Gift {
       uint256 providerTokenId;
@@ -45,7 +69,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     mapping(uint256 => address) private _owners;
 
     // Mapping from address to specific tokens Owned
-    mapping(address => uint256[]) public _tokensOwned;
+    mapping(address => uint256[]) private _tokensOwned;
 
     // Mapping from token ID to gifted gift
     mapping(uint256 => Gift) private _giftsByTokenId;
@@ -83,20 +107,33 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     function numGiftsLeft() public view virtual returns (uint256) {
         return giftPoolTokens.length;
     }
+
+    function setBaseURI(string memory newURI) public onlyOwner {
+        _baseURI = newURI;
+    }
     
+    function tokenURI(uint256 tokenId) external view returns (string memory){
+        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+        return string(abi.encodePacked(_baseURI, toString(tokenId), ".json"));
+    }
+
+    function contractURI() public view returns (string memory) {
+        return string(abi.encodePacked(_baseURI,"contract.json"));
+    }
+
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
         // Validate Mint
-        require(mintActive, "Mint: Minting is not open yet!");
-        require((qty + numberReserved + numberMinted) <= maxSupply, "Mint: Minting has sold out!");
-        require(qty <= maxPerTx, "Mint: Max tokens per transaction exceeded");
-        require((_tokensOwned[_msgSender()].length + qty) <= maxPerWallet, "Mint: Max tokens per wallet exceeded");
-        require(msg.value >= qty * mintPrice, "Mint: Insufficient Funds For This Transaction");
+        require(mintActive, "Minting Inactive");
+        require((qty + numberReserved + numberMinted) <= maxSupply, "Mint Sold Out");
+        require(qty <= maxPerTx, "Exceeded Max Per Txn");
+        require((_tokensOwned[_msgSender()].length + qty) <= maxPerWallet, "Exceed Max Per Wallet");
+        require(msg.value >= qty * mintPrice, "Insufficient Funds");
 
         // Validate Gifts
-        require(nftAddresses.length == qty, "Mint: Invalid gift parameters");
-        require(nftTokenIds.length == qty, "Mint: Invalid gift parameters");
+        require(nftAddresses.length == qty, "Invalid gift");
+        require(nftTokenIds.length == qty, "Invalid gift");
 
-        uint256 firstMintTokenId = numberMinted; //Store the starting value of the mint batch
+        uint256 firstMintTokenId = numberMinted;
 
         // Do the Thing
         for(uint256 i = 0; i < qty; i++) {
@@ -126,27 +163,20 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
     }
 
     function claimGifts(uint256[] memory tokenIds, address gifteeAddress) external {
-      console.log('senderOverHere', _msgSender());
-      console.log('txOrigin', tx.origin);
-      console.log('gifteeAddress', gifteeAddress);
       // Can Claim At All
-      require(claimActive, "Claim: Claiming Period has not started yet!");
+      require(claimActive, "Claiming Inactive");
 
       // Iterate through RagingSanta token Ids
       for(uint256 i = 0; i < tokenIds.length; i++) {
         uint256 tokenId = tokenIds[i];
 
         bool wasDelegated = tx.origin != gifteeAddress;
-        console.log('tokenId', tokenId);
-        console.log('owner', _owners[tokenId]);
-        console.log('sender', _msgSender());
-        console.log('wasDelegated', wasDelegated);
 
         // Does Sender own these tokens?
-        require(_owners[tokenId] == tx.origin, "Claim: Tx Origin is not the owner of this token.");
+        require(_owners[tokenId] == tx.origin, "Sender Does Not Own Tokens");
 
         // Have these tokens been claimed yet?
-        require(_claimToProviderTokenId[tokenId] == 0, "Claim: Gift has already been claimed");
+        require(_claimToProviderTokenId[tokenId] == 0, "Gift Already Claimed");
 
         uint256 rn = uint256(
           keccak256(
@@ -162,11 +192,6 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         // Try not to gift you your own gift
         if (!wasDelegated) {
           while (giftToClaim.gifter == gifteeAddress && tries < maxTries) {
-            console.log('giftIndexToTry', giftIndexToTry);
-            console.log('Should give out gift', giftToClaim.nftAddress);
-            console.log('tokenId', giftToClaim.providerTokenId);
-            console.log('gifter Addy', giftToClaim.gifter);
-            console.log('who is giftee', gifteeAddress);
 
             giftIndexToTry = (giftIndexToTry + 1) % giftPoolTokens.length;
             giftToClaim = _giftsByTokenId[giftPoolTokens[giftIndexToTry]];
@@ -174,10 +199,9 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
             tries++;
           }
 
-          require(giftToClaim.gifter != gifteeAddress, "Could not find a valid gift to claim!");
+          require(giftToClaim.gifter != gifteeAddress, "No Gift Found");
         }
 
-        console.log('landed on gift from ', giftToClaim.gifter);
 
         // Do the Transfer
         nonce++;
@@ -202,7 +226,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
      * @dev See {IERC721-balanceOf}.
      */
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        require(owner != address(0), "ERC721: balance query for the zero address");
+        require(owner != address(0), "Zero Address Balance");
         return _tokensOwned[owner].length;
     }
 
@@ -211,7 +235,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
      */
     function ownerOf(uint256 tokenId) public view virtual override returns (address) {
         address owner = _owners[tokenId];
-        require(owner != address(0), "ERC721: owner query for nonexistent token");
+        require(owner != address(0), "Nonexistent Token");
         return owner;
     }
 
@@ -219,7 +243,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
      * @dev See {IERC721-balanceOf}.
      */
     function tokensOwned(address owner) public view virtual returns (uint[] memory) {
-        require(owner != address(0), "ERC721: balance query for the zero address");
+        require(owner != address(0), "Zero Address");
         return _tokensOwned[owner];
     }
 
@@ -228,7 +252,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
      */
     function getGiftByProviderToken(uint256 tokenId) public view virtual returns (Gift memory) {
         address owner = _owners[tokenId];
-        require(owner != address(0), "ERC721: balance query for the zero address");
+        require(owner != address(0), "Nonexistent Token");
         return _giftsByTokenId[tokenId];
     }
 
@@ -237,11 +261,11 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
      */
     function approve(address to, uint256 tokenId) public virtual override {
         address owner = ownerOf(tokenId);
-        require(to != owner, "ERC721: approval to current owner");
+        require(to != owner, "Can't Approve Owner");
 
         require(
             msg.sender == owner || isApprovedForAll(owner, msg.sender),
-            "ERC721: approve caller is not owner nor approved for all"
+            "Not Approved. Not Owner."
         );
 
         _approve(to, tokenId);
@@ -264,7 +288,7 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
      * @dev See {IERC721-getApproved}.
      */
     function getApproved(uint256 tokenId) public view virtual override returns (address) {
-        require(_exists(tokenId), "ERC721: approved query for nonexistent token");
+        require(_exists(tokenId), "Nonexistent Token");
 
         return _tokenApprovals[tokenId];
     }
@@ -524,4 +548,8 @@ contract RagingSantas is IERC721, Ownable, AccessControl {
         address owner = ownerOf(tokenId);
         return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
     }
+
+    receive() external payable {}
+
+    fallback() external payable {}
 }

@@ -28,7 +28,7 @@ describe("SecretSanta - Registration", async function () {
     expect(await rs.mintActive()).to.equal(false);
 
     expect(rs.connect(accounts[1]).mint(1, [], [])).to.be.revertedWith(
-      "Mint: Minting is not open yet!"
+      "VM Exception while processing transaction: reverted with reason string 'Minting Inactive'"
     );
   });
 
@@ -44,7 +44,7 @@ describe("SecretSanta - Registration", async function () {
         value: parseUnits(".0299", "ether")
       })
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Mint: Insufficient Funds For This Transaction'"
+      "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
     );
 
     // Just short of 2 mints
@@ -54,7 +54,7 @@ describe("SecretSanta - Registration", async function () {
         value: parseUnits(".0599", "ether")
       })
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Mint: Insufficient Funds For This Transaction'"
+      "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
     );
 
     const numMinted = await rs.numberMinted();
@@ -72,7 +72,7 @@ describe("SecretSanta - Registration", async function () {
         value: parseUnits(".03", "ether")
       })
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Mint: Invalid gift parameters'"
+      "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
     );
   });
 
@@ -101,7 +101,7 @@ describe("SecretSanta - Registration", async function () {
           value: parseUnits(".03", "ether")
         })
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Mint: Invalid gift parameters'"
+        "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
       )
 
       await expect(
@@ -110,7 +110,7 @@ describe("SecretSanta - Registration", async function () {
           value: parseUnits(".03", "ether")
         })
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Mint: Invalid gift parameters'"
+        "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
       )
     });
 

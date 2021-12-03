@@ -58,7 +58,7 @@ describe("SecretSanta - Claiming", async function () {
     await expect(
       rs.connect(accounts[1])["claimGifts(uint256[])"]([0])
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Claim: Claiming Period has not started yet!'"
+      "VM Exception while processing transaction: reverted with reason string 'Claiming Inactive'"
     );
 
     await rs.connect(owner).activateClaim();
@@ -96,7 +96,7 @@ describe("SecretSanta - Claiming", async function () {
     await expect(
       rs.connect(accounts[1])["claimGifts(uint256[])"]([0])
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Claim: Gift has already been claimed'"
+      "VM Exception while processing transaction: reverted with reason string 'Gift Already Claimed'"
     );
   });
 
