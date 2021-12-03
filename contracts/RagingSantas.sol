@@ -170,19 +170,19 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
 
       // Iterate through RagingSanta token Ids
       for(uint256 i = 0; i < tokenIds.length; i++) {
-        uint256 tokenId = tokenIds[i];
+        uint256 tId = tokenIds[i];
 
         bool wasDelegated = tx.origin != gifteeAddress;
 
         // Does Sender own these tokens?
-        require(_owners[tokenId] == tx.origin, "Sender Does Not Own Tokens");
+        require(_owners[tId] == tx.origin, "Sender Does Not Own Tokens");
 
         // Have these tokens been claimed yet?
-        require(_claimToProviderTokenId[tokenId] == 0, "Gift Already Claimed");
+        require(_claimToProviderTokenId[tId] == 0, "Gift Already Claimed");
 
         uint256 rn = uint256(
           keccak256(
-            abi.encodePacked(blockhash(block.number - 1), giftPoolTokens.length, tokenId, nonce)
+            abi.encodePacked(blockhash(block.number - 1), giftPoolTokens.length, tId, nonce)
           )
         );
 
@@ -220,7 +220,7 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
         }
 
         // Map Token to Token
-        _claimToProviderTokenId[tokenId] = giftToClaim.providerTokenId;
+        _claimToProviderTokenId[tId] = giftToClaim.providerTokenId;
       }
     }
 
