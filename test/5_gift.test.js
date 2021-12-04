@@ -95,6 +95,15 @@ describe("SecretSanta - Registration", async function () {
       await rs.connect(accounts[0]).activateMint();
 
       await expect(
+        rs.connect(accounts[1]).mint(2, [dc.address], [0], {
+          from: accounts[1].address,
+          value: parseUnits(".06", "ether")
+        })
+      ).to.be.revertedWith(
+        "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
+      )
+
+      await expect(
         rs.connect(accounts[1]).mint(1, [dc.address], [0, 1], {
           from: accounts[1].address,
           value: parseUnits(".03", "ether")
@@ -202,6 +211,12 @@ describe("SecretSanta - Registration", async function () {
       expect(gift.giftee).to.equal(AddressZero);
       expect(gift.gifteeDelegator).to.equal(AddressZero);
       expect(gift.hasClaimed).to.equal(false);
+
+      await expect(
+        rs.getGiftByGifterToken(2)
+      ).to.be.revertedWith(
+        "VM Exception while processing transaction: reverted with reason string 'ERC721: owner query for nonexistent token'"
+      );
     });
   })
 });

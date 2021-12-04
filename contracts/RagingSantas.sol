@@ -88,7 +88,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
 
         uint256 mLength = totalGifts - 1;
         for (uint256 i = 0; i < mLength; i++) {
-          uint256 n = uint256(keccak256(abi.encodePacked(i + seed))) % (totalGifts);
+          uint256 n = uint256(keccak256(abi.encodePacked(i + seed, giftPoolTokens[i]))) % (totalGifts);
           (giftPoolTokens[i], giftPoolTokens[n]) = (giftPoolTokens[n], giftPoolTokens[i]);
         }
 
@@ -176,12 +176,12 @@ contract RagingSantas is ERC721, Ownable, Functional {
     }
 
     function getGiftByGifterToken(uint256 tId) external view virtual returns (Gift memory) {
-        require(this.ownerOf(tId) != address(0), "Nonexistent Token");
+        this.ownerOf(tId);
         return _giftsByTID[tId];
     }
 
     function getGiftByGifteeToken(uint256 tId) external view virtual returns (Gift memory) {
-        require(this.ownerOf(tId) != address(0), "Nonexistent Token");
+        this.ownerOf(tId);
         uint256 tIdClaim = _giftRefsToClaim[tId];
         return _giftsByTID[tIdClaim];
     }
