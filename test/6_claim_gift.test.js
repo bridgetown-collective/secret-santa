@@ -40,7 +40,7 @@ describe("SecretSanta - Claiming", async function () {
     });
   });
 
-  it("should not allow claiming until activateClaim is flipped", async () => {
+  it.only("should not allow claiming until activateClaim is flipped", async () => {
     // Verify rs account owns the dummy collection gifts now
     expect(rs.address).to.equal(await dc.ownerOf(0));
     expect(rs.address).to.equal(await dc.ownerOf(1));
@@ -60,10 +60,22 @@ describe("SecretSanta - Claiming", async function () {
       "VM Exception while processing transaction: reverted with reason string 'Claiming Inactive'"
     );
 
-    await rs.connect(owner).activateClaim();
+    const rn_seed = 456123789;
+    await rs.connect(owner).activateClaim(rn_seed);
+
     await rs.connect(accounts[1])["claimGifts(uint256[])"]([0]);
 
+    let gift = await rs.getGiftByGifteeToken(0);
+
     expect(accounts[1].address).to.equal(await dc.ownerOf(1));
+    expect(gift.nftAddress).to.equal(dc.address);
+    expect(gift.nftTokenId).to.equal("0");
+    expect(gift.gifterTokenId).to.equal('0');
+    expect(gift.gifteeTokenId).to.equal('0');
+    expect(gift.gifter).to.equal(accounts[1].address);
+    expect(gift.giftee).to.equal(accounts[1].address);
+    expect(gift.gifteeDelgator).to.equal(AddressZero);
+    expect(gift.hasClaimed).to.equal(true);
   });
 
   it("should let someone claim a gift that is not their own", async () => {
@@ -124,7 +136,7 @@ describe("SecretSanta - Claiming", async function () {
     let giftInPoolToken = Number((await rs.giftPoolTokens(0)).toString())
     expect(giftInPoolToken).to.equal(0)
 
-    let gift = await rs.getGiftByProviderToken(giftInPoolToken);
+    let gift = await rs.getGiftByGifteeToken(giftInPoolToken);
     expect(gift.nftAddress).to.equal(dc.address);
     expect(gift.nftTokenId).to.equal(0);
     expect(gift.gifter).to.equal(accounts[1].address);
@@ -146,7 +158,7 @@ describe("SecretSanta - Claiming", async function () {
     giftInPoolToken = Number((await rs.giftPoolTokens(0)).toString())
     expect(giftInPoolToken).to.equal(0)
 
-    gift = await rs.getGiftByProviderToken(giftInPoolToken);
+    gift = await rs.getGiftByGifteeToken(giftInPoolToken);
     expect(gift.nftAddress).to.equal(dc.address);
     expect(gift.nftTokenId).to.equal(0);
     expect(gift.gifter).to.equal(accounts[1].address);

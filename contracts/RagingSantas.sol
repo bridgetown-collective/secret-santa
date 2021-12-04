@@ -7,61 +7,56 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "hardhat/console.sol";
 
-
-
 abstract contract Functional {
-    function toString(uint256 value) internal pure returns (string memory) {
-        if (value == 0) {
-            return "0";
-        }
-        uint256 temp = value;
-        uint256 digits;
-        while (temp != 0) {
-            digits++;
-            temp /= 10;
-        }
-        bytes memory buffer = new bytes(digits);
-        while (value != 0) {
-            digits -= 1;
-            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
-            value /= 10;
-        }
-        return string(buffer);
+  function toString(uint256 value) internal pure returns (string memory) {
+    if (value == 0) {
+      return "0";
     }
+    uint256 temp = value;
+    uint256 digits;
+    while (temp != 0) {
+      digits++;
+      temp /= 10;
+    }
+    bytes memory buffer = new bytes(digits);
+    while (value != 0) {
+      digits -= 1;
+      buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+      value /= 10;
+    }
+    return string(buffer);
+  }
 }
 
 contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     using SafeMath for uint256;
     using Address for address;
 
-    // Token name
-    string private _name;
-
-    // Token symbol
-    string private _symbol;
-
     // Provenance hash proving random distribution
-    string public provenanceHash;
+    string public provHashMint;
+    string public provHashMatch;
     bool public mintActive;
     bool public claimActive;
+
+    uint256 public matchSeed;
+    uint256 public totalGifts;
 
     uint256 public maxSupply;
     uint256 public mintPrice;
     uint256 public numberMinted;
+    uint256 public numberClaimed;
 
     string private _baseURI;
-    uint256 private nonce;
-    uint256 private constant maxPerTx = 10;
-    uint256 private constant maxPerWallet = 30;
-    uint256 private constant maxTries = 20;
 
     struct Gift {
-      uint256 providerTokenId;
-      address nftAddress;
+      uint256 gifterTokenId;
+      uint256 gifteeTokenId;
       uint256 nftTokenId;
+      address nftAddress;
       address gifter;
       address giftee;
       address gifteeDelegator;
+      bool hasClaimed;
     }
 
     // Mapping from token ID to owner address
@@ -71,10 +66,13 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     mapping(address => uint256[]) private _tokensOwned;
 
     // Mapping from token ID to gifted gift
-    mapping(uint256 => Gift) private _giftsByTokenId;
+    mapping(uint256 => Gift) private _giftsByTID;
 
     // Mapping from token ID (to make a claim) to token ID tied to claimed gift
-    mapping(uint256 => uint256) private _claimToProviderTokenId;
+    mapping(uint256 => uint256) private _giftRefsToClaim;
+
+    // The Gift Pool
+    uint256[] public giftPoolTokens;
 
     // Mapping from token ID to approved address
     mapping(uint256 => address) private _tokenApprovals;
@@ -82,44 +80,62 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     // Mapping from owner to operator approvals
     mapping(address => mapping(address => bool)) private _operatorApprovals;
 
-    // The Gift Pool
-    uint256[] public giftPoolTokens;
-
     constructor(uint256 supply)
     {
         mintActive = false;
         claimActive = false;
         mintPrice = 0.03 ether;
         maxSupply = supply;
-        nonce = 42;
     }
     
-    function activateMint() public onlyOwner {
+    function activateMint() external onlyOwner {
         mintActive = true;
     }
 
-    function activateClaim() public onlyOwner {
+    function activateClaim(uint256 seed) external onlyOwner {
+        totalGifts = giftPoolTokens.length;
+        require(totalGifts > 1);
+
         claimActive = true;
+        matchSeed = seed;
+        mintActive = false;
+
+        uint256 mLength = totalGifts - 1;
+        for (uint256 i = 0; i < mLength; i++) {
+          uint256 n = uint256(keccak256(abi.encodePacked(i + seed))) % (totalGifts);
+          (giftPoolTokens[i], giftPoolTokens[n]) = (giftPoolTokens[n], giftPoolTokens[i]);
+        }
+
+        for (uint256 i = 0; i < mLength; i++) {
+          _giftsByTID[giftPoolTokens[i]].gifteeTokenId = giftPoolTokens[i + 1];
+          _giftRefsToClaim[giftPoolTokens[i + 1]] = giftPoolTokens[i];
+        }
+        _giftsByTID[giftPoolTokens[mLength]].gifteeTokenId = giftPoolTokens[0];
+        _giftRefsToClaim[giftPoolTokens[0]] = giftPoolTokens[mLength];
     }
 
-    function numGiftsLeft() public view virtual returns (uint256) {
+    function numGiftsLeft() external view virtual returns (uint256) {
         return giftPoolTokens.length;
     }
 
-    function setBaseURI(string memory newURI) public onlyOwner {
+    function setBaseURI(string memory newURI) external onlyOwner {
         _baseURI = newURI;
     }
 
-    function setProvenanceHash(string memory newHash) public onlyOwner {
-        provenanceHash = newHash;
+    function setProvHashMint(string memory newHash) external onlyOwner {
+        provHashMint = newHash;
     }
     
+    function setProvHashMatch(string memory newHash) external onlyOwner {
+        provHashMatch = newHash;
+    }
+
     function tokenURI(uint256 tokenId) external view returns (string memory){
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+        require(_exists(tokenId), "Nonexistent token");
         return string(abi.encodePacked(_baseURI, toString(tokenId), ".json"));
     }
 
-    function contractURI() public view returns (string memory) {
+    function contractURI() external view returns (string memory) {
         return string(abi.encodePacked(_baseURI,"contract.json"));
     }
 
@@ -127,8 +143,8 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
         // Validate Mint
         require(mintActive, "Minting Inactive");
         require((qty + numberMinted) <= maxSupply, "Mint Sold Out");
-        require(qty <= maxPerTx, "Exceeded Max Per Txn");
-        require((_tokensOwned[_msgSender()].length + qty) <= maxPerWallet, "Exceed Max Per Wallet");
+        require(qty <= 10, "Exceeded Max Per Txn");
+        require((_tokensOwned[_msgSender()].length + qty) <= 30, "Exceed Max Per Wallet");
         require(msg.value >= qty * mintPrice, "Insufficient Funds");
 
         // Validate Gifts
@@ -155,8 +171,29 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
       IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
 
       // Write it down
-      _giftsByTokenId[tokenId] = Gift(tokenId, nftAddress, nftTokenId, from, address(0), address(0));
+      _giftsByTID[tokenId] = Gift(
+        tokenId,
+        0,
+        nftTokenId,
+        nftAddress,
+        from,
+        address(0),
+        address(0),
+        false
+      );
+
       giftPoolTokens.push(tokenId);
+    }
+
+    function getGiftByGifterToken(uint256 tId) external view virtual returns (Gift memory) {
+        require(_owners[tId] != address(0), "Nonexistent Token");
+        return _giftsByTID[tId];
+    }
+
+    function getGiftByGifteeToken(uint256 tId) external view virtual returns (Gift memory) {
+        require(_owners[tId] != address(0), "Nonexistent Token");
+        uint256 tIdClaim = _giftRefsToClaim[tId];
+        return _giftsByTID[tIdClaim];
     }
 
     function claimGifts(uint256[] memory tokenIds) external {
@@ -167,68 +204,42 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
     function claimGifts(uint256[] memory tokenIds, address gifteeAddress) external {
       // Can Claim At All
       require(claimActive, "Claiming Inactive");
+      bool wasDelegated = tx.origin != gifteeAddress;
 
       // Iterate through RagingSanta token Ids
       for(uint256 i = 0; i < tokenIds.length; i++) {
         uint256 tId = tokenIds[i];
 
-        bool wasDelegated = tx.origin != gifteeAddress;
-
         // Does Sender own these tokens?
-        require(_owners[tId] == tx.origin, "Sender Does Not Own Tokens");
+        require(_owners[tId] == tx.origin, "Not Owner");
+
+        uint256 tIdClaim = _giftRefsToClaim[tId];
+        Gift memory giftToClaim = _giftsByTID[tIdClaim];
 
         // Have these tokens been claimed yet?
-        require(_claimToProviderTokenId[tId] == 0, "Gift Already Claimed");
+        require(!giftToClaim.hasClaimed, "Gift Claimed");
 
-        uint256 rn = uint256(
-          keccak256(
-            abi.encodePacked(blockhash(block.number - 1), giftPoolTokens.length, tId, nonce)
-          )
-        );
-
-        uint256 giftIndexToTry = rn % giftPoolTokens.length;
-        Gift memory giftToClaim = _giftsByTokenId[giftPoolTokens[giftIndexToTry]];
-        uint8 tries = 0;
-
-        // If theres no external giftee
-        // Try not to gift you your own gift
-        if (!wasDelegated) {
-          while (giftToClaim.gifter == gifteeAddress && tries < maxTries) {
-
-            giftIndexToTry = (giftIndexToTry + 1) % giftPoolTokens.length;
-            giftToClaim = _giftsByTokenId[giftPoolTokens[giftIndexToTry]];
-            nonce++;
-            tries++;
-          }
-
-          require(giftToClaim.gifter != gifteeAddress, "No Gift Found");
-        }
-
+        // For Testing / Remove before deploying
+        require(giftToClaim.gifteeTokenId == tId, "Wrong Giftee");
 
         // Do the Transfer
-        nonce++;
         IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.nftTokenId);
 
-        // Remove gift from pool
-        giftPoolTokens[giftIndexToTry] = giftPoolTokens[giftPoolTokens.length - 1];
-        giftPoolTokens.pop();
-
         // Update the gift object
-        _giftsByTokenId[giftToClaim.providerTokenId].giftee = gifteeAddress;
+        _giftsByTID[tIdClaim].hasClaimed = true;
+        _giftsByTID[tIdClaim].giftee = gifteeAddress;
         if (wasDelegated) {
-          _giftsByTokenId[giftToClaim.providerTokenId].gifteeDelegator = tx.origin;
+          _giftsByTID[tIdClaim].gifteeDelegator = tx.origin;
         }
-
-        // Map Token to Token
-        _claimToProviderTokenId[tId] = giftToClaim.providerTokenId;
       }
+      numberClaimed += tokenIds.length;
     }
 
      /**
      * @dev See {IERC721-balanceOf}.
      */
     function balanceOf(address owner) public view virtual override returns (uint256) {
-        require(owner != address(0), "Zero Address Balance");
+        require(owner != address(0), "Zero Address");
         return _tokensOwned[owner].length;
     }
 
@@ -237,7 +248,7 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
      */
     function ownerOf(uint256 tokenId) public view virtual override returns (address) {
         address owner = _owners[tokenId];
-        require(owner != address(0), "Nonexistent Token");
+        require(owner != address(0), "NonToken");
         return owner;
     }
 
@@ -249,83 +260,6 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
         return _tokensOwned[owner];
     }
 
-     /**
-     * @dev See {IERC721-balanceOf}.
-     */
-    function getGiftByProviderToken(uint256 tokenId) public view virtual returns (Gift memory) {
-        address owner = _owners[tokenId];
-        require(owner != address(0), "Nonexistent Token");
-        return _giftsByTokenId[tokenId];
-    }
-
-    /**
-     * @dev See {IERC721-approve}.
-     */
-    function approve(address to, uint256 tokenId) public virtual override {
-        address owner = ownerOf(tokenId);
-        require(to != owner, "Can't Approve Owner");
-
-        require(
-            msg.sender == owner || isApprovedForAll(owner, msg.sender),
-            "Not Approved. Not Owner."
-        );
-
-        _approve(to, tokenId);
-    }
-
-
-    /**
-     * @dev Approve `to` to operate on `tokenId`
-     *
-     * Emits a {Approval} event.
-     */
-    function _approve(address to, uint256 tokenId) internal virtual {
-        _tokenApprovals[tokenId] = to;
-        emit Approval(ownerOf(tokenId), to, tokenId);
-    }
-
-
-
-    /**
-     * @dev See {IERC721-getApproved}.
-     */
-    function getApproved(uint256 tokenId) public view virtual override returns (address) {
-        require(_exists(tokenId), "Nonexistent Token");
-
-        return _tokenApprovals[tokenId];
-    }
-
-    /**
-     * @dev See {IERC721-setApprovalForAll}.
-     */
-    function setApprovalForAll(address operator, bool approved) public virtual override {
-        require(operator != msg.sender, "ERC721: approve to caller");
-
-        _operatorApprovals[msg.sender][operator] = approved;
-        emit ApprovalForAll(msg.sender, operator, approved);
-    }
-
-    /**
-     * @dev See {IERC721-isApprovedForAll}.
-     */
-    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
-        return _operatorApprovals[owner][operator];
-    }
-
-    /**
-     * @dev See {IERC721-transferFrom}.
-     */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public virtual override {
-        //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721: transfer caller is not owner nor approved");
-
-        _transfer(from, to, tokenId);
-    }
-    
     /**
      * @dev Returns whether `tokenId` exists.
      *
@@ -364,7 +298,7 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
         _mint(to, tokenId);
         require(
             _checkOnERC721Received(address(0), to, tokenId, _data),
-            "ERC721: transfer to non ERC721Receiver implementer"
+            "NonERC721Receiver"
         );
     }
 
@@ -381,8 +315,8 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
      * Emits a {Transfer} event.
      */
     function _mint(address to, uint256 tokenId) internal virtual {
-        require(to != address(0), "ERC721: mint to the zero address");
-        require(!_exists(tokenId), "ERC721: token already minted");
+        require(to != address(0), "Zero Address");
+        require(!_exists(tokenId), "Already Minted");
 
         _beforeTokenTransfer(address(0), to, tokenId);
 
@@ -401,7 +335,7 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
      * - When `from` and `to` are both non-zero, ``from``'s `tokenId` will be
      * transferred to `to`.
      * - When `from` is zero, `tokenId` will be minted for `to`.
-     * - When `to` is zero, ``from``'s `tokenId` will be burned.
+     * - When `to` is zero, ``from``s `tokenId` will be burned.
      * - `from` and `to` are never both zero.
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
@@ -433,7 +367,7 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
                 return retval == IERC721Receiver(to).onERC721Received.selector;
             } catch (bytes memory reason) {
                 if (reason.length == 0) {
-                    revert("ERC721: transfer to non ERC721Receiver implementer");
+                    revert("NonERC721Receiver");
                 } else {
                     assembly {
                         revert(add(32, reason), mload(reason))
@@ -444,6 +378,21 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
             return true;
         }
     }
+
+    /**
+     * @dev See {IERC721-transferFrom}.
+     */
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public virtual override {
+        //solhint-disable-next-line max-line-length
+        require(_isApprovedOrOwner(msg.sender, tokenId), "NonApproved");
+
+        _transfer(from, to, tokenId);
+    }
+    
 
     /**
      * @dev Transfers `tokenId` from `from` to `to`.
@@ -461,8 +410,8 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
         address to,
         uint256 tokenId
     ) internal virtual {
-        require(ownerOf(tokenId) == from, "ERC721: transfer of token that is not own");
-        require(to != address(0), "ERC721: transfer to the zero address");
+        require(ownerOf(tokenId) == from, "NotOwner");
+        require(to != address(0), "ZeroAddress");
 
         _beforeTokenTransfer(from, to, tokenId);
 
@@ -505,7 +454,7 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
         uint256 tokenId,
         bytes memory _data
     ) public virtual override {
-        require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721: transfer caller is not owner nor approved");
+        require(_isApprovedOrOwner(msg.sender, tokenId), "NotApproved");
         _safeTransfer(from, to, tokenId, _data);
     }
 
@@ -534,9 +483,62 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
         bytes memory _data
     ) internal virtual {
         _transfer(from, to, tokenId);
-        require(_checkOnERC721Received(from, to, tokenId, _data), "ERC721: transfer to non ERC721Receiver implementer");
+        require(_checkOnERC721Received(from, to, tokenId, _data), "NonERC721Receiver");
     }
 
+    /**
+     * @dev See {IERC721-approve}.
+     */
+    function approve(address to, uint256 tokenId) public virtual override {
+        address owner = ownerOf(tokenId);
+        require(to != owner, "Owner");
+
+        require(
+            msg.sender == owner || isApprovedForAll(owner, msg.sender),
+            "NotApproved"
+        );
+
+        _approve(to, tokenId);
+    }
+
+
+    /**
+     * @dev Approve `to` to operate on `tokenId`
+     *
+     * Emits a {Approval} event.
+     */
+    function _approve(address to, uint256 tokenId) internal virtual {
+        _tokenApprovals[tokenId] = to;
+        emit Approval(ownerOf(tokenId), to, tokenId);
+    }
+
+
+
+    /**
+     * @dev See {IERC721-getApproved}.
+     */
+    function getApproved(uint256 tokenId) public view virtual override returns (address) {
+        require(_exists(tokenId), "NonToken");
+
+        return _tokenApprovals[tokenId];
+    }
+
+    /**
+     * @dev See {IERC721-setApprovalForAll}.
+     */
+    function setApprovalForAll(address operator, bool approved) public virtual override {
+        require(operator != msg.sender, "SelfApproval");
+
+        _operatorApprovals[msg.sender][operator] = approved;
+        emit ApprovalForAll(msg.sender, operator, approved);
+    }
+
+    /**
+     * @dev See {IERC721-isApprovedForAll}.
+     */
+    function isApprovedForAll(address owner, address operator) public view virtual override returns (bool) {
+        return _operatorApprovals[owner][operator];
+    }
 
     /**
      * @dev Returns whether `spender` is allowed to manage `tokenId`.
@@ -546,7 +548,7 @@ contract RagingSantas is IERC721, Ownable, Functional, AccessControl {
      * - `tokenId` must exist.
      */
     function _isApprovedOrOwner(address spender, uint256 tokenId) internal view virtual returns (bool) {
-        require(_exists(tokenId), "ERC721: operator query for nonexistent token");
+        require(_exists(tokenId), "NonToken");
         address owner = ownerOf(tokenId);
         return (spender == owner || getApproved(tokenId) == spender || isApprovedForAll(owner, spender));
     }

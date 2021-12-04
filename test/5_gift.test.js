@@ -131,6 +131,7 @@ describe("SecretSanta - Registration", async function () {
       expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
       expect(await rs.numGiftsLeft()).to.equal(2);
 
+      await expectTokenOwnedToBe(rs, accounts[0].address, [])
       await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1])
     });
 
@@ -183,19 +184,30 @@ describe("SecretSanta - Registration", async function () {
         value: parseUnits(".03", "ether")
       });
 
-      await expectTokenOwnedToBe(rs, accounts[1].address, [1])
       await expectTokenOwnedToBe(rs, accounts[2].address, [0])
+      await expectTokenOwnedToBe(rs, accounts[1].address, [1])
 
       let giftInPoolToken = Number((await rs.giftPoolTokens(0)).toString())
       expect(giftInPoolToken).to.equal(0)
 
-      const gift = await rs.getGiftByProviderToken(giftInPoolToken);
+      let gift = await rs.getGiftByToken(giftInPoolToken);
       expect(gift.nftAddress).to.equal(dc.address);
       expect(gift.nftTokenId).to.equal(1);
       expect(gift.gifter).to.equal(accounts[2].address);
       expect(gift.giftee).to.equal(AddressZero);
       expect(gift.gifteeDelegator).to.equal(AddressZero);
+      expect(gift.hasClaimed).to.equal(false);
+
+      giftInPoolToken = Number((await rs.giftPoolTokens(1)).toString())
+      expect(giftInPoolToken).to.equal(1)
+
+      gift = await rs.getGiftByToken(giftInPoolToken);
+      expect(gift.nftAddress).to.equal(dc.address);
+      expect(gift.nftTokenId).to.equal(0);
+      expect(gift.gifter).to.equal(accounts[1].address);
+      expect(gift.giftee).to.equal(AddressZero);
+      expect(gift.gifteeDelegator).to.equal(AddressZero);
+      expect(gift.hasClaimed).to.equal(false);
     });
   })
-
 });
