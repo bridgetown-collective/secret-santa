@@ -86,18 +86,18 @@ contract RagingSantas is ERC721, Ownable, Functional {
         matchSeed = seed;
         mintActive = false;
 
-        uint256 mLength = totalGifts - 1;
-        for (uint256 i = 0; i < mLength; i++) {
-          uint256 n = uint256(keccak256(abi.encodePacked(i + seed, giftPoolTokens[i]))) % (totalGifts);
+        uint256 mLen = totalGifts - 1;
+        for (uint256 i = 0; i < mLen; i++) {
+          uint256 n = uint256(keccak256(abi.encodePacked(i + seed, blockhash(block.number-1)))) % (totalGifts);
           (giftPoolTokens[i], giftPoolTokens[n]) = (giftPoolTokens[n], giftPoolTokens[i]);
         }
 
-        for (uint256 i = 0; i < mLength; i++) {
+        for (uint256 i = 0; i < mLen; i++) {
           _giftsByTID[giftPoolTokens[i]].gifteeTokenId = giftPoolTokens[i + 1];
           _giftRefsToClaim[giftPoolTokens[i + 1]] = giftPoolTokens[i];
         }
-        _giftsByTID[giftPoolTokens[mLength]].gifteeTokenId = giftPoolTokens[0];
-        _giftRefsToClaim[giftPoolTokens[0]] = giftPoolTokens[mLength];
+        _giftsByTID[giftPoolTokens[mLen]].gifteeTokenId = giftPoolTokens[0];
+        _giftRefsToClaim[giftPoolTokens[0]] = giftPoolTokens[mLen];
     }
 
     function numGiftsLeft() external view virtual returns (uint256) {
