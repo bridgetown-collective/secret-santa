@@ -3,10 +3,10 @@ const { parseUnits } = require("ethers").utils;
 const { AddressZero } = require("ethers").constants;
 
 async function expectTokenOwnedToBe(rs, address, expectedArr) {
-  let tokensOwned = await rs.tokensOwned(address);
-  tokensOwned = tokensOwned.map((x) => Number(x.toString()))
-  expect(tokensOwned.length).to.equal(expectedArr.length);
-  expect(tokensOwned).deep.to.equal(expectedArr);
+  for(let i = 0; i < expectedArr.length; i++) {
+    let ownerAdd= await rs.ownerOf(expectedArr[i]);
+    expect(ownerAdd).to.equal(address);
+  }
 }
 
 describe("SecretSanta - Registration", async function () {
@@ -187,10 +187,7 @@ describe("SecretSanta - Registration", async function () {
       await expectTokenOwnedToBe(rs, accounts[2].address, [0])
       await expectTokenOwnedToBe(rs, accounts[1].address, [1])
 
-      let giftInPoolToken = Number((await rs.giftPoolTokens(0)).toString())
-      expect(giftInPoolToken).to.equal(0)
-
-      let gift = await rs.getGiftByToken(giftInPoolToken);
+      let gift = await rs.getGiftByGifterToken(0);
       expect(gift.nftAddress).to.equal(dc.address);
       expect(gift.nftTokenId).to.equal(1);
       expect(gift.gifter).to.equal(accounts[2].address);
@@ -198,10 +195,7 @@ describe("SecretSanta - Registration", async function () {
       expect(gift.gifteeDelegator).to.equal(AddressZero);
       expect(gift.hasClaimed).to.equal(false);
 
-      giftInPoolToken = Number((await rs.giftPoolTokens(1)).toString())
-      expect(giftInPoolToken).to.equal(1)
-
-      gift = await rs.getGiftByToken(giftInPoolToken);
+      gift = await rs.getGiftByGifterToken(1);
       expect(gift.nftAddress).to.equal(dc.address);
       expect(gift.nftTokenId).to.equal(0);
       expect(gift.gifter).to.equal(accounts[1].address);
