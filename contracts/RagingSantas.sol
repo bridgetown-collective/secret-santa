@@ -88,7 +88,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
 
         uint256 mLen = totalGifts - 1;
         for (uint256 i = 0; i < mLen; i++) {
-          uint256 n = uint256(keccak256(abi.encodePacked(i + seed, blockhash(block.number-1)))) % (totalGifts);
+          uint256 n = uint256(keccak256(abi.encodePacked(i + seed))) % (totalGifts);
           (giftPoolTokens[i], giftPoolTokens[n]) = (giftPoolTokens[n], giftPoolTokens[i]);
         }
 
@@ -193,6 +193,10 @@ contract RagingSantas is ERC721, Ownable, Functional {
     function claimGifts(uint256[] memory tokenIds, address gifteeAddress) external {
       // Can Claim At All
       require(claimActive, "Claiming Inactive");
+
+      // Must Provide Tokens
+      require(tokenIds.length > 0, "No Tokens");
+
       bool wasDelegated = tx.origin != gifteeAddress;
 
       // Iterate through RagingSanta token Ids

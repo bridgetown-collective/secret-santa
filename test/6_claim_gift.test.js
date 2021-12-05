@@ -126,6 +126,28 @@ describe("SecretSanta - Claiming", async function () {
     );
   });
 
+  it("should not let someone claim a gift for a token they arent the owner of", async () => {
+    const rn_seed = 456123789;
+    await rs.connect(owner).activateClaim(rn_seed);
+
+    await expect(
+      rs.connect(accounts[1])["claimGifts(uint256[])"]([1])
+    ).to.be.revertedWith(
+      "VM Exception while processing transaction: reverted with reason string 'Not Owner'"
+    );
+  });
+
+  it("should not let someone claim a gift if they dont provide tokens", async () => {
+    const rn_seed = 456123789;
+    await rs.connect(owner).activateClaim(rn_seed);
+
+    await expect(
+      rs.connect(accounts[1])["claimGifts(uint256[])"]([])
+    ).to.be.revertedWith(
+      "VM Exception while processing transaction: reverted with reason string 'No Tokens'"
+    );
+  });
+
   it("should let someone send their gift to a wallet of choice", async () => {
     expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.not.contain(
       accounts[3].address
