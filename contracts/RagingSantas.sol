@@ -86,6 +86,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
         matchSeed = seed;
         mintActive = false;
 
+        // Fisher Yates Shuffle
         uint256 mLen = totalGifts - 1;
         for (uint256 i = 0; i < mLen; i++) {
           uint256 n = uint256(keccak256(abi.encodePacked(i + seed))) % (totalGifts);

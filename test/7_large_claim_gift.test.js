@@ -51,10 +51,12 @@ describe("SecretSanta - Large Claiming", async function () {
       console.log('TokenId', i-1, 'GETTING GIFT FROM TokenId ', giftGetting.gifterTokenId.toString());
       expect(await dc.ownerOf(giftGetting.nftTokenId)).to.equal(accounts[i].address);
       expect(giftGetting.giftee).to.equal(accounts[i].address);
+      expect(giftGetting.hasClaimed).to.equal(true);
 
       let giftGave = await rs.getGiftByGifterToken(giftGetting.gifterTokenId);
       expect(giftGave.nftTokenId).to.equal(giftGetting.nftTokenId);
       expect(giftGave.giftee).to.equal(accounts[i].address);
+      expect(giftGave.hasClaimed).to.equal(true);
     }
   });
 });
