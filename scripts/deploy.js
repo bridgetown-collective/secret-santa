@@ -1,10 +1,10 @@
 async function main() {
-  const SecretSanta = await hre.ethers.getContractFactory("SecretSanta");
-  const secretSanta = await SecretSanta.deploy();
+  const RagingSanta = await hre.ethers.getContractFactory("RagingSantas");
+  const ragingSanta = await RagingSanta.deploy();
 
-  await secretSanta.deployed();
+  await ragingSanta.deployed();
 
-  console.log("SecretSanta deployed to:", secretSanta.address);
+  console.log("RagingSanta deployed to:", ragingSanta.address);
 }
 
 main()

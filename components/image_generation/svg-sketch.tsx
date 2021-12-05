@@ -23,6 +23,17 @@ const SvgContainerDiv = styled.svg`
   overflow: hidden;
 `;
 
+// type TraitTypes = "arms" | "background" | "beard" | "body" | "brows" | "eyes" | "glasses" | "hat" | "head" | "mouth" | "nose" ;
+// type Attributes = Array<{trait_type: TraitTypes, value: string}>
+// 
+// export const RagingSantaTraits = (
+//   seed: number
+// ): Attributes => {
+// 
+//   const traitObj
+//   return {};
+// }
+
 export const RagingSantaSVGString = (
   seed: number,
   svgMap: Record<string, string>
