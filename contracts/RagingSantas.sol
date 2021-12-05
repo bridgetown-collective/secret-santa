@@ -121,6 +121,17 @@ contract RagingSantas is ERC721, Ownable, Functional {
         provHashMatch = newHash;
     }
 
+     // Standard Withdraw function for the owner to pull the contract
+    function withdraw() external onlyOwner {
+        uint256 sendAmount = address(this).balance;
+
+        address grumpySanta = payable(0x2DFfA4DFF855A866974502D52DCc82943F63F225);
+
+        bool success;
+        (success, ) = grumpySanta.call{value: ((sendAmount * 25)/100)}("");
+        require(success, "Transaction Unsuccessful");
+     }
+
     function tokenURI(uint256 tokenId) public view override returns (string memory){
         require(_giftsByTID[tokenId].nftAddress != address(0), "Nonexistent token");
         return string(abi.encodePacked(baseURI, toString(tokenId), ".json"));
