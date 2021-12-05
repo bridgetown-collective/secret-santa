@@ -3,10 +3,10 @@ const { parseUnits } = require("ethers").utils;
 const { AddressZero } = require("ethers").constants;
 
 async function expectTokenOwnedToBe(rs, address, expectedArr) {
-  let tokensOwned = await rs.tokensOwned(address);
-  tokensOwned = tokensOwned.map((x) => Number(x.toString()))
-  expect(tokensOwned.length).to.equal(expectedArr.length);
-  expect(tokensOwned).deep.to.equal(expectedArr);
+  for(let i = 0; i < expectedArr.length; i++) {
+    let ownerAdd= await rs.ownerOf(expectedArr[i]);
+    expect(ownerAdd).to.equal(address);
+  }
 }
 
 describe("SecretSanta - Registration", async function () {
@@ -95,6 +95,15 @@ describe("SecretSanta - Registration", async function () {
       await rs.connect(accounts[0]).activateMint();
 
       await expect(
+        rs.connect(accounts[1]).mint(2, [dc.address], [0], {
+          from: accounts[1].address,
+          value: parseUnits(".06", "ether")
+        })
+      ).to.be.revertedWith(
+        "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
+      )
+
+      await expect(
         rs.connect(accounts[1]).mint(1, [dc.address], [0, 1], {
           from: accounts[1].address,
           value: parseUnits(".03", "ether")
@@ -131,6 +140,7 @@ describe("SecretSanta - Registration", async function () {
       expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
       expect(await rs.numGiftsLeft()).to.equal(2);
 
+      await expectTokenOwnedToBe(rs, accounts[0].address, [])
       await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1])
     });
 
@@ -183,19 +193,30 @@ describe("SecretSanta - Registration", async function () {
         value: parseUnits(".03", "ether")
       });
 
-      await expectTokenOwnedToBe(rs, accounts[1].address, [1])
       await expectTokenOwnedToBe(rs, accounts[2].address, [0])
+      await expectTokenOwnedToBe(rs, accounts[1].address, [1])
 
-      let giftInPoolToken = Number((await rs.giftPoolTokens(0)).toString())
-      expect(giftInPoolToken).to.equal(0)
-
-      const gift = await rs.getGiftByProviderToken(giftInPoolToken);
+      let gift = await rs.getGiftByGifterToken(0);
       expect(gift.nftAddress).to.equal(dc.address);
       expect(gift.nftTokenId).to.equal(1);
       expect(gift.gifter).to.equal(accounts[2].address);
       expect(gift.giftee).to.equal(AddressZero);
       expect(gift.gifteeDelegator).to.equal(AddressZero);
+      expect(gift.hasClaimed).to.equal(false);
+
+      gift = await rs.getGiftByGifterToken(1);
+      expect(gift.nftAddress).to.equal(dc.address);
+      expect(gift.nftTokenId).to.equal(0);
+      expect(gift.gifter).to.equal(accounts[1].address);
+      expect(gift.giftee).to.equal(AddressZero);
+      expect(gift.gifteeDelegator).to.equal(AddressZero);
+      expect(gift.hasClaimed).to.equal(false);
+
+      await expect(
+        rs.getGiftByGifterToken(2)
+      ).to.be.revertedWith(
+        "VM Exception while processing transaction: reverted with reason string 'ERC721: owner query for nonexistent token'"
+      );
     });
   })
-
 });
