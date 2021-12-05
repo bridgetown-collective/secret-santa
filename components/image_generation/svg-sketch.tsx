@@ -40,13 +40,10 @@ const traitPrefixMap = {
 
 export const RagingSantaTraits = (seed: number): Array<Trait> => {
   const rnd = new RND(9998 * seed);
-
   let roll = rnd.rb(0, 1);
   const hasHat = roll < 0.8;
-
   roll = rnd.rb(0, 1);
   const hasArms = roll < 0.2;
-
   roll = rnd.rb(0, 1);
   const hasGlasses = roll < 0.1;
 
@@ -54,25 +51,19 @@ export const RagingSantaTraits = (seed: number): Array<Trait> => {
   traitObj.push(Background(seed));
   traitObj.push(Body(seed));
   traitObj.push(Head(seed));
-
   if (hasHat) {
     traitObj.push(Hat(seed));
   }
-
   traitObj.push(Eyes(seed));
-
   if (hasArms) {
     traitObj.push(Arms(seed));
   }
-
   traitObj.push(Brows(seed));
   traitObj.push(Beard(seed));
   traitObj.push(Mouth(seed));
-
   if (hasGlasses) {
     traitObj.push(Glasses(seed));
   }
-
   traitObj.push(Nose(seed));
   return traitObj;
 };
