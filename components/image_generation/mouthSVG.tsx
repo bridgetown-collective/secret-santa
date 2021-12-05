@@ -1,16 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
+
+export const mouthPrefix = "8000_mouth_";
 
 export default function Mouth(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const mouths = getAssetMap(svgMap, "8000_mouth_", [
-    "canine_teeth",
-    "gold_teeth",
-    "missing_teeth",
-  ]);
-
+): Trait {
   const rnd = new RND(97713 * seed);
   const roll = rnd.rb(0, 1);
 
@@ -25,5 +20,8 @@ export default function Mouth(
     default:
   }
 
-  return mouths[variant];
+  return {
+    trait_type: "mouth",
+    value: variant,
+  }
 }

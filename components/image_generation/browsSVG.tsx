@@ -1,15 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
+
+export const browsPrefix = "6000_brows_";
 
 export default function Brows(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const brows = getAssetMap(svgMap, "6000_brows_", [
-    "bushy_black",
-    "unibrow_white",
-  ]);
-
+): Trait {
   const rnd = new RND(79182 * seed);
   const roll = rnd.rb(0, 1);
 
@@ -21,5 +17,8 @@ export default function Brows(
     default:
   }
 
-  return brows[variant];
+  return {
+    trait_type: "brows",
+    value: variant,
+  }
 }

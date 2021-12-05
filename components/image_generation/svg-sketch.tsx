@@ -2,17 +2,18 @@ import styled from "styled-components";
 
 import RND from "./randomizer";
 
-import Arms from "./armsSVG";
-import Background from "./backgroundSVG";
-import Beard from "./beardSVG";
-import Body from "./bodySVG";
-import Brows from "./browsSVG";
-import Eyes from "./eyesSVG";
-import Glasses from "./glassesSVG";
-import Hat from "./hatSVG";
-import Head from "./headSVG";
-import Mouth from "./mouthSVG";
-import Nose from "./noseSVG";
+import Arms, { armsPrefix } from "./armsSVG";
+import Background, { backgroundPrefix } from "./backgroundSVG";
+import Beard, { beardPrefix } from "./beardSVG";
+import Body, { bodyPrefix } from "./bodySVG";
+import Brows, { browsPrefix } from "./browsSVG";
+import Eyes, { eyesPrefix } from "./eyesSVG";
+import Glasses, { glassesPrefix } from "./glassesSVG";
+import Hat, { hatPrefix } from "./hatSVG";
+import Head, { headPrefix } from "./headSVG";
+import Mouth, { mouthPrefix } from "./mouthSVG";
+import Nose, { nosePrefix } from "./noseSVG";
+import { Trait } from "./common";
 
 const SvgContainerDiv = styled.svg`
   border: 0.0625rem solid black;
@@ -23,21 +24,21 @@ const SvgContainerDiv = styled.svg`
   overflow: hidden;
 `;
 
-// type TraitTypes = "arms" | "background" | "beard" | "body" | "brows" | "eyes" | "glasses" | "hat" | "head" | "mouth" | "nose" ;
-// type Attributes = Array<{trait_type: TraitTypes, value: string}>
-// 
-// export const RagingSantaTraits = (
-//   seed: number
-// ): Attributes => {
-// 
-//   const traitObj
-//   return {};
-// }
+const traitPrefixMap = {
+  background: backgroundPrefix,
+  body: bodyPrefix,
+  head: headPrefix,
+  hat: hatPrefix,
+  eyes: eyesPrefix,
+  arms: armsPrefix,
+  brows: browsPrefix,
+  beard: beardPrefix,
+  mouth: mouthPrefix,
+  glasses: glassesPrefix,
+  nose: nosePrefix,
+};
 
-export const RagingSantaSVGString = (
-  seed: number,
-  svgMap: Record<string, string>
-): string => {
+export const RagingSantaTraits = (seed: number): Array<Trait> => {
   const rnd = new RND(9998 * seed);
 
   let roll = rnd.rb(0, 1);
@@ -49,26 +50,48 @@ export const RagingSantaSVGString = (
   roll = rnd.rb(0, 1);
   const hasGlasses = roll < 0.1;
 
-  const allElements = [
-    Background,
-    Body,
-    Head,
-    hasHat && Hat,
-    Eyes,
-    hasArms && Arms,
-    Brows,
-    Beard,
-    Mouth,
-    hasGlasses && Glasses,
-    Nose,
-  ]
-    .filter((v) => v)
-    .map((c) => c(seed, svgMap))
-    .filter((v) => v);
+  const traitObj = [];
+  traitObj.push(Background(seed));
+  traitObj.push(Body(seed));
+  traitObj.push(Head(seed));
+
+  if (hasHat) {
+    traitObj.push(Hat(seed));
+  }
+
+  traitObj.push(Eyes(seed));
+
+  if (hasArms) {
+    traitObj.push(Arms(seed));
+  }
+
+  traitObj.push(Brows(seed));
+  traitObj.push(Beard(seed));
+  traitObj.push(Mouth(seed));
+
+  if (hasGlasses) {
+    traitObj.push(Glasses(seed));
+  }
+
+  traitObj.push(Nose(seed));
+  return traitObj;
+};
+
+export const RagingSantaSVGString = (
+  seed: number,
+  svgMap: Record<string, string>
+): string => {
+  const allElements = RagingSantaTraits(seed)
+    .filter(v => v)
+    .map(({ trait_type, value }): string => {
+      let prefix: string = traitPrefixMap[trait_type];
+      return svgMap[`${prefix}${value}.svg`];
+    })
+    .filter(v => v);
 
   let final = allElements[0].split(">")[0] + ">";
 
-  allElements.forEach((el) => {
+  allElements.forEach(el => {
     const parts = el.split(">");
     final += parts.slice(1, parts.length - 2).join(">") + ">";
   });
@@ -80,7 +103,7 @@ export const RagingSantaSVGString = (
 
 const SvgSketch = ({
   seed,
-  svgMap,
+  svgMap
 }: {
   seed: number;
   svgMap: Record<string, string>;

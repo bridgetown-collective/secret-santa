@@ -1,21 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
+
+export const headPrefix = "3000_face_";
 
 export default function Head(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const heads = getAssetMap(svgMap, "3000_face_", [
-    "blue_elf_ears",
-    "blue_round_ears",
-    "brown_elf_ears",
-    "brown_round_ears",
-    "peach_elf_ears",
-    "peach_round_ears",
-    "yellow_elf_ears",
-    "yellow_round_ears",
-  ]);
-
+): Trait {
   const rnd = new RND(104002 * seed);
   const roll = rnd.rb(0, 1);
 
@@ -45,5 +35,8 @@ export default function Head(
     default:
   }
 
-  return heads[variant];
+  return {
+    trait_type: "head",
+    value: variant,
+  }
 }

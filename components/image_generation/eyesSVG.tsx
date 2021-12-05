@@ -1,21 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
+
+export const eyesPrefix = "5000_eyes_";
 
 export default function Eyes(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const eyes = getAssetMap(svgMap, "5000_eyes_", [
-    "dots",
-    "mixed",
-    "pacman",
-    "black",
-    "wreaths",
-    "black_white_inside",
-    "squinty_black",
-    "squinty_gingerbread_man",
-    "squinty_red",
-  ]);
+): Trait {
 
   const rnd = new RND(1576642 * seed);
   const roll = rnd.rb(0, 1);
@@ -49,5 +39,8 @@ export default function Eyes(
     default:
   }
 
-  return eyes[variant];
+  return {
+    trait_type: "eyes",
+    value: variant,
+  }
 }

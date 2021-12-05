@@ -1,16 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
+
+export const beardPrefix = "7000_beard_";
 
 export default function Beard(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const beards = getAssetMap(svgMap, "7000_beard_", [
-    "green_bow",
-    "traditional",
-    "falling_off",
-  ]);
-
+): Trait {
   const rnd = new RND(166382 * seed);
   const roll = rnd.rb(0, 1);
 
@@ -25,5 +20,8 @@ export default function Beard(
     default:
   }
 
-  return beards[variant];
+  return {
+    trait_type: "beard",
+    value: variant,
+  }
 }

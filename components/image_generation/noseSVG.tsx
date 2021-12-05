@@ -1,15 +1,18 @@
-import { getAssetMap } from "./common";
+import { Trait } from './common';
+
+
+export const nosePrefix = "9000_nose_";
 
 export default function Nose(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const noses = getAssetMap(svgMap, "9000_nose_", ["red_paper_texture"]);
-
+): Trait {
   let variant = "red_paper_texture";
   switch (true) {
     default:
   }
 
-  return noses[variant];
+  return {
+    trait_type: "nose",
+    value: variant,
+  }
 }

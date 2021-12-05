@@ -1,34 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
+
+export const hatPrefix = "4000_hat_";
 
 export default function Hat(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const hats = getAssetMap(svgMap, "4000_hat_", [
-    "camoflauge",
-    "bald",
-    "burglar_mask",
-    "cardboard_core",
-    "cardboard_core_burglar_mask",
-    "ushanka_gingerbread_wreath",
-    "cardboard_core_devil_horns",
-    "cardboard_core_hand_horns",
-    "cardboard_core_reindeer_horns",
-    "two_hairs",
-    "traditional",
-    "devil_horns",
-    "energy_dome",
-    "reindeer_horns_half_mask",
-    "hunting",
-    "jester",
-    "mohawk",
-    "red_fez",
-    "red_triangle",
-    "reindeer_hand_horns_half_mask",
-    "reindeer_horns",
-  ]);
-
+): Trait {
   const rnd = new RND(1222242 * seed);
   const roll = rnd.rb(0, 1);
 
@@ -97,5 +74,8 @@ export default function Hat(
     default:
   }
 
-  return hats[variant];
+  return {
+    trait_type: "hat",
+    value: variant,
+  }
 }

@@ -1,28 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
+
+export const bodyPrefix = "2000_body_";
 
 export default function Body(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const bodies = getAssetMap(svgMap, "2000_body_", [
-    "cardboard",
-    "sweater_camoflauge",
-    "santa_red_suspenders_no_shirt_nipples_hair",
-    "wreath_buttons",
-    "santa_belt",
-    "sweater_trees",
-    "santa_red_suspenders_no_shirt_nipples",
-    "sweater_orange_hunting",
-    "santa_red_suspenders",
-    "sweater_diamond_ornament_belt",
-    "santa_red_suspenders_no_shirt",
-    "sweater_diamond",
-    "blue",
-    "sweater_chanukah",
-    "santa_red",
-  ]);
-
+): Trait {
   const rnd = new RND(123122 * seed);
   const roll = rnd.rb(0, 1);
 
@@ -76,5 +59,8 @@ export default function Body(
     default:
   }
 
-  return bodies[variant];
+  return {
+    trait_type: "body",
+    value: variant,
+  }
 }

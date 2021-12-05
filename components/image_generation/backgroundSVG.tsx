@@ -1,16 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
 
-export default function Body(
-  seed: number,
-  svgMap: Record<string, string>
-): string {
-  const backgrounds = getAssetMap(svgMap, "1000_background_", [
-    "baby_blue",
-    "green",
-    "pink",
-  ]);
+export const backgroundPrefix = "1000_background_";
 
+export default function Background(
+  seed: number
+): Trait {
   const rnd = new RND(142442 * seed);
   const roll = rnd.rb(0, 1);
 
@@ -25,5 +20,8 @@ export default function Body(
     default:
   }
 
-  return backgrounds[variant];
+  return {
+    trait_type: "background",
+    value: variant,
+  }
 }

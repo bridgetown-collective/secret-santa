@@ -1,12 +1,11 @@
-import { getAssetMap } from "./common";
 import RND from "./randomizer";
+import { Trait } from './common';
+
+export const armsPrefix = "5100_arms_";
 
 export default function Arms(
   seed: number,
-  svgMap: Record<string, string>
-): string {
-  const arms = getAssetMap(svgMap, "5100_arms_", ["black", "popsicle_sticks"]);
-
+): Trait{
   const rnd = new RND(150992 * seed);
   const roll = rnd.rb(0, 1);
 
@@ -18,5 +17,8 @@ export default function Arms(
     default:
   }
 
-  return arms[variant];
+  return {
+    trait_type: "arms",
+    value: variant,
+  }
 }

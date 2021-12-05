@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { getSVGMap } from "../components/image_generation/common";
-import { RagingSantaSVGString } from "../components/image_generation/svg-sketch";
+import { RagingSantaSVGString, RagingSantaTraits } from "../components/image_generation/svg-sketch";
 
 const MAX_SUPPLY = 100;
 
@@ -18,6 +18,9 @@ fs.mkdir(folderName, (err) => {
   for (let i = 0; i < MAX_SUPPLY; i++) {
     let svgPath = path.join(folderName, `${i}.svg`)
     fs.writeFileSync(svgPath, RagingSantaSVGString(i / 1000, svgMap));
+
+    let jsonPath = path.join(folderName, `${i}.json`)
+    fs.writeFileSync(jsonPath, JSON.stringify(RagingSantaTraits(i / 1000)));
   }
 
   console.log("Directory is created.");
