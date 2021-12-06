@@ -43,10 +43,6 @@ export default function Home() {
           margin: 2rem 0;
           padding: 2rem 4rem;
         }
-
-        .section:first-of-type {
-          padding: 4rem;
-        }
       `}</style>
     </div>
   );
