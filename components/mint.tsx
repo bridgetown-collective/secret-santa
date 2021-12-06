@@ -23,7 +23,7 @@ function Mint() {
           <button className="inline-block">Select NFT To Gift</button>
         </Link>
         <br />
-        <div className="inline-block self-center">
+        <div className="inline-block self-center nft-card">
           <NFTCard
             contractAddress="0x9048de699869385756939a7bb0a22b6d6cb63a83"
             tokenId="743"
@@ -35,6 +35,11 @@ function Mint() {
           Mint Now
         </button>
       </div>
+      <style jsx>{`
+        .nft-card{
+          color: #000;
+        }
+      `}</style>
     </div>
   );
 }
