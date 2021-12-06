@@ -4,12 +4,12 @@ const THE_TEAM: string[] = [
   "GrumpySanta",
   "HanukkahHarry",
   "ShortSanta",
-  "dr zarkov",
+  "DrZarkov",
 ];
 
 export default function TheSantas() {
   return (
-    <div id="the-santas" className="flex flex-col">
+    <div id="the-santas" className="flex flex-col alt-font">
       <p className="text-4xl text-center">The Santas</p>
 
       <div className="flex flex-wrap justify-center">

@@ -10,19 +10,8 @@ import TheSantas from "../components/the-santas";
 export default function Home() {
   return (
     <div className="inline-flex flex-col self-center mb-24">
-      <div className="section flex-col text-center">
-        <p className="text-6xl alt-font">Raging Santas NFT</p>
-        <p className="text-xl">
-          <s>FEEL the love</s> - SHARE the Rage - MINT a Santa - EXCHANGE an NFT
-        </p>
-      </div>
-
       <div className="section">
         <Hero />
-      </div>
-
-      <div className="section">
-        <About />
       </div>
 
       <div className="section">
@@ -31,6 +20,13 @@ export default function Home() {
 
       <div className="section">
         <FAQ />
+      </div>
+
+      <div class="grid justify-items-center">
+        <img
+          src="/assets/advent_calendar_01.gif"
+          class="rounded-full max-w-lg h-auto align-middle border-none nice-shadow"
+        />
       </div>
 
       <div className="section" id="reveal">
@@ -46,18 +42,11 @@ export default function Home() {
           display: flex;
           justify-content: space-around;
           margin: 2rem 0;
-          padding: 0 4rem;
-        }
-
-        .section:nth-of-type(even) {
-          border: solid 1px black;
-          padding-bottom: 2rem;
-          padding-top: 2rem;
+          padding: 2rem 4rem;
         }
 
         .section:first-of-type,
         #reveal {
-          background-color: #f49898;
           margin-left: 0;
           margin-right: 0;
         }
