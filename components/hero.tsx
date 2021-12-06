@@ -17,7 +17,7 @@ export default function Hero() {
         </Link>
       </div>
 
-      <div className="mt-10 xl:mt-0 pl-0 lg:pl-8">
+      <div className="pl-0 lg:pl-8 santa-gif">
         <Image
           className="rounded-full"
           src="/assets/raging_santas_slowed.gif"
@@ -26,6 +26,13 @@ export default function Hero() {
           height={400}
         />
       </div>
+      <style jsx global>{`
+        @media(max-width: 1520px) {
+          .santa-gif {
+            padding-top: 2.5rem;
+          }
+        }
+      `}</style>
     </div>
   );
 }

@@ -93,6 +93,7 @@ export default function App({ Component, pageProps }) {
           background: url("/assets/cardboard.png");
           background-color: #efa6a4;
           color: black;
+          box-shadow: var(--shadow-elevation-medium-red);
         }
 
         .section {
@@ -164,6 +165,12 @@ export default function App({ Component, pageProps }) {
             16.1px 14.4px 24.3px -1.8px hsl(var(--shadow-color-brown) / 0.34),
             24.5px 22px 37px -2.1px hsl(var(--shadow-color-brown) / 0.34),
             36.1px 32.3px 54.5px -2.5px hsl(var(--shadow-color-brown) / 0.34);
+
+          --color-green: #16A818;
+          --color-pink: #EFA6A4;
+          --color-yellow: #D1CF49;
+          --color-red: #B51316;
+          --color-brown: #7F3C10;
         }
         
     `}</style>

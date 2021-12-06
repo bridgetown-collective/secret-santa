@@ -9,7 +9,7 @@ export default function About() {
         </ul>
       </p>
       <p className="text-xl my-2">
-        If so, come participate in <i>this</i> rager - the first ever Secret
+        If so, come participate in <i>this</i> rager - the first ever <i>on-chain</i> Secret
         Santa NFT Swap!
       </p>
     </div>
