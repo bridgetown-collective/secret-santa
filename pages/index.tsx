@@ -40,7 +40,7 @@ export default function Home() {
         .section {
           display: flex;
           justify-content: space-around;
-          margin: 2rem 1rem;
+          margin: 2rem 0;
           padding: 2rem 4rem;
         }
 

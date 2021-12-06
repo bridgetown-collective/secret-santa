@@ -79,7 +79,7 @@ export default function App({ Component, pageProps }) {
         html,
         body {
           background: url("/assets/cardboard.png");
-          background-color: #b51316;
+          background-color: var(--color-red);
           font-family: "Noticia Text", serif;
           margin: 0;
           padding: 0;

@@ -15,7 +15,7 @@ function Mint() {
           <br />
           <br />
         </p>
-        <Image src="/assets/ShortSanta.png" height={300} width={300} />
+        <Image className="rounded-2xl" src="/assets/ShortSanta.png" height={300} width={300} />
       </div>
 
       <div className="flex flex-col justify-center">
