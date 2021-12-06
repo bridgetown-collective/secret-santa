@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function FAQ() {
   return (
-    <div className='faq p-20'>
+    <div className='faq sm:p-20'>
       <span>
       <p className="text-xl">What is the mint fee?</p>
       <p className="text-lg">
