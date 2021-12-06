@@ -1,6 +1,5 @@
 import "styled-jsx";
 
-import About from "../components/about";
 import FAQ from "../components/faq";
 import Hero from "../components/hero";
 import Mint from "../components/mint";
