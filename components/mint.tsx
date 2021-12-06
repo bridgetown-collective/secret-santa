@@ -15,15 +15,22 @@ function Mint() {
           <br />
           <br />
         </p>
-        <Image className="rounded-2xl" src="/assets/ShortSanta.png" height={300} width={300} />
+        <Image
+          className="rounded-2xl"
+          src="/assets/ShortSanta.png"
+          height={300}
+          width={300}
+        />
       </div>
 
       <div className="flex flex-col justify-center">
         <Link href="/my-gallery">
-          <button className="inline-block">Select NFT To Gift</button>
+          <button className="inline-block rounded-md outline-none nice-shadow">
+            Select NFT To Gift
+          </button>
         </Link>
         <br />
-        <div className="inline-block self-center nft-card">
+        <div className="inline-block self-center nft-card nice-shadow">
           <NFTCard
             contractAddress="0x9048de699869385756939a7bb0a22b6d6cb63a83"
             tokenId="743"
@@ -31,12 +38,15 @@ function Mint() {
           />
         </div>
         <br />
-        <button disabled className="text-xl w-96 alt-font">
+        <button
+          disabled
+          className="text-xl w-96 alt-font rounded-md outline-none nice-shadow"
+        >
           Mint Now
         </button>
       </div>
       <style jsx>{`
-        .nft-card{
+        .nft-card {
           color: #000;
         }
       `}</style>

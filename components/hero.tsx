@@ -13,13 +13,15 @@ export default function Hero() {
         <About />
 
         <Link href="#mint">
-          <button className="text-xl mt-10 alt-font">Yes! Let's Deck The Halls!</button>
+          <button className="text-xl mt-10 alt-font nice-shadow rounded-md outline-none">
+            Yes! Let's Deck The Halls!
+          </button>
         </Link>
       </div>
 
       <div className="pl-0 lg:pl-8 santa-gif">
         <Image
-          className="rounded-full"
+          className="rounded-full nice-shadow"
           src="/assets/raging_santas_slowed.gif"
           alt=""
           width={400}

@@ -21,10 +21,18 @@ export default function App({ Component, pageProps }) {
 
       <nav className="flex items-center justify-between flex-wrap p-2">
         <div className="w-24 sm:w-24 px-4">
-          <img src="/assets/hi-res-logo.png" className="rounded-full max-w-full h-auto align-middle border-none"/>
+          <img
+            src="/assets/hi-res-logo.png"
+            className="rounded-full max-w-full h-auto align-middle border-none"
+          />
         </div>
         <div className="flex items-center flex-shrink-0 mr-6">
-          <span className="text-4xl tracking-tight" style={{fontFamily: 'LogoFont'}}>Raging Santas</span>
+          <span
+            className="text-4xl tracking-tight"
+            style={{ fontFamily: "LogoFont" }}
+          >
+            Raging Santas
+          </span>
         </div>
         <div className="block lg:hidden">
           <button className="flex items-center px-3 py-2 border rounded">
@@ -98,20 +106,20 @@ export default function App({ Component, pageProps }) {
 
         .section {
           background: url("/assets/cardboard.png");
-          background-color: #7F3C10;
+          background-color: #7f3c10;
           border-radius: 2em;
           color: #ffa;
           box-shadow: var(--shadow-elevation-high-red);
         }
 
         .nice-shadow {
-          box-shadow: var(--shadow-elevation-high-brown);
+          box-shadow: var(--shadow-elevation-medium-brown);
         }
 
         button {
           background: url("/assets/cardboard.png");
           /*background-color: #0fa;*/
-          background-color: #16A818;
+          background-color: #16a818;
           cursor: pointer;
           display: block;
           padding: 1em 2em;
@@ -122,23 +130,23 @@ export default function App({ Component, pageProps }) {
         }
 
         @font-face {
-          font-family: 'LogoFont';
-          src: url('/assets/CanterburyRegular-MVqn.ttf');
+          font-family: "LogoFont";
+          src: url("/assets/CanterburyRegular-MVqn.ttf");
         }
 
         :root {
           --shadow-color-red: 359deg 93% 22%;
-          --shadow-elevation-low-red:
-            0.4px 0.3px 0.6px hsl(var(--shadow-color-red) / 0.34),
+          --shadow-elevation-low-red: 0.4px 0.3px 0.6px
+              hsl(var(--shadow-color-red) / 0.34),
             0.6px 0.5px 0.9px -1.2px hsl(var(--shadow-color-red) / 0.34),
             1.4px 1.3px 2.1px -2.5px hsl(var(--shadow-color-red) / 0.34);
-          --shadow-elevation-medium-red:
-            0.4px 0.3px 0.6px hsl(var(--shadow-color-red) / 0.36),
+          --shadow-elevation-medium-red: 0.4px 0.3px 0.6px
+              hsl(var(--shadow-color-red) / 0.36),
             1.2px 1.1px 1.8px -0.8px hsl(var(--shadow-color-red) / 0.36),
             3px 2.7px 4.5px -1.7px hsl(var(--shadow-color-red) / 0.36),
             7.2px 6.5px 10.9px -2.5px hsl(var(--shadow-color-red) / 0.36);
-          --shadow-elevation-high-red:
-            0.4px 0.3px 0.6px hsl(var(--shadow-color-red) / 0.34),
+          --shadow-elevation-high-red: 0.4px 0.3px 0.6px
+              hsl(var(--shadow-color-red) / 0.34),
             2.1px 1.9px 3.2px -0.4px hsl(var(--shadow-color-red) / 0.34),
             3.9px 3.5px 5.9px -0.7px hsl(var(--shadow-color-red) / 0.34),
             6.5px 5.8px 9.8px -1.1px hsl(var(--shadow-color-red) / 0.34),
@@ -147,17 +155,17 @@ export default function App({ Component, pageProps }) {
             24.5px 22px 37px -2.1px hsl(var(--shadow-color-red) / 0.34),
             36.1px 32.3px 54.5px -2.5px hsl(var(--shadow-color-red) / 0.34);
           --shadow-color-brown: 24deg 100% 15%;
-          --shadow-elevation-low-brown:
-            0.4px 0.3px 0.6px hsl(var(--shadow-color-brown) / 0.34),
+          --shadow-elevation-low-brown: 0.4px 0.3px 0.6px
+              hsl(var(--shadow-color-brown) / 0.34),
             0.6px 0.5px 0.9px -1.2px hsl(var(--shadow-color-brown) / 0.34),
             1.4px 1.3px 2.1px -2.5px hsl(var(--shadow-color-brown) / 0.34);
-          --shadow-elevation-medium-brown:
-            0.4px 0.3px 0.6px hsl(var(--shadow-color-brown) / 0.36),
+          --shadow-elevation-medium-brown: 0.4px 0.3px 0.6px
+              hsl(var(--shadow-color-brown) / 0.36),
             1.2px 1.1px 1.8px -0.8px hsl(var(--shadow-color-brown) / 0.36),
             3px 2.7px 4.5px -1.7px hsl(var(--shadow-color-brown) / 0.36),
             7.2px 6.5px 10.9px -2.5px hsl(var(--shadow-color-brown) / 0.36);
-          --shadow-elevation-high-brown:
-            0.4px 0.3px 0.6px hsl(var(--shadow-color-brown) / 0.34),
+          --shadow-elevation-high-brown: 0.4px 0.3px 0.6px
+              hsl(var(--shadow-color-brown) / 0.34),
             2.1px 1.9px 3.2px -0.4px hsl(var(--shadow-color-brown) / 0.34),
             3.9px 3.5px 5.9px -0.7px hsl(var(--shadow-color-brown) / 0.34),
             6.5px 5.8px 9.8px -1.1px hsl(var(--shadow-color-brown) / 0.34),
@@ -166,14 +174,13 @@ export default function App({ Component, pageProps }) {
             24.5px 22px 37px -2.1px hsl(var(--shadow-color-brown) / 0.34),
             36.1px 32.3px 54.5px -2.5px hsl(var(--shadow-color-brown) / 0.34);
 
-          --color-green: #16A818;
-          --color-pink: #EFA6A4;
-          --color-yellow: #D1CF49;
-          --color-red: #B51316;
-          --color-brown: #7F3C10;
+          --color-green: #16a818;
+          --color-pink: #efa6a4;
+          --color-yellow: #d1cf49;
+          --color-red: #b51316;
+          --color-brown: #7f3c10;
         }
-        
-    `}</style>
+      `}</style>
     </div>
   );
 }

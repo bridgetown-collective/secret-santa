@@ -16,9 +16,10 @@ export default function TheSantas() {
         {THE_TEAM.map((name) => (
           <div key={name} className="a-santa inline-block m-4">
             <Image
+              className="nice-shadow"
               src={`/assets/${name}.png`}
-              height={150}
-              width={150}
+              height={250}
+              width={250}
               alt={name}
             />
             <h3 className="text-center">{name}</h3>
