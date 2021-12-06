@@ -22,10 +22,10 @@ export default function Home() {
         <FAQ />
       </div>
 
-      <div class="grid justify-items-center">
+      <div className="grid justify-items-center">
         <img
           src="/assets/advent_calendar_01.gif"
-          class="rounded-md max-w-lg h-auto align-middle border-none nice-shadow"
+          className="rounded-md max-w-lg h-auto align-middle border-none nice-shadow"
         />
       </div>
 
