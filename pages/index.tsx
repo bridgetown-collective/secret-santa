@@ -25,7 +25,7 @@ export default function Home() {
       <div class="grid justify-items-center">
         <img
           src="/assets/advent_calendar_01.gif"
-          class="rounded-full max-w-lg h-auto align-middle border-none nice-shadow"
+          class="rounded-md max-w-lg h-auto align-middle border-none nice-shadow"
         />
       </div>
 
