@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import "tailwindcss/tailwind.css";
 import "styled-jsx";
 
@@ -20,20 +21,24 @@ export default function App({ Component, pageProps }) {
       </Head>
 
       <nav className="flex items-center justify-between flex-wrap p-2">
-        <div className="w-24 sm:w-24 px-4">
-          <img
-            src="/assets/hi-res-logo.png"
-            className="rounded-full max-w-full h-auto align-middle border-none"
-          />
-        </div>
-        <div className="flex items-center flex-shrink-0 mr-6">
-          <span
-            className="text-4xl tracking-tight"
-            style={{ fontFamily: "LogoFont" }}
-          >
-            Raging Santas
-          </span>
-        </div>
+        <Link href="/">
+          <div className="w-24 sm:w-24 px-4 cursor-pointer">
+            <img
+              src="/assets/hi-res-logo.png"
+              className="rounded-full max-w-full h-auto align-middle border-none"
+            />
+          </div>
+        </Link>
+        <Link href="/">
+          <div className="flex items-center flex-shrink-0 mr-6 cursor-pointer">
+            <span
+              className="text-4xl tracking-tight"
+              style={{ fontFamily: "LogoFont" }}
+            >
+              Raging Santas
+            </span>
+          </div>
+        </Link>
         <div className="block lg:hidden">
           <button className="flex items-center px-3 py-2 border rounded">
             <svg

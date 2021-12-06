@@ -1,10 +1,13 @@
 import Image from "next/image";
-import Link from "next/link";
-import { NFTCard } from "@bridgetown-collective/paris";
 
 import RequireWeb3 from "./require-web3";
+import MyGallery, { RenderNFT } from "../pages/my-gallery";
+import { useState } from "react";
 
 function Mint() {
+  const [selectedNFT, setSelectedNFT] = useState(null);
+  const [showNFTSelectionModal, setShowNFTSelectionModal] = useState(false);
+
   return (
     <div className="flex flex-wrap justify-around w-full" id="mint">
       <div className="text-center mb-8 md:mb-0">
@@ -24,19 +27,19 @@ function Mint() {
       </div>
 
       <div className="flex flex-col justify-center">
-        <Link href="/my-gallery">
-          <button className="inline-block rounded-md outline-none nice-shadow">
-            Select NFT To Gift
-          </button>
-        </Link>
+        <button
+          className="inline-block rounded-md outline-none nice-shadow"
+          onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
+        >
+          Select NFT To Gift
+        </button>
         <br />
-        <div className="inline-block self-center nft-card nice-shadow">
-          <NFTCard
-            contractAddress="0x9048de699869385756939a7bb0a22b6d6cb63a83"
-            tokenId="743"
-            size={200}
+        {selectedNFT && (
+          <RenderNFT
+            nft={selectedNFT}
+            onSelection={() => setShowNFTSelectionModal(true)}
           />
-        </div>
+        )}
         <br />
         <button
           disabled
@@ -45,9 +48,30 @@ function Mint() {
           Mint Now
         </button>
       </div>
+
+      {showNFTSelectionModal ? (
+        <div
+          className="nft-selection-modal md:p-24 overflow-auto bg-black bg-opacity-60"
+          onClick={() => setShowNFTSelectionModal(false)}
+        >
+          <MyGallery
+            size={150}
+            onSelection={(nft) => {
+              setSelectedNFT(nft);
+              setShowNFTSelectionModal(false);
+            }}
+          />
+        </div>
+      ) : null}
+
       <style jsx>{`
-        .nft-card {
-          color: #000;
+        .nft-selection-modal {
+          bottom: 0;
+          left: 0;
+          position: fixed;
+          right: 0;
+          top: 0;
+          z-index: 99;
         }
       `}</style>
     </div>

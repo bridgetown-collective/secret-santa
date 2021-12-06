@@ -1,9 +1,76 @@
 import { NFTsByOwner } from "@bridgetown-collective/paris";
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import "styled-jsx";
 
 import RequireWeb3 from "../components/require-web3";
 
-function MyGallery() {
+const PLACEHOLDER_IMAGE = "/assets/hi-res-logo.png";
+
+export function RenderNFT({
+  nft,
+  onSelection,
+  size = 300,
+}: {
+  nft;
+  onSelection?;
+  size?: number;
+}): JSX.Element {
+  const [finalImage, setFinalImage] = useState<string>(nft?.metadata?.image);
+
+  useEffect(() => {
+    if (nft?.metadata?.image) {
+      setFinalImage(nft?.metadata?.image);
+    }
+  }, [nft]);
+
+  useEffect(() => {
+    if (!finalImage) {
+      setFinalImage(PLACEHOLDER_IMAGE);
+    }
+  }, [finalImage]);
+
+  if (!finalImage) {
+    return null;
+  }
+
+  return (
+    <div
+      className={`nft-card ${onSelection ? "cursor-pointer" : ""}`}
+      onClick={() => (onSelection ? onSelection(nft) : null)}
+    >
+      <div className="image-container">
+        <Image
+          src={finalImage}
+          layout="fill"
+          objectFit="cover"
+          placeholder="blur"
+          blurDataURL={PLACEHOLDER_IMAGE}
+          onError={() => setFinalImage(PLACEHOLDER_IMAGE)}
+        />
+      </div>
+      <p className="text-md">{nft?.metadata?.name}</p>
+
+      <style jsx>{`
+        .nft-card {
+          width: ${size}px;
+        }
+
+        .nft-card p {
+          color: #ffa;
+        }
+
+        .image-container {
+          height: ${size}px;
+          position: relative;
+          width: ${size}px;
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function MyGallery(props) {
   const [owner, setOwner] = useState<string>(null);
 
   useEffect(() => {
@@ -20,12 +87,14 @@ function MyGallery() {
 
   return (
     <div className="flex flex-col justify-center align-center">
-      <p className="text-4xl">My Gallery</p>
-      <NFTsByOwner owner={owner} />
+      <NFTsByOwner
+        owner={owner}
+        component={({ nft }) => <RenderNFT nft={nft} {...props} />}
+      />
     </div>
   );
 }
 
-export default function WrappedMyGallery() {
-  return RequireWeb3(<MyGallery />);
+export default function WrappedMyGallery(props) {
+  return RequireWeb3(<MyGallery {...props} />);
 }
