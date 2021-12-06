@@ -20,7 +20,7 @@ export default function App({ Component, pageProps }) {
         ></link>
       </Head>
 
-      <nav className="flex items-center justify-between flex-wrap p-2">
+      <nav className="flex fixed items-center justify-between flex-wrap p-2">
         <Link href="/">
           <div className="w-24 sm:w-24 px-4 cursor-pointer">
             <img
@@ -107,6 +107,8 @@ export default function App({ Component, pageProps }) {
           background-color: #efa6a4;
           color: black;
           box-shadow: var(--shadow-elevation-medium-red);
+          width:100%;
+          z-index: 10;
         }
 
         .section {
@@ -115,6 +117,9 @@ export default function App({ Component, pageProps }) {
           border-radius: 1em;
           color: #ffa;
           box-shadow: var(--shadow-elevation-high-red);
+        }
+        .section:first-of-type{
+          margin-top: 6em;
         }
 
         .nice-shadow {
