@@ -9,30 +9,30 @@ import TheSantas from "../components/the-santas";
 export default function Home() {
   return (
     <div className="inline-flex flex-col self-center mb-24">
-      <div className="section">
+      <div className="section  mx-12 md:mx-0">
         <Hero />
       </div>
 
-      <div className="section">
+      <div className="section  mx-12 md:mx-0">
         <Mint />
       </div>
 
-      <div className="section">
+      <div className="section  mx-12 md:mx-0">
         <FAQ />
       </div>
 
-      <div className="grid justify-items-center">
+      <div className="grid justify-items-center mx-12 md:mx-0">
         <img
           src="/assets/advent_calendar_01.gif"
           className="rounded-md max-w-lg h-auto align-middle border-none nice-shadow"
         />
       </div>
 
-      <div className="section" id="reveal">
+      <div className="section  mx-12 md:mx-0" id="reveal">
         <Reveal />
       </div>
 
-      <div className="section">
+      <div className="section  mx-12 md:mx-0">
         <TheSantas />
       </div>
 
@@ -40,9 +40,23 @@ export default function Home() {
         .section {
           display: flex;
           justify-content: space-around;
-          margin: 2rem 0;
+          margin-top: 2rem;
+          margin-bottom: 2rem;
           padding: 2rem 4rem;
         }
+
+        .section {
+          background: url("/assets/cardboard.png");
+          background-color: #7f3c10;
+          border-radius: 1em;
+          color: #ffa;
+          box-shadow: var(--shadow-elevation-high-red);
+        }
+
+        .section:first-of-type{
+          margin-top: 6em;
+        }
+
       `}</style>
     </div>
   );

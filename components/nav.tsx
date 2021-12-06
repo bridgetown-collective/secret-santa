@@ -78,10 +78,16 @@ export default function Nav({}) {
           </a>
         </div>
       </div>
-      <script>{`
-            function myFunction() {
-            }
-        `}</script>
+      <style jsx global>{`
+        nav {
+          background: url("/assets/cardboard.png");
+          background-color: var(--color-pink);
+          color: black;
+          box-shadow: var(--shadow-elevation-medium-red);
+          width:100%;
+          z-index: 10;
+        }
+      `}</style>
     </nav>
   );
 }

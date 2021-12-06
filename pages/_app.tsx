@@ -39,27 +39,6 @@ export default function App({ Component, pageProps }) {
         .alt-font {
           font-family: "Special Elite", cursive;
         }
-
-        nav {
-          background: url("/assets/cardboard.png");
-          background-color: #efa6a4;
-          color: black;
-          box-shadow: var(--shadow-elevation-medium-red);
-          width:100%;
-          z-index: 10;
-        }
-
-        .section {
-          background: url("/assets/cardboard.png");
-          background-color: #7f3c10;
-          border-radius: 1em;
-          color: #ffa;
-          box-shadow: var(--shadow-elevation-high-red);
-        }
-        .section:first-of-type{
-          margin-top: 6em;
-        }
-
         .nice-shadow {
           box-shadow: var(--shadow-elevation-medium-brown);
         }
