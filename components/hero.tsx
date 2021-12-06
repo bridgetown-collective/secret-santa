@@ -27,10 +27,8 @@ export default function Hero() {
         />
       </div>
       <style jsx global>{`
-        @media(max-width: 1520px) {
-          .santa-gif {
-            padding-top: 2.5rem;
-          }
+        .santa-gif {
+          padding-top: 2.5rem;
         }
       `}</style>
     </div>

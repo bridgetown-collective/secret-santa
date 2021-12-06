@@ -40,14 +40,8 @@ export default function Home() {
         .section {
           display: flex;
           justify-content: space-around;
-          margin: 2rem 0;
+          margin: 2rem 1rem;
           padding: 2rem 4rem;
-        }
-
-        .section:first-of-type,
-        #reveal {
-          margin-left: 0;
-          margin-right: 0;
         }
 
         .section:first-of-type {

@@ -71,7 +71,7 @@ export default function App({ Component, pageProps }) {
         </div>
       </nav>
 
-      <div className="container flex justify-center m-auto py-8">
+      <div className="container flex m-auto py-8">
         <Component {...pageProps} />
       </div>
 
