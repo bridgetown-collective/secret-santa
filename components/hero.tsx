@@ -7,7 +7,7 @@ export default function Hero() {
     <div className="flex flex-wrap justify-around flex-row">
       <div className="flex flex-col justify-center text-left md:mr-12">
         <p className="text-4xl alt-font mb-12">
-          The first ever Secret Santa NFT Swap
+          The First Annual <br/> <i>On-Chain</i><br/> Secret Santa NFT Swap
         </p>
 
         <About />
