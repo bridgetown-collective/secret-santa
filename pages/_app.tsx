@@ -112,7 +112,7 @@ export default function App({ Component, pageProps }) {
         .section {
           background: url("/assets/cardboard.png");
           background-color: #7f3c10;
-          border-radius: 2em;
+          border-radius: 1em;
           color: #ffa;
           box-shadow: var(--shadow-elevation-high-red);
         }
