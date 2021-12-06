@@ -4,7 +4,7 @@ import "styled-jsx";
 
 export default function App({ Component, pageProps }) {
   return (
-    <div className="container flex justify-center m-auto py-8">
+    <div>
       <Head>
         <title>Raging Santas NFT</title>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
@@ -19,7 +19,9 @@ export default function App({ Component, pageProps }) {
         ></link>
       </Head>
 
-      <Component {...pageProps} />
+      <div className="container flex justify-center m-auto py-8">
+        <Component {...pageProps} />
+      </div>
 
       <style jsx global>{`
         html,
@@ -44,7 +46,7 @@ export default function App({ Component, pageProps }) {
           outline: solid 1px black;
         }
         button:hover {
-          background-color: #fa9;
+          background-color: #f49898;
         }
       `}</style>
     </div>

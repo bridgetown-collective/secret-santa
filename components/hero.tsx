@@ -13,9 +13,10 @@ export default function Hero() {
           <button className="text-xl alt-font">Mint Now</button>
         </Link>
       </div>
+
       <div className="md:m-0 m-8">
         <Image
-          src="/assets/raging_santa_animated_gif_01.gif"
+          src="/assets/raging_santas_slowed.gif"
           alt=""
           width={300}
           height={300}

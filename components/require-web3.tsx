@@ -1,39 +1,26 @@
 import { useEffect, useState } from "react";
-import Web3 from "web3";
 
-export default function RequireWeb3({
-  Component,
-  children,
-  shouldRenderAction = true,
-}: {
-  Component?: (props: Record<string, unknown>) => JSX.Element;
-  children?: JSX.Element | JSX.Element[];
-  shouldRenderAction?: boolean;
-}) {
-  const [web3, setWeb3] = useState<Web3>(null);
+export default function RequireWeb3(
+  Component: JSX.Element,
+  shouldRenderAction: boolean = true
+): JSX.Element {
+  const [hasWeb3, setHasWeb3] = useState<Boolean>(false);
+
+  useEffect(() => {
+    // @ts-ignore
+    setHasWeb3(!!window.ethereum);
+  }, []);
 
   const requestConnection = async () => {
     // @ts-ignore next-block
     if (window.ethereum) {
       // @ts-ignore
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      // @ts-ignore
-      window.web3 = new Web3(window.ethereum);
-      // @ts-ignore
-      setWeb3(window.web3);
+      await window.ethereum.enable();
+      setHasWeb3(true);
     }
   };
 
-  useEffect(() => {
-    // @TODO: fix tsconfig
-    // @ts-ignore
-    if (window.web3 && window.web3.eth) {
-      // @ts-ignore
-      setWeb3(window.web3);
-    }
-  }, []);
-
-  if (!web3) {
+  if (!hasWeb3) {
     if (!shouldRenderAction) {
       return null;
     }
@@ -41,9 +28,5 @@ export default function RequireWeb3({
     return <button onClick={() => requestConnection()}>Login</button>;
   }
 
-  if (Component) {
-    return <Component web3={web3} />;
-  }
-
-  return <div>{children}</div>;
+  return Component;
 }

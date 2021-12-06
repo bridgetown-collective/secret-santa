@@ -6,3 +6,4 @@ cache/
 .next
 dist
 out.svg
+collection-*

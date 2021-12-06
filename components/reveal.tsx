@@ -3,7 +3,7 @@ import RequireWeb3 from "./require-web3";
 function Reveal() {
   return (
     <div className="flex flex-wrap justify-around w-full" id="reveal">
-      <p className="text-4xl alt-font">
+      <p className="text-4xl alt-font text-center">
         {Math.floor(
           (new Date("2021-12-25T00:00:00Z").getTime() - Date.now()) /
             1000 /
@@ -18,5 +18,5 @@ function Reveal() {
 }
 
 export default function WrappedMint() {
-  return <RequireWeb3 Component={() => <Reveal />} />;
+  return RequireWeb3(<Reveal />);
 }

@@ -6,7 +6,7 @@ import sharp from "sharp";
 import { getSVGMap } from "../components/image_generation/common";
 import {
   RagingSantaSVGString,
-  RagingSantaTraits
+  RagingSantaTraits,
 } from "../components/image_generation/svg-sketch";
 
 const program = new Command();
@@ -17,9 +17,11 @@ program.parse(process.argv);
 const { quantity } = program.opts();
 function main(quantity: number): void {
   var ds = new Date();
-  var folderName = `${ds.getFullYear()}-${ds.getMonth()}-${ds.getDate()}-${ds.getHours()}-${ds.getMinutes()}-${ds.getSeconds()}`;
+  var folderName = `collection-${ds.getFullYear()}-${
+    ds.getMonth() + 1
+  }-${ds.getDate()}-${ds.getHours()}-${ds.getMinutes()}-${ds.getSeconds()}`;
 
-  fs.mkdir(folderName, err => {
+  fs.mkdir(folderName, (err) => {
     if (err) {
       throw err;
     }
@@ -33,7 +35,7 @@ function main(quantity: number): void {
       fs.writeFileSync(jsonPath, JSON.stringify(RagingSantaTraits(i / 1000)));
       const inputBuffer = Buffer.from(svgString);
       let pngPath = path.join(folderName, `${i}.png`);
-      sharp(inputBuffer).resize(400, 400).toFile(pngPath);
+      sharp(inputBuffer).resize(500, 500).toFile(pngPath);
     }
 
     console.log("Directory is created.");

@@ -1,14 +1,15 @@
 import { NFTsByOwner } from "@bridgetown-collective/paris";
 import { useEffect, useState } from "react";
-import Web3 from "web3";
 
 import RequireWeb3 from "../components/require-web3";
 
-function MyGallery({ web3 }: { web3: Web3 }) {
+function MyGallery() {
   const [owner, setOwner] = useState<string>(null);
 
   useEffect(() => {
-    web3.eth.getAccounts().then((accounts) => {
+    // @ts-ignore
+    const { ethereum } = window;
+    ethereum.request({ method: "eth_requestAccounts" }).then((accounts) => {
       setOwner(accounts[0]?.toLowerCase());
     });
   }, []);
@@ -26,5 +27,5 @@ function MyGallery({ web3 }: { web3: Web3 }) {
 }
 
 export default function WrappedMyGallery() {
-  return <RequireWeb3 Component={MyGallery} />;
+  return RequireWeb3(<MyGallery />);
 }

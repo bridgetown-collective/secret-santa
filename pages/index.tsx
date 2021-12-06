@@ -1,32 +1,19 @@
-import fs from "fs";
-import path from "path";
 import "styled-jsx";
 
 import About from "../components/about";
 import FAQ from "../components/faq";
 import Hero from "../components/hero";
-import { getSVGMap } from "../components/image_generation/common";
 import Mint from "../components/mint";
 import Reveal from "../components/reveal";
 import TheSantas from "../components/the-santas";
 
-export function getStaticProps() {
-  return {
-    props: {
-      // @NOTE: this has to be done server side to leverage fs
-      svgMap: getSVGMap(fs, path),
-    },
-  };
-}
-
-export default function Home({ svgMap }) {
+export default function Home() {
   return (
-    <div className="inline-flex flex-col self-center m-6 mb-24">
+    <div className="inline-flex flex-col self-center mb-24">
       <div className="section flex-col text-center">
         <p className="text-6xl alt-font">Raging Santas NFT</p>
         <p className="text-xl">
-          A generative collection of raging santas on the Ethereum blockchain,
-          just in time for the holidays
+          <s>FEEL the love</s> - SHARE the Rage - MINT a Santa - EXCHANGE an NFT
         </p>
       </div>
 
@@ -39,19 +26,19 @@ export default function Home({ svgMap }) {
       </div>
 
       <div className="section">
-        <Mint svgMap={svgMap} />
+        <Mint />
       </div>
 
       <div className="section">
         <FAQ />
       </div>
 
-      <div className="section">
+      <div className="section" id="reveal">
         <Reveal />
       </div>
 
       <div className="section">
-        <TheSantas svgMap={svgMap} />
+        <TheSantas />
       </div>
 
       <style jsx>{`
@@ -59,11 +46,24 @@ export default function Home({ svgMap }) {
           display: flex;
           justify-content: space-around;
           margin: 2rem 0;
+          padding: 0 4rem;
         }
 
         .section:nth-of-type(even) {
           border: solid 1px black;
-          padding: 2rem;
+          padding-bottom: 2rem;
+          padding-top: 2rem;
+        }
+
+        .section:first-of-type,
+        #reveal {
+          background-color: #f49898;
+          margin-left: 0;
+          margin-right: 0;
+        }
+
+        .section:first-of-type {
+          padding: 4rem;
         }
       `}</style>
     </div>

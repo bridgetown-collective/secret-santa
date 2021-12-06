@@ -1,10 +1,10 @@
+import Image from "next/image";
 import Link from "next/link";
 import { NFTCard } from "@bridgetown-collective/paris";
 
 import RequireWeb3 from "./require-web3";
-import SvgSketch from "./image_generation/svg-sketch";
 
-function Mint({ svgMap }) {
+function Mint() {
   return (
     <div className="flex flex-wrap justify-around w-full" id="mint">
       <div className="text-center mb-8 md:mb-0">
@@ -15,7 +15,7 @@ function Mint({ svgMap }) {
           <br />
           <br />
         </p>
-        <SvgSketch seed={Math.random()} svgMap={svgMap} />
+        <Image src="/assets/ShortSanta.png" height={300} width={300} />
       </div>
 
       <div className="flex flex-col justify-center">
@@ -39,6 +39,6 @@ function Mint({ svgMap }) {
   );
 }
 
-export default function WrappedMint({ svgMap }) {
-  return <RequireWeb3 Component={() => <Mint svgMap={svgMap} />} />;
+export default function WrappedMint() {
+  return RequireWeb3(<Mint />);
 }
