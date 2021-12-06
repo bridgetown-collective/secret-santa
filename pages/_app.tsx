@@ -19,17 +19,17 @@ export default function App({ Component, pageProps }) {
         ></link>
       </Head>
 
-      <nav class="flex items-center justify-between flex-wrap p-2">
-        <div class="w-24 sm:w-24 px-4">
-          <img src="/assets/hi-res-logo.png" class="rounded-full max-w-full h-auto align-middle border-none"/>
+      <nav className="flex items-center justify-between flex-wrap p-2">
+        <div className="w-24 sm:w-24 px-4">
+          <img src="/assets/hi-res-logo.png" className="rounded-full max-w-full h-auto align-middle border-none"/>
         </div>
-        <div class="flex items-center flex-shrink-0 mr-6">
-          <span class="text-4xl tracking-tight" style={{fontFamily: 'LogoFont'}}>Raging Santas</span>
+        <div className="flex items-center flex-shrink-0 mr-6">
+          <span className="text-4xl tracking-tight" style={{fontFamily: 'LogoFont'}}>Raging Santas</span>
         </div>
-        <div class="block lg:hidden">
-          <button class="flex items-center px-3 py-2 border rounded hover:text-white hover:border-white">
+        <div className="block lg:hidden">
+          <button className="flex items-center px-3 py-2 border rounded">
             <svg
-              class="fill-current h-3 w-3"
+              className="fill-current h-3 w-3"
               viewBox="0 0 20 20"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -38,24 +38,24 @@ export default function App({ Component, pageProps }) {
             </svg>
           </button>
         </div>
-        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
-          <div class="text-md font-semibold	pt-2 lg:pt-0 lg:flex-grow text-red-700">
-            <s class="mr-4">FEEL the love</s>
+        <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
+          <div className="text-md font-semibold	pt-2 lg:pt-0 lg:flex-grow text-red-700">
+            <s className="mr-4">FEEL the love</s>
             <a
               href="#responsive-header"
-              class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
             >
               SHARE the Rage
             </a>
             <a
               href="#responsive-header"
-              class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
             >
               MINT a Santa
             </a>
             <a
               href="#responsive-header"
-              class="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
+              className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
             >
               EXCHANGE an NFT
             </a>
@@ -63,7 +63,7 @@ export default function App({ Component, pageProps }) {
           <div>
             <a
               href="#"
-              class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+              className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
             >
               Connect
             </a>
