@@ -10,7 +10,7 @@ export default function Nav({}) {
   return (
     <nav
       id="pageNav"
-      className="flex fixed items-center justify-between flex-wrap p-2"
+      className="flex fixed items-center justify-between flex-wrap p-2 mt-0 top-0"
     >
       <Link href="/">
         <div className="w-24 sm:w-24 px-4 cursor-pointer">

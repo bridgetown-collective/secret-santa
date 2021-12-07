@@ -4,11 +4,10 @@ import About from "./about";
 
 export default function Hero() {
   return (
-    <div className="flex flex-wrap justify-around flex-col-reverse 2xl:flex-row">
-
+    <div className="flex flex-wrap justify-around flex-col-reverse">
       <div className="hidden lg:flex lg:flex-col justify-center text-left lg:pr-0">
         <Link href="#mint">
-          <button className="text-xl mt-10 alt-font nice-shadow rounded-md outline-none">
+          <button className="text-xl mt-10 alt-font nice-shadow rounded-md outline-none w-full">
             Yes! Let's Deck The Halls!
           </button>
         </Link>
@@ -16,7 +15,6 @@ export default function Hero() {
 
       <div className="flex-col lg:hidden justify-center text-left lg:pr-40">
         <About />
-
         <Link href="#mint">
           <button className="text-xl mt-10 alt-font nice-shadow rounded-md outline-none m-auto w-full">
             Yes! Let's Deck The Halls!
@@ -28,12 +26,10 @@ export default function Hero() {
         <p className="text-4xl alt-font mb-12">
           The First Annual <br/> <i>On-Chain</i><br/> Secret Santa NFT Swap
         </p>
-
         <About />
-
       </div>
 
-      <div className="pl-0 text-center pb-12 2xl:pl-8 2xl:pb-0 santa-gif">
+      <div className="pl-0 text-center pb-12 santa-gif">
         <Image
           className="rounded-full nice-shadow"
           src="/assets/raging_santas_slowed.gif"
