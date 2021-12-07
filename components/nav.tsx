@@ -10,7 +10,7 @@ export default function Nav({}) {
   return (
     <nav
       id="pageNav"
-      className="flex fixed items-center justify-between flex-wrap p-2 mt-0 top-0"
+      className="flex fixed items-center justify-between flex-wrap lg:flex-nowrap p-2 mt-0 top-0"
     >
       <Link href="/">
         <div className="w-24 sm:w-24 px-4 cursor-pointer">
@@ -23,7 +23,7 @@ export default function Nav({}) {
       <Link href="/">
         <div className="flex items-center flex-shrink-0 mr-6 cursor-pointer">
           <span
-            className="text-6xl tracking-tight"
+            className="text-5xl xl:text-6xl tracking-tight"
             style={{ fontFamily: "LogoFont" }}
           >
             Raging Santas
@@ -70,6 +70,24 @@ export default function Nav({}) {
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
             GIVE for Santa
+          </a>
+          <a
+            href="#faq"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
+          >
+            ASK a question
+          </a>
+          <a
+            href="#reveal"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
+          >
+            OPEN presents
+          </a>
+          <a
+            href="#the-santas"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
+          >
+            MEET the Santas
           </a>
         </div>
         <div>
