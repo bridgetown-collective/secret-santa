@@ -10,7 +10,7 @@ const PLACEHOLDER_IMAGE = "/assets/hi-res-logo.png";
 export function RenderNFT({
   nft,
   onSelection,
-  size = 300,
+  size = 300
 }: {
   nft;
   onSelection?;
@@ -85,15 +85,17 @@ export function OwnerGallery({
 
   if (nfts.length == 0) {
     return (
-      <div className="text-white">
-        <h2>No NFTs (ERC-721) detected on this wallet</h2>
+      <div className="flex flex-col justify-center align-middle w-full h-full text-white text-center">
+        <h1 className="text-7xl" style={{ color: "var(--color-yellow)" }}>
+          No NFTs (ERC-721) detected in this wallet
+        </h1>
       </div>
     );
   }
 
   return (
     <div className="flex flex-wrap justify-center align-center owner-gallery">
-      {nfts.map((nft) => (
+      {nfts.map(nft => (
         <RenderNFT
           key={`${nft.contractAddress}/${nft.tokenId}`}
           nft={nft}

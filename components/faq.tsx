@@ -48,8 +48,8 @@ export default function FAQ() {
       <span>
       <p className="text-xl">What does the future hold?</p>
       <p className="text-lg">
-        There is no roadmap. This is simply the first of many swaps! We will run
-        it back so hold onto your Santas for additional value!
+        There is no roadmap. This is simply the first of hopefully many swaps! We may run
+        it back! You never know where Santa might show up next!
         <br />
         We will roll out a Discord server if we hit 25% sold out.
         <br />
