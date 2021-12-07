@@ -49,7 +49,7 @@ export function RenderNFT({
           onError={() => setFinalImage(PLACEHOLDER_IMAGE)}
         />
       </div>
-      <p className="text-md">{nft?.metadata?.name}</p>
+      <p className="text-md text-center pt-1">{nft?.metadata?.name}</p>
 
       <style jsx>{`
         .nft-card {
@@ -64,6 +64,7 @@ export function RenderNFT({
           height: ${size}px;
           position: relative;
           width: ${size}px;
+          border-radius: 99px;
         }
       `}</style>
     </div>
@@ -82,8 +83,16 @@ export function OwnerGallery({
     return null;
   }
 
+  if (nfts.length == 0) {
+    return (
+      <div className="text-white">
+        <h2>No NFTs (ERC-721) detected on this wallet</h2>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-wrap justify-center align-center">
+    <div className="flex flex-wrap justify-center align-center owner-gallery">
       {nfts.map((nft) => (
         <RenderNFT
           key={`${nft.contractAddress}/${nft.tokenId}`}

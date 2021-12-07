@@ -23,7 +23,7 @@ export default function Nav({}) {
       <Link href="/">
         <div className="flex items-center flex-shrink-0 mr-6 cursor-pointer">
           <span
-            className="text-4xl tracking-tight"
+            className="text-6xl tracking-tight"
             style={{ fontFamily: "LogoFont" }}
           >
             Raging Santas
@@ -33,7 +33,7 @@ export default function Nav({}) {
 
       <div className="block lg:hidden">
         <button
-          className="flex items-center px-3 py-2 border rounded"
+          className="flex items-center px-3 py-2 border rounded cursor-pointer"
           onClick={() => setIsNavOpen(!isNavOpen)}
         >
           <svg
@@ -61,15 +61,15 @@ export default function Nav({}) {
               "SHARE the Rage! https://ragingsantas.xyz @RagingSantasNFT"
             )}`}
             target="_blank"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
             SHARE the Rage
           </a>
           <a
             href="#mint"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
-            MINT a Santa
+            GIVE for Santa
           </a>
         </div>
         <div>
