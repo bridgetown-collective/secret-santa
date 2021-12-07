@@ -4,14 +4,9 @@ import About from "./about";
 
 export default function Hero() {
   return (
-    <div className="flex flex-wrap justify-around flex-row">
-      <div className="flex flex-col justify-center text-left md:mr-12">
-        <p className="text-4xl alt-font mb-12">
-          The First Annual <br/> <i>On-Chain</i><br/> Secret Santa NFT Swap
-        </p>
+    <div className="flex flex-wrap justify-around flex-col-reverse 2xl:flex-row">
 
-        <About />
-
+      <div className="hidden lg:flex lg:flex-col justify-center text-left lg:pr-0">
         <Link href="#mint">
           <button className="text-xl mt-10 alt-font nice-shadow rounded-md outline-none">
             Yes! Let's Deck The Halls!
@@ -19,7 +14,26 @@ export default function Hero() {
         </Link>
       </div>
 
-      <div className="pl-0 lg:pl-8 santa-gif">
+      <div className="flex-col lg:hidden justify-center text-left lg:pr-40">
+        <About />
+
+        <Link href="#mint">
+          <button className="text-xl mt-10 alt-font nice-shadow rounded-md outline-none m-auto w-full">
+            Yes! Let's Deck The Halls!
+          </button>
+        </Link>
+      </div>
+
+      <div className="hidden lg:flex lg:flex-col justify-center text-left md:mr-12 lg:pr-40">
+        <p className="text-4xl alt-font mb-12">
+          The First Annual <br/> <i>On-Chain</i><br/> Secret Santa NFT Swap
+        </p>
+
+        <About />
+
+      </div>
+
+      <div className="pl-0 text-center pb-12 2xl:pl-8 2xl:pb-0 santa-gif">
         <Image
           className="rounded-full nice-shadow"
           src="/assets/raging_santas_slowed.gif"
@@ -28,9 +42,27 @@ export default function Hero() {
           height={400}
         />
       </div>
+
+      <div className="flex-col lg:hidden justify-center text-left md:mr-12 lg:pr-40">
+        <p className="text-4xl alt-font mb-12">
+          The First Annual <br/> <i>On-Chain</i><br/> Secret Santa NFT Swap
+        </p>
+      </div>
+
       <style jsx global>{`
         .santa-gif {
-          padding-top: 2.5rem;
+          padding-top: 0;
+          margin: auto;
+          width: 287px;
+        }
+
+        @media (min-width: 1024px) {
+          .santa-gif {
+            position: absolute;
+            top: -2rem;
+            right: -28px;
+            width: 357px;
+          }
         }
       `}</style>
     </div>

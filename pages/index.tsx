@@ -9,7 +9,7 @@ import TheSantas from "../components/the-santas";
 export default function Home() {
   return (
     <div className="inline-flex flex-col self-center mb-24">
-      <div className="section  mx-12 md:mx-0">
+      <div className="section  mx-12 md:mx-0 relative">
         <Hero />
       </div>
 
@@ -40,8 +40,7 @@ export default function Home() {
         .section {
           display: flex;
           justify-content: space-around;
-          margin-top: 2rem;
-          margin-bottom: 2rem;
+          margin: 2rem;
           padding: 2rem 4rem;
         }
 
@@ -54,7 +53,7 @@ export default function Home() {
         }
 
         .section:first-of-type{
-          margin-top: 6em;
+          margin-top: 8em;
         }
 
       `}</style>
