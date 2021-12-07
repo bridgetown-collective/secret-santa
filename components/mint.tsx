@@ -64,14 +64,20 @@ export default function Mint() {
 
       <div className="flex flex-col justify-center">
         <div className="flex flex-row justify-center">
-          <div className="flex align-middle text-center m-auto flex-col">
-            <h1 className="text-4xl">0.03 ETH</h1>
+          <div className="flex flex-col text-center">
+              <Image
+                className="cursor-pointer"
+                src="/assets/eth_box_01.svg"
+                height="364"
+                width="364"
+              />
+            <h1 className="text-4xl pt-12">0.03 ETH</h1>
           </div>
           <div className="flex align-middle text-center m-auto flex-col">
-            <h1 className="text-6xl">+</h1>
+            <h1 className="text-9xl font-black color-pink mt-0 mx-8 mb-40">+</h1>
           </div>
           {!selectedNFT?.contractAddress ? (
-            <div className="flex flex-col justify-center pt-10">
+            <div className="flex flex-col justify-center">
               <Image
                 className="cursor-pointer"
                 src="/assets/gift_nft_exchange_ribbon_01.svg"

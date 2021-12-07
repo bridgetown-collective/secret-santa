@@ -65,6 +65,10 @@ export default function App({ Component, pageProps }) {
           src: url("/assets/CanterburyRegular-MVqn.ttf");
         }
 
+        .color-pink {
+          color: var(--color-pink);
+        }
+
         :root {
           --shadow-color-red: 359deg 93% 22%;
           --shadow-elevation-low-red: 0.4px 0.3px 0.6px
