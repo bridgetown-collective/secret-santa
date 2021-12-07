@@ -20,6 +20,7 @@ export default function App({ Component, pageProps }) {
           href="https://fonts.googleapis.com/css2?family=Noticia+Text&family=Special+Elite&display=swap"
           rel="stylesheet"
         ></link>
+        <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"></link>
       </Head>
 
       <Nav />
