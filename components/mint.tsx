@@ -74,7 +74,7 @@ export default function Mint() {
             <div className="flex flex-col justify-center pt-10">
               <Image
                 className="cursor-pointer"
-                src="/assets/gift_nft_exchange_transparent.svg"
+                src="/assets/gift_nft_exchange_ribbon_01.svg"
                 height="364"
                 width="364"
                 onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
