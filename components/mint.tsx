@@ -90,7 +90,6 @@ export default function Mint() {
         {selectedNFT && (
           <div className="self-center">
             <RenderNFT
-              className="rounded-full"
               size={371}
               nft={selectedNFT}
               onSelection={() => setShowNFTSelectionModal(true)}
