@@ -4,7 +4,7 @@ export default function FAQ() {
   return (
     <div className='faq md:pl-16 md:pr-16 lg:p-10'>
       <span>
-      <p className="text-xl"> 🎁{' '} What is the mint fee?</p>
+      <p className="text-xl">🎄{' '} What is the mint fee?</p>
       <p className="text-lg">
         0.03 ETH + 1 NFT of your choice to add to the Secret Santa Swap gift
         pool.
@@ -30,7 +30,7 @@ export default function FAQ() {
 
       <br />
       <span>
-      <p className="text-xl">🎁{' '} When does it happen?</p>
+      <p className="text-xl">🎄{' '} When does it happen?</p>
       <p className="text-lg">
         9999 Raging Santas will be mintable starting December 13th, 2021.
         <br />
@@ -67,7 +67,7 @@ export default function FAQ() {
 
       <br />
       <span>
-      <p className="text-xl">🎁{' '} Disclaimer</p>
+      <p className="text-xl">🎄{' '} Disclaimer</p>
       <p className="text-lg">
         This is an experimental project.
         <br />
