@@ -51,18 +51,17 @@ export default function Mint() {
 
   return (
     <div className="flex flex-wrap justify-around w-full" id="mint">
-      {/*
-        <div className="text-center flex flex-col justify-center mb-8 md:mb-0 rounded-2xl items-end mt-8">
-          <Image src="/assets/ShortSanta.png" height="394" width="394" />
-          <p className="text-2xl alt-font b-0 align-bottom mt-16 m-auto">
-            Santas Raging
-            <br />
-            {totalMinted} / 9999
-            <br />
-            <br />
-          </p>
-        </div>
-      */}
+      <div className="hidden text-center flex flex-col justify-center mb-8 md:mb-0 rounded-2xl items-end mt-8">
+        <Image src="/assets/ShortSanta.png" height="394" width="394" />
+        <p className="text-2xl alt-font b-0 align-bottom mt-16 m-auto">
+          Santas Raging
+          <br />
+          {totalMinted} / 9999
+          <br />
+          <br />
+        </p>
+      </div>
+
       <div className="flex flex-col justify-center">
         <div className="flex flex-row justify-center">
           <div className="flex align-middle text-center m-auto flex-col" style={{'width': '360px'}}>
