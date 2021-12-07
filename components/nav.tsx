@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -90,9 +91,31 @@ export default function Nav({}) {
             MEET the Santas
           </a>
         </div>
+        <div className="flex flex-row mt-2">
+          <span>
+            <a href="https://twitter.com/RagingSantasNFT" target="_blank">
+              <Image
+                className="cursor-pointer"
+                src="/assets/twitter-logo.svg"
+                height="45"
+                width="45"
+              />
+            </a>
+          </span>
+          <span className="mx-5">
+            <a href="https://opensea.io" target="_blank">
+              <Image
+                className="cursor-pointer"
+                src="/assets/opensea-logo.svg"
+                height="45"
+                width="45"
+              />
+            </a>
+          </span>
+        </div>
         <div>
           <p
-            className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0 cursor-pointer"
+            className="inline-block text-sm px-4 py-2 leading-none border rounded text-black border-black hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0 cursor-pointer"
             onClick={requestConnection}
           >
             {account ? `${account.slice(0, 10)}...` : "Login"}
