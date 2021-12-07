@@ -1,6 +1,8 @@
-import RequireWeb3 from "./require-web3";
+import useWeb3 from "./use-web3";
 
-function Reveal() {
+export default function Reveal() {
+  useWeb3();
+
   return (
     <div className="flex flex-wrap justify-around w-full" id="reveal">
       <p className="text-4xl alt-font text-center">
@@ -15,8 +17,4 @@ function Reveal() {
       </p>
     </div>
   );
-}
-
-export default function WrappedMint() {
-  return RequireWeb3(<Reveal />);
 }

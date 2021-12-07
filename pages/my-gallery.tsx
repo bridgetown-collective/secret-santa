@@ -1,9 +1,9 @@
-import { NFTsByOwner } from "@bridgetown-collective/paris";
+import { useNFTsByOwnerQuery } from "@bridgetown-collective/paris";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import "styled-jsx";
 
-import RequireWeb3 from "../components/require-web3";
+import useWeb3 from "../components/use-web3";
 
 const PLACEHOLDER_IMAGE = "/assets/hi-res-logo.png";
 
@@ -36,7 +36,7 @@ export function RenderNFT({
 
   return (
     <div
-      className={`nft-card ${onSelection ? "cursor-pointer" : ""}`}
+      className={`nft-card m-4 ${onSelection ? "cursor-pointer" : ""}`}
       onClick={() => (onSelection ? onSelection(nft) : null)}
     >
       <div className="image-container">
@@ -70,31 +70,37 @@ export function RenderNFT({
   );
 }
 
-function MyGallery(props) {
-  const [owner, setOwner] = useState<string>(null);
-
-  useEffect(() => {
-    // @ts-ignore
-    const { ethereum } = window;
-    ethereum.request({ method: "eth_requestAccounts" }).then((accounts) => {
-      setOwner(accounts[0]?.toLowerCase());
-    });
-  }, []);
+export function OwnerGallery({
+  owner,
+  ...props
+}: {
+  owner: string;
+}): JSX.Element {
+  const nfts = useNFTsByOwnerQuery(owner);
 
   if (!owner) {
     return null;
   }
 
   return (
-    <div className="flex flex-col justify-center align-center">
-      <NFTsByOwner
-        owner={owner}
-        component={({ nft }) => <RenderNFT nft={nft} {...props} />}
-      />
+    <div className="flex flex-wrap justify-center align-center">
+      {nfts.map((nft) => (
+        <RenderNFT
+          key={`${nft.contractAddress}/${nft.tokenId}`}
+          nft={nft}
+          {...props}
+        />
+      ))}
     </div>
   );
 }
 
 export default function WrappedMyGallery(props) {
-  return RequireWeb3(<MyGallery {...props} />);
+  const { account, hasWeb3 } = useWeb3();
+
+  if (!hasWeb3 || !account) {
+    return null;
+  }
+
+  return <OwnerGallery owner={account} {...props} />;
 }

@@ -1,10 +1,11 @@
 import Link from "next/link";
+import { useState } from "react";
+
+import useWeb3 from "./use-web3";
 
 export default function Nav({}) {
-  const onCollapse = e => {
-    var x = window.document.getElementById("mobileDropdownMenu");
-    x.classList.toggle("hidden");
-  };
+  const { account, requestConnection } = useWeb3();
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   return (
     <nav
@@ -29,10 +30,11 @@ export default function Nav({}) {
           </span>
         </div>
       </Link>
+
       <div className="block lg:hidden">
         <button
           className="flex items-center px-3 py-2 border rounded"
-          onClick={onCollapse}
+          onClick={() => setIsNavOpen(!isNavOpen)}
         >
           <svg
             className="fill-current h-3 w-3"
@@ -44,47 +46,49 @@ export default function Nav({}) {
           </svg>
         </button>
       </div>
+
       <div
         id="mobileDropdownMenu"
-        className="hidden w-full block flex-grow lg:flex lg:items-center lg:w-auto"
+        className={`w-full block flex-grow lg:flex lg:items-center lg:w-auto ${
+          !isNavOpen ? "hidden" : ""
+        }`}
       >
         <div className="text-md font-semibold	pt-2 lg:pt-0 lg:flex-grow text-red-700">
           <s className="mr-4">FEEL the love</s>
           <a
-            href="#responsive-header"
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
+              // @TODO: link to the user's "gifted" page to show off -- "I just gifted, you should too"
+              "SHARE the Rage! https://ragingsantas.xyz @RagingSantasNFT"
+            )}`}
+            target="_blank"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
           >
             SHARE the Rage
           </a>
           <a
-            href="#responsive-header"
+            href="#mint"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4"
           >
             MINT a Santa
           </a>
-          <a
-            href="#responsive-header"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white"
-          >
-            EXCHANGE an NFT
-          </a>
         </div>
         <div>
-          <a
-            href="#"
-            className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+          <p
+            className="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0 cursor-pointer"
+            onClick={requestConnection}
           >
-            Connect
-          </a>
+            {account ? `${account.slice(0, 10)}...` : "Login"}
+          </p>
         </div>
       </div>
+
       <style jsx global>{`
         nav {
           background: url("/assets/cardboard.png");
           background-color: var(--color-pink);
           color: black;
           box-shadow: var(--shadow-elevation-medium-red);
-          width:100%;
+          width: 100%;
           z-index: 10;
         }
       `}</style>

@@ -1,12 +1,24 @@
 import Image from "next/image";
 
-import RequireWeb3 from "./require-web3";
+import useWeb3 from "./use-web3";
 import MyGallery, { RenderNFT } from "../pages/my-gallery";
 import { useState } from "react";
 
-function Mint() {
+export default function Mint() {
+  const { account, hasWeb3, requestConnection } = useWeb3();
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [showNFTSelectionModal, setShowNFTSelectionModal] = useState(false);
+
+  if (!hasWeb3 || !account) {
+    return (
+      <button
+        className="text-xl rounded-md outline-none nice-shadow"
+        onClick={requestConnection}
+      >
+        Login To Mint
+      </button>
+    );
+  }
 
   return (
     <div className="flex flex-wrap justify-around w-full" id="mint">
@@ -76,8 +88,4 @@ function Mint() {
       `}</style>
     </div>
   );
-}
-
-export default function WrappedMint() {
-  return RequireWeb3(<Mint />);
 }
