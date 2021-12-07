@@ -12,7 +12,7 @@ export default function Mint() {
     hasWeb3,
     isMintActive,
     requestConnection,
-    totalMinted,
+    totalMinted
   } = useWeb3();
   const [isMinting, setIsMinting] = useState<boolean>(false);
   const [selectedNFT, setSelectedNFT] = useState(null);
@@ -24,7 +24,7 @@ export default function Mint() {
         className="text-xl rounded-md outline-none nice-shadow"
         onClick={requestConnection}
       >
-        Login To Mint
+        Connect To Mint
       </button>
     );
   }
@@ -51,50 +51,68 @@ export default function Mint() {
 
   return (
     <div className="flex flex-wrap justify-around w-full" id="mint">
-      <div className="text-center mb-8 md:mb-0">
-        <p className="text-2xl alt-font">
+      <div className="hidden text-center flex flex-col justify-center mb-8 md:mb-0 rounded-2xl items-end mt-8">
+        <Image src="/assets/ShortSanta.png" height="394" width="394" />
+        <p className="text-2xl alt-font b-0 align-bottom mt-16 m-auto">
           Santas Raging
           <br />
           {totalMinted} / 9999
           <br />
           <br />
         </p>
-        <Image
-          className="rounded-2xl"
-          src="/assets/ShortSanta.png"
-          height={300}
-          width={300}
-        />
       </div>
 
       <div className="flex flex-col justify-center">
-        {!selectedNFT?.contractAddress ? (
-          <button
-            className="inline-block text-xl rounded-md outline-none nice-shadow cursor-pointer mb-8"
-            onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
-          >
-            Select NFT To Gift
-          </button>
-        ) : null}
-        {selectedNFT && (
-          <div className="self-center">
-            <RenderNFT
-              nft={selectedNFT}
-              onSelection={() => setShowNFTSelectionModal(true)}
-            />
+        <div className="flex flex-row justify-center">
+          <div className="flex align-middle text-center m-auto flex-col">
+            <h1 className="text-4xl">0.03 ETH</h1>
           </div>
-        )}
-        {selectedNFT?.contractAddress ? (
-          <button
-            disabled={isMinting}
-            className="text-xl w-96 alt-font rounded-md outline-none nice-shadow cursor-pointer mt-8"
-            onClick={() =>
-              doMint(selectedNFT.contractAddress, selectedNFT.tokenId)
-            }
-          >
-            Mint Now
-          </button>
-        ) : null}
+          <div className="flex align-middle text-center m-auto flex-col">
+            <h1 className="text-6xl">+</h1>
+          </div>
+          {!selectedNFT?.contractAddress ? (
+            <div className="flex flex-col justify-center pt-10">
+              <Image
+                className="cursor-pointer"
+                src="/assets/gift_nft_exchange_transparent.svg"
+                height="364"
+                width="364"
+                onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
+              />
+              <button
+                className="text-xl rounded-md outline-none nice-shadow cursor-pointer mb-8 mt-10"
+                onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
+              >
+                Pick an NFT To Give
+              </button>
+            </div>
+          ) : null}
+          {selectedNFT && (
+            <div className="self-center">
+              <RenderNFT
+                size={371}
+                nft={selectedNFT}
+                onSelection={() => setShowNFTSelectionModal(true)}
+              />
+            </div>
+          )}
+        </div>
+        <div className="text-center">
+          {selectedNFT?.contractAddress ? (
+            <>
+              <button
+                disabled={isMinting}
+                className="text-xl w-96 alt-font rounded-md outline-none nice-shadow cursor-pointer mt-8 m-auto"
+                onClick={() =>
+                  doMint(selectedNFT.contractAddress, selectedNFT.tokenId)
+                }
+              >
+                Give NOW
+              </button>
+              <p className="mt-1">You don't want coal for Christmas, do you?</p>
+            </>
+          ) : null}
+        </div>
       </div>
 
       {showNFTSelectionModal ? (
@@ -104,7 +122,7 @@ export default function Mint() {
         >
           <MyGallery
             size={150}
-            onSelection={(nft) => {
+            onSelection={nft => {
               setSelectedNFT(nft);
               setShowNFTSelectionModal(false);
             }}

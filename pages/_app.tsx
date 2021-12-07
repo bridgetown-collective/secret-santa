@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }) {
 
       <Nav />
 
-      <div className="container flex m-auto py-8">
+      <div className="container flex m-auto py-40 -mt-40">
         <Component {...pageProps} />
         <ToastContainer position="top-right" autoClose={5000} />
       </div>
