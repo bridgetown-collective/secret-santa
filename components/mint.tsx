@@ -64,10 +64,10 @@ export default function Mint() {
 
       <div className="flex flex-col justify-center">
         <div className="flex flex-row justify-center">
-          <div className="flex align-middle text-center m-auto flex-col" style={{'width': '360px'}}>
+          <div className="flex align-middle text-center m-auto flex-col">
             <h1 className="text-4xl" >0.03 ETH</h1>
           </div>
-          <div className="flex align-middle text-center m-auto flex-col" style={{'width': '360px'}}>
+          <div className="flex align-middle text-center m-auto flex-col">
             <h1 className="text-6xl" >+</h1>
           </div>
         {!selectedNFT?.contractAddress ? (
