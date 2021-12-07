@@ -20,7 +20,14 @@
     "noEmit": false,
     "incremental": true
   },
-  "include": ["next-env.d.ts", "types", "components", "pages", "scripts"],
+  "include": [
+    "next-env.d.ts",
+    "types",
+    "components",
+    "lib",
+    "pages",
+    "scripts"
+  ],
   "exclude": ["node_modules"],
   "ts-node": {
     "compilerOptions": {

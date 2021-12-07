@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import "styled-jsx";
 
-import useWeb3 from "../components/use-web3";
+import useWeb3 from "../lib/use-web3";
 
 const PLACEHOLDER_IMAGE = "/assets/hi-res-logo.png";
 
@@ -43,7 +43,7 @@ export function RenderNFT({
         <Image
           src={finalImage}
           layout="fill"
-          objectFit="cover"
+          objectFit="contain"
           placeholder="blur"
           blurDataURL={PLACEHOLDER_IMAGE}
           onError={() => setFinalImage(PLACEHOLDER_IMAGE)}

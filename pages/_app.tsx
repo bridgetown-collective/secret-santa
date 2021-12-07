@@ -1,7 +1,9 @@
 import Head from "next/head";
-import Nav from './../components/nav';
-import "tailwindcss/tailwind.css";
+import Nav from "./../components/nav";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "styled-jsx";
+import "tailwindcss/tailwind.css";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -24,6 +26,7 @@ export default function App({ Component, pageProps }) {
 
       <div className="container flex m-auto py-8">
         <Component {...pageProps} />
+        <ToastContainer position="top-right" autoClose={5000} />
       </div>
 
       <style jsx global>{`

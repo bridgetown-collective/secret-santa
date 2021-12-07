@@ -1,4 +1,4 @@
-import useWeb3 from "./use-web3";
+import useWeb3 from "../lib/use-web3";
 
 export default function Reveal() {
   useWeb3();

@@ -1,11 +1,20 @@
 import Image from "next/image";
 
-import useWeb3 from "./use-web3";
+import useWeb3 from "../lib/use-web3";
 import MyGallery, { RenderNFT } from "../pages/my-gallery";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function Mint() {
-  const { account, hasWeb3, requestConnection } = useWeb3();
+  const {
+    account,
+    contract,
+    hasWeb3,
+    isMintActive,
+    requestConnection,
+    totalMinted,
+  } = useWeb3();
+  const [isMinting, setIsMinting] = useState<boolean>(false);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [showNFTSelectionModal, setShowNFTSelectionModal] = useState(false);
 
@@ -20,13 +29,33 @@ export default function Mint() {
     );
   }
 
+  if (!isMintActive) {
+    return <p className="text-3xl">Patience - the mint isn't active yet</p>;
+  }
+
+  const doMint = async (contractAddress: string, tokenId: string) => {
+    setIsMinting(true);
+
+    try {
+      // @TODO: check these params
+      await contract.methods.mint(1, [contractAddress], [tokenId]).call();
+
+      setIsMinting(false);
+      toast.success("Success!");
+      // @TODO: do something post mint - i.e. redirect to gift share page
+    } catch (e) {
+      console.error(e);
+      toast.error(e.message);
+    }
+  };
+
   return (
     <div className="flex flex-wrap justify-around w-full" id="mint">
       <div className="text-center mb-8 md:mb-0">
         <p className="text-2xl alt-font">
           Santas Raging
           <br />
-          {500} / 9999
+          {totalMinted} / 9999
           <br />
           <br />
         </p>
@@ -39,26 +68,33 @@ export default function Mint() {
       </div>
 
       <div className="flex flex-col justify-center">
-        <button
-          className="inline-block rounded-md outline-none nice-shadow"
-          onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
-        >
-          Select NFT To Gift
-        </button>
-        <br />
+        {!selectedNFT?.contractAddress ? (
+          <button
+            className="inline-block text-xl rounded-md outline-none nice-shadow cursor-pointer mb-8"
+            onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
+          >
+            Select NFT To Gift
+          </button>
+        ) : null}
         {selectedNFT && (
-          <RenderNFT
-            nft={selectedNFT}
-            onSelection={() => setShowNFTSelectionModal(true)}
-          />
+          <div className="self-center">
+            <RenderNFT
+              nft={selectedNFT}
+              onSelection={() => setShowNFTSelectionModal(true)}
+            />
+          </div>
         )}
-        <br />
-        <button
-          disabled
-          className="text-xl w-96 alt-font rounded-md outline-none nice-shadow"
-        >
-          Mint Now
-        </button>
+        {selectedNFT?.contractAddress ? (
+          <button
+            disabled={isMinting}
+            className="text-xl w-96 alt-font rounded-md outline-none nice-shadow cursor-pointer mt-8"
+            onClick={() =>
+              doMint(selectedNFT.contractAddress, selectedNFT.tokenId)
+            }
+          >
+            Mint Now
+          </button>
+        ) : null}
       </div>
 
       {showNFTSelectionModal ? (
