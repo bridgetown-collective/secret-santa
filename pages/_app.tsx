@@ -21,11 +21,11 @@ export default function App({ Component, pageProps }) {
           rel="stylesheet"
         ></link>
         <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"></link>
-        <meta property="og:title" content="Site Title" />
+        <meta property="og:title" content="Raging Santas" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://ragingsantas.xyz" />
         <meta property="og:image" content="https://ragingsantas.xyz/assets/advent_calendar_01.gif" />
-        <meta property="og:description" content="RagingSantas is the first ever on-chain secret santa NFT swap. Join In On the Fun Today!" />
+        <meta property="og:description" content="Raging Santas is the first ever on-chain secret santa NFT swap. Join In On the Fun Today!" />
         <meta name="theme-color" content="#b51316" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
