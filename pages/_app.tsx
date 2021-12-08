@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }) {
         <meta property="og:title" content="Raging Santas" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://ragingsantas.xyz" />
-        <meta property="og:image" content="https://ragingsantas.xyz/assets/advent_calendar_01.gif" />
+        <meta property="og:image" content="https://ragingsantas.xyz/assets/advent_calendar.png" />
         <meta property="og:description" content="Raging Santas is the first ever on-chain secret santa NFT swap. Join In On the Fun Today!" />
         <meta name="theme-color" content="#b51316" />
         <meta name="twitter:card" content="summary_large_image" />
