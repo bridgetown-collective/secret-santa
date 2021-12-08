@@ -70,7 +70,7 @@ export default function Mint() {
               className="text-center text-3xl mb-5 underline text-shadow"
               style={{ color: "var(--color-green" }}
             >
-              Wrap your Gift - Mint
+              Give
             </h1>
           </div>
           <div className="flex flex-col lg:flex-row justify-center">

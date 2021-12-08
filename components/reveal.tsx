@@ -12,7 +12,7 @@ export default function Reveal() {
             className="text-center text-3xl mb-5 underline text-shadow"
             style={{ color: "var(--color-green" }}
           >
-            Open Your Gifts → Claim
+            Claim
           </h1>
           <img
             src="/assets/advent_calendar_01.gif"

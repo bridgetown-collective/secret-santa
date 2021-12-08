@@ -3,18 +3,18 @@ export default function HowTo() {
     <div className="howto md:pl-16 md:pr-16 lg:p-10" id="howto">
       <span>
         <p className="text-2xl text-bold howto-header text-shadow">
-          Step 1 - Wrap Your Gift → Mint
+          Step 1 - Wrap Your Gift → Give
         </p>
         <p className="text-2xl font-extralight	">
           To mint your own Raging Santa you must provide a gift NFT of your
           choice for the Raging Santas Gift Pool.
           <br />
           <br />
-          Additionally, each Raging Santa costs 0.03 ETH + gas to mint.
+          Each Raging Santa costs 0.03 ETH + gas to mint.
           <br />
           <br />
           Your Raging Santa will be proof that you gave generously to the Gift
-          Pool and will also be your claim to a Free Gift on X-Mas Day!
+          Pool and will also be proof of your claim to a Free Gift on X-Mas Day!
         </p>
       </span>
 
