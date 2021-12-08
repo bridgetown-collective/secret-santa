@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function HowTo() {
   return (
     <div className="howto md:pl-16 md:pr-16 lg:p-10" id="howto">
