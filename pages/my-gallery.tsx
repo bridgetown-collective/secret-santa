@@ -10,7 +10,7 @@ const PLACEHOLDER_IMAGE = "/assets/hi-res-logo.png";
 export function RenderNFT({
   nft,
   onSelection,
-  size = 300
+  size = 300,
 }: {
   nft;
   onSelection?;
@@ -42,6 +42,7 @@ export function RenderNFT({
       <div className="image-container">
         <Image
           src={finalImage}
+          className="rounded-lg"
           layout="fill"
           objectFit="contain"
           placeholder="blur"
@@ -77,13 +78,13 @@ export function OwnerGallery({
 }: {
   owner: string;
 }): JSX.Element {
-  const nfts = useNFTsByOwnerQuery(owner);
+  const { loading, nfts } = useNFTsByOwnerQuery(owner);
 
   if (!owner) {
     return null;
   }
 
-  if (nfts.length == 0) {
+  if (nfts.length == 0 && !loading) {
     return (
       <div className="flex flex-col justify-center align-middle w-full h-full text-white text-center">
         <h1 className="text-7xl" style={{ color: "var(--color-yellow)" }}>
@@ -95,7 +96,7 @@ export function OwnerGallery({
 
   return (
     <div className="flex flex-wrap justify-center align-center owner-gallery">
-      {nfts.map(nft => (
+      {nfts.map((nft) => (
         <RenderNFT
           key={`${nft.contractAddress}/${nft.tokenId}`}
           nft={nft}

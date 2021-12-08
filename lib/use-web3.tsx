@@ -34,13 +34,13 @@ export default function useWeb3() {
 
     if (web3) {
       setHasWeb3(true);
+
+      web3.eth.getAccounts().then((accounts: string[]) => {
+        setAccount(accounts[0]);
+      });
+
+      web3.eth.net.getNetworkType().then(setNetwork);
     }
-
-    web3.eth.getAccounts().then((accounts: string[]) => {
-      setAccount(accounts[0]);
-    });
-
-    web3.eth.net.getNetworkType().then(setNetwork);
   }, []);
 
   useEffect(() => {
@@ -96,7 +96,9 @@ export default function useWeb3() {
     // @ts-ignore
     if (window.ethereum) {
       // @ts-ignore
-      const accounts = await window.ethereum.enable();
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
       setAccount(accounts[0]);
     }
   };
