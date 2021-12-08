@@ -66,7 +66,7 @@ export default function Hero() {
         @media (min-width: 1520px) {
           .santa-gif {
             position: absolute;
-            top: inherit;
+            top: 35px;
             right: 136px;
           }
         }
