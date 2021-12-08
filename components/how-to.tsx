@@ -48,7 +48,7 @@ export default function HowTo() {
           a Raging Santa NFT will be eligible to claim a random gift (1 per Raging
           Santa) from the Raging Santas Gift Pool!
           <br /> <br />
-          You will have 6 months (until June 25th, 2021) to claim your gift!
+          You will have 6 months (until June 25th, 2022) to claim your gift!
           <br /> <br />
           Additionally all Raging Santas will be revealed by Christmas Day!
           <br /> <br />
