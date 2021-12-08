@@ -14,7 +14,7 @@ export default function HowTo() {
           <br />
           <br />
           Your Raging Santa will be proof that you gave generously to the Gift
-          Pool and will also be proof of your claim to a Free Gift on X-Mas Day!
+          Pool and will also be proof of your claim to a Free Gift on Christmas Day!
         </p>
       </span>
 

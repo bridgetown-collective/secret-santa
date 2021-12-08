@@ -79,7 +79,6 @@ export default function Nav({}) {
           >
             TEAM
           </a>
-          <s className="mr-4">FEEL the love</s>
           <a
             href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
               // @TODO: link to the user's "gifted" page to show off -- "I just gifted, you should too"
@@ -88,7 +87,7 @@ export default function Nav({}) {
             target="_blank"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
-            SHARE the Rage
+            SHARE the RAGE
           </a>
         </div>
         <div className="flex flex-row mt-2">
@@ -103,7 +102,7 @@ export default function Nav({}) {
             </a>
           </span>
           <span className="mx-5">
-            <a href="https://opensea." target="_blank">
+            <a href="https://opensea.io" target="_blank">
               <Image
                 className="cursor-pointer"
                 src="/assets/opensea-logo.svg"
