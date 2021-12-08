@@ -3,6 +3,7 @@ import "styled-jsx";
 import FAQ from "../components/faq";
 import Hero from "../components/hero";
 import Mint from "../components/mint";
+import HowTo from "../components/how-to";
 import Reveal from "../components/reveal";
 import TheSantas from "../components/the-santas";
 
@@ -14,22 +15,19 @@ export default function Home() {
       </div>
 
       <div className="section  mx-12 md:mx-0">
+        <HowTo />
+      </div>
+
+      <div className="section  mx-12 md:mx-0">
         <Mint />
+      </div>
+
+      <div className="section mx-12 md:mx-0">
+        <Reveal />
       </div>
 
       <div className="section  mx-12 md:mx-0">
         <FAQ />
-      </div>
-
-      <div className="grid justify-items-center mx-12 md:mx-0">
-        <img
-          src="/assets/advent_calendar_01.gif"
-          className="rounded-md max-w-lg h-auto align-middle border-none nice-shadow"
-        />
-      </div>
-
-      <div className="section  mx-12 md:mx-0" id="reveal">
-        <Reveal />
       </div>
 
       <div className="section  mx-12 md:mx-0">

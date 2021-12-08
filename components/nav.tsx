@@ -55,6 +55,30 @@ export default function Nav({}) {
         }`}
       >
         <div className="text-md font-semibold	pt-2 lg:pt-0 lg:flex-grow text-red-700">
+          <a
+            href="#mint"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
+          >
+            GIVE
+          </a>
+          <a
+            href="#reveal"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
+          >
+            CLAIM
+          </a>
+          <a
+            href="#faq"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
+          >
+            FAQ
+          </a>
+          <a
+            href="#the-santas"
+            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
+          >
+            TEAM
+          </a>
           <s className="mr-4">FEEL the love</s>
           <a
             href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
@@ -65,30 +89,6 @@ export default function Nav({}) {
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
             SHARE the Rage
-          </a>
-          <a
-            href="#mint"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
-          >
-            GIVE for Santa
-          </a>
-          <a
-            href="#faq"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
-          >
-            ASK a question
-          </a>
-          <a
-            href="#reveal"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
-          >
-            OPEN presents
-          </a>
-          <a
-            href="#the-santas"
-            className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
-          >
-            MEET the Santas
           </a>
         </div>
         <div className="flex flex-row mt-2">
@@ -103,7 +103,7 @@ export default function Nav({}) {
             </a>
           </span>
           <span className="mx-5">
-            <a href="https://opensea.io" target="_blank">
+            <a href="https://opensea." target="_blank">
               <Image
                 className="cursor-pointer"
                 src="/assets/opensea-logo.svg"
