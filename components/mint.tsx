@@ -63,7 +63,7 @@ export default function Mint() {
       </div>
 
       <div className="flex flex-col justify-center">
-        <div className="flex flex-row justify-center">
+        <div className="flex flex-col lg:flex-row justify-center">
           <div className="flex flex-col text-center">
               <Image
                 className="cursor-pointer"
@@ -71,9 +71,9 @@ export default function Mint() {
                 height="364"
                 width="364"
               />
-            <h1 className="text-4xl pt-12">0.03 ETH</h1>
+            <h1 className="text-4xl lg:pt-12">0.03 ETH</h1>
           </div>
-          <div className="flex align-middle text-center m-auto flex-col">
+          <div className="flex align-middle text-center m-auto h-36 lg:h-auto flex-col">
             <h1 className="text-9xl font-black color-pink mt-0 mx-8 mb-40">+</h1>
           </div>
           {!selectedNFT?.contractAddress ? (
@@ -86,7 +86,7 @@ export default function Mint() {
                 onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
               />
               <button
-                className="text-xl rounded-md outline-none nice-shadow cursor-pointer mb-8 mt-10"
+                className="text-xl rounded-md outline-none nice-shadow cursor-pointer mb-8 lg:mt-10"
                 onClick={() => setShowNFTSelectionModal(!showNFTSelectionModal)}
               >
                 Pick an NFT To Give
