@@ -10,7 +10,7 @@ import TheSantas from "../components/the-santas";
 export default function Home() {
   return (
     <div className="inline-flex flex-col self-center mb-24">
-      <div className="section mx-12 md:mx-0 justify-start relative">
+      <div className="section mx-12 md:mx-0 justify-center md:justify-start relative">
         <Hero />
       </div>
 
