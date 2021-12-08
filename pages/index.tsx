@@ -10,34 +10,33 @@ import TheSantas from "../components/the-santas";
 export default function Home() {
   return (
     <div className="inline-flex flex-col self-center mb-24">
-      <div className="section  mx-12 md:mx-0 relative">
+      <div className="section mx-12 md:mx-0 justify-start relative">
         <Hero />
       </div>
 
-      <div className="section  mx-12 md:mx-0">
+      <div className="section justify-around mx-12 md:mx-0">
         <HowTo />
       </div>
 
-      <div className="section  mx-12 md:mx-0">
+      <div className="section justify-around mx-12 md:mx-0">
         <Mint />
       </div>
 
-      <div className="section mx-12 md:mx-0">
+      <div className="section justify-around mx-12 md:mx-0">
         <Reveal />
       </div>
 
-      <div className="section  mx-12 md:mx-0">
+      <div className="section justify-around mx-12 md:mx-0">
         <FAQ />
       </div>
 
-      <div className="section  mx-12 md:mx-0">
+      <div className="section justify-around mx-12 md:mx-0">
         <TheSantas />
       </div>
 
       <style jsx>{`
         .section {
           display: flex;
-          justify-content: space-around;
           margin: 2rem;
           padding: 2rem 4rem;
         }

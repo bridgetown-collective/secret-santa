@@ -62,6 +62,14 @@ export default function Hero() {
             width: 357px;
           }
         }
+
+        @media (min-width: 1520px) {
+          .santa-gif {
+            position: absolute;
+            top: inherit;
+            right: 136px;
+          }
+        }
       `}</style>
     </div>
   );
