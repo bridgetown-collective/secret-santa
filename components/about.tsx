@@ -1,20 +1,27 @@
 export default function About() {
   return (
-    <div>
+    <div className="about">
       <div className="text-2xl">
-        <ul>
-          <li>Do you like NFTs?</li>
-          <li>Do you Rage for Christmas?</li>
-          <li>
-            Do you enjoy both giving AND receiving presents from strangers on
-            the internet?
-          </li>
-        </ul>
+        <table>
+          <tr>
+            <td className="pr-5">🎅</td>
+            <td>Mint a Raging Santa!</td>
+          </tr>
+          <tr>
+            <td>🎄</td>
+            <td>Give an NFT to the Gift Pool!</td>
+          </tr>
+          <tr>
+            <td>🎁</td>
+            <td>Claim a Random Gift from the Pool!</td>
+          </tr>
+        </table>
       </div>
-      <p className="text-xl my-2">
-        If so, come participate in <i>this</i> rager - the first ever{" "}
-        <i>on-chain</i> Secret Santa NFT Swap!
-      </p>
+      <style jsx global>{`
+        .about {
+          font-weight:400;
+        }
+      `}</style>
     </div>
   );
 }

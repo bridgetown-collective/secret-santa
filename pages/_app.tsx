@@ -41,7 +41,7 @@ export default function App({ Component, pageProps }) {
         }
 
         .alt-font {
-          font-family: "Special Elite", cursive;
+          font-family: "Iniya";
         }
         .nice-shadow {
           box-shadow: var(--shadow-elevation-medium-brown);
@@ -63,6 +63,27 @@ export default function App({ Component, pageProps }) {
         @font-face {
           font-family: "LogoFont";
           src: url("/assets/CanterburyRegular-MVqn.ttf");
+        }
+
+        @font-face {
+          font-family: "Iniya";
+          src: url("/assets/IniyaDisplay-ow0Ra.otf");
+        }
+        
+        a.anchor {
+          display: block;
+          position: relative;
+          top: -150px;
+          visibility: hidden;
+        }
+
+        .text-shadow {
+          text-shadow: 2px 1px var(--toastify-color-dark);
+        }
+
+        .iniya-header {
+          font-family: "Iniya";
+          text-shadow: 3px 1px var(--toastify-color-dark);
         }
 
         .color-pink {
