@@ -21,13 +21,24 @@ export default function App({ Component, pageProps }) {
           rel="stylesheet"
         ></link>
         <link rel="icon" type="image/x-icon" href="/assets/favicon.ico"></link>
-        <meta property="og:title" content="Raging Santas" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://ragingsantas.xyz" />
-        <meta property="og:image" content="https://ragingsantas.xyz/assets/advent_calendar.png" />
-        <meta property="og:description" content="Raging Santas is the first ever on-chain secret santa NFT swap. Join In On the Fun Today!" />
-        <meta name="theme-color" content="#b51316" />
-        <meta name="twitter:card" content="summary_large_image" />
+
+        <!-- Primary Meta Tags -->
+        <meta name="title" content="Raging Santas NFT">
+        <meta name="description" content="Raging Santas is the first ever on-chain secret santa NFT swap. Join in on the fun today!">
+
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="https://www.ragingsantas.xyz/">
+        <meta property="og:title" content="Raging Santas NFT">
+        <meta property="og:description" content="Raging Santas is the first ever on-chain secret santa NFT swap. Join in on the fun today!">
+        <meta property="og:image" content="https://ragingsantas.xyz/assets/advent_calendar.png">
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image">
+        <meta property="twitter:url" content="https://www.ragingsantas.xyz/">
+        <meta property="twitter:title" content="Raging Santas NFT">
+        <meta property="twitter:description" content="Raging Santas is the first ever on-chain secret santa NFT swap. Join in on the fun today!">
+        <meta property="twitter:image" content="https://ragingsantas.xyz/assets/advent_calendar.png">
       </Head>
 
       <Nav />
