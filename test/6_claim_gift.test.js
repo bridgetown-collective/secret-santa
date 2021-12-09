@@ -225,7 +225,7 @@ describe("SecretSanta - Claiming", async function () {
       expect(otherGift.hasClaimed).to.equal(false);
     });
 
-    it.only("should allow for pausing / unpausing of claims", async () => {
+    it("should allow for pausing / unpausing of claims", async () => {
       expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.not.contain(
         accounts[3].address
       );
