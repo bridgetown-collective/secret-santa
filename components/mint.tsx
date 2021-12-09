@@ -1,18 +1,22 @@
 import Image from "next/image";
+import Web3 from "web3";
 
 import useWeb3 from "../lib/use-web3";
 import MyGallery, { RenderNFT } from "../pages/my-gallery";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import contractAbi from "../lib/contract-abi";
 
 export default function Mint() {
   const {
     account,
     contract,
+    contractAddress: ragingSantasContractAddress,
     hasWeb3,
     isMintActive,
     requestConnection,
-    totalMinted
+    totalMinted,
+    web3,
   } = useWeb3();
   const [isMinting, setIsMinting] = useState<boolean>(false);
   const [selectedNFT, setSelectedNFT] = useState(null);
@@ -37,8 +41,18 @@ export default function Mint() {
     setIsMinting(true);
 
     try {
-      // @TODO: check these params
-      await contract.methods.mint(1, [contractAddress], [tokenId]).call();
+      const selectedTokenContract = await new web3.eth.Contract(
+        contractAbi,
+        contractAddress
+      );
+
+      await selectedTokenContract.methods
+        .approve(ragingSantasContractAddress, tokenId)
+        .send({ from: account });
+
+      await contract.methods
+        .mint(1, [contractAddress], [tokenId])
+        .send({ from: account, value: Web3.utils.toWei("0.03", "ether") });
 
       setIsMinting(false);
       toast.success("Success!");
@@ -144,7 +158,7 @@ export default function Mint() {
         >
           <MyGallery
             size={150}
-            onSelection={nft => {
+            onSelection={(nft) => {
               setSelectedNFT(nft);
               setShowNFTSelectionModal(false);
             }}

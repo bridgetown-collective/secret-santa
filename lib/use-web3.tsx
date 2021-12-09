@@ -105,10 +105,12 @@ export default function useWeb3() {
   return {
     account,
     contract,
+    contractAddress,
     isMintActive,
     hasWeb3,
     network,
     requestConnection,
     totalMinted,
+    web3,
   };
 }
