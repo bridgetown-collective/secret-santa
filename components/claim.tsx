@@ -157,7 +157,7 @@ export default function Claim() {
           </h1>
           {hasGifts || hasGiftsToClaim ? (
             <div className="flex flex-row justify-evenly">
-              {hasGiftsToClaim && (
+              {!!hasGiftsToClaim && (
                 <div className="w-6/12 mr-40">
                   <p className="text-3xl text-shadow mb-5">Gifts To Unwrap</p>
                   <div>
@@ -175,7 +175,7 @@ export default function Claim() {
                   </div>
                 </div>
               )}
-              {hasGifts && (
+              {!!hasGifts && (
                 <div className="">
                   <p className="text-3xl text-shadow mb-5">Gifts Owned</p>
                   <div>
