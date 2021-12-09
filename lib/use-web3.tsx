@@ -5,7 +5,7 @@ import contractAbi from "./contract-abi";
 
 const CONTRACT_ADDRESSES = {
   mainnet: "0x9048de699869385756939a7bb0a22b6d6cb63a83", // @TODO: replace this LizardLab address
-  testnet: "invalid-contract-address", // @TODO: replace this with a testnet address
+  testnet: "0x9d12BD80274cF93079ccBEE7D1F44664363dCfA4", // this is for rinkeby testnet
 };
 
 let web3: Web3 | null = null;
