@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { RenderNFT } from "../pages/my-gallery";
 
+import { RenderNFT } from "../pages/my-gallery";
 import contractAbi from "../lib/contract-abi";
 import useWeb3 from "../lib/use-web3";
 
@@ -13,7 +13,7 @@ interface Gift {
   gifter: string;
   giftee: string;
   gifteeDelegator: string;
-  hasClaimed: bool;
+  hasClaimed: boolean;
 }
 
 interface GiftGroups {
@@ -28,7 +28,8 @@ export default function Claim() {
     hasWeb3,
     isClaimActive,
     network,
-    requestConnection
+    requestConnection,
+    web3,
   } = useWeb3();
 
   const [isClaiming, setIsClaiming] = useState(null);
@@ -36,7 +37,7 @@ export default function Claim() {
 
   const [giftGroups, setGiftGroups] = useState<GiftGroups>({
     giftsOwned: [],
-    giftsToClaim: []
+    giftsToClaim: [],
   });
 
   const [santaIdsToClaim, setSantaIdsToClaim] = useState<number[]>([]);
@@ -59,7 +60,7 @@ export default function Claim() {
               .call()
               .catch(() => "")
           )
-      ).then(addrs => {
+      ).then((addrs) => {
         setAllSantaIds(
           addrs
             .map((a, i) => [a, i])
@@ -76,17 +77,16 @@ export default function Claim() {
     }
 
     Promise.all(
-      allSantaIds.map(sid =>
+      allSantaIds.map((sid) =>
         contract.methods
           .getGiftByGifteeToken(sid)
           .call()
           .catch(() => null)
       )
     )
-      .then(structs => {
-        giftGroups.giftsOwned = structs.filter(async v => {
+      .then((structs) => {
+        giftGroups.giftsOwned = structs.filter(async (v) => {
           const isClaimed = !!v.hasClaimed;
-          const nftContract = v.nftAddress;
           let isOwned = v.giftee === account;
 
           try {
@@ -104,14 +104,14 @@ export default function Claim() {
           return v && isClaimed && isOwned;
         });
 
-        giftGroups.giftsToClaim = structs.filter(v => v && !v.hasClaimed);
+        giftGroups.giftsToClaim = structs.filter((v) => v && !v.hasClaimed);
         console.log("giftGroups", giftGroups);
 
         setGiftGroups(giftGroups);
-        return giftGroups.giftsToClaim.map(v => v.gifteeTokenId);
+        return giftGroups.giftsToClaim.map((v) => v.gifteeTokenId);
       })
       .then(setSantaIdsToClaim);
-  }, [contract, account, allSantaIds]);
+  }, [contract, account, allSantaIds, web3]);
 
   const doClaim = async () => {
     setIsClaiming(true);
@@ -161,13 +161,13 @@ export default function Claim() {
                 <div className="w-6/12 mr-40">
                   <p className="text-3xl text-shadow mb-5">Gifts To Unwrap</p>
                   <div>
-                    {giftGroups.giftsToClaim.map(g => {
+                    {giftGroups.giftsToClaim.map((g) => {
                       return (
                         <RenderNFT
                           size={371}
                           nft={{
-                            contractAddress: g.nftAdress, // replace this for testing
-                            tokenId: g.nftTokenId // replace this for testing
+                            contractAddress: g.nftAddress, // replace this for testing
+                            tokenId: g.nftTokenId, // replace this for testing
                           }}
                         />
                       );
@@ -179,13 +179,13 @@ export default function Claim() {
                 <div className="">
                   <p className="text-3xl text-shadow mb-5">Gifts Owned</p>
                   <div>
-                    {giftGroups.giftsOwned.map(g => {
+                    {giftGroups.giftsOwned.map((g) => {
                       return (
                         <RenderNFT
                           size={371}
                           nft={{
-                            contractAddress: g.nftAdress, // replace this for testing
-                            tokenId: g.nftTokenId // replace this for testing
+                            contractAddress: g.nftAddress, // replace this for testing
+                            tokenId: g.nftTokenId, // replace this for testing
                           }}
                         />
                       );
@@ -209,7 +209,9 @@ export default function Claim() {
                 >
                   {isClaiming
                     ? "Unwrapping your gifts now..."
-                    : santaIdsToClaim.length ? `Unwrap your ${santaIdsToClaim.length} gifts` : `You Have No Gifts To Unwrap`}
+                    : santaIdsToClaim.length
+                    ? `Unwrap your ${santaIdsToClaim.length} gifts`
+                    : `You Have No Gifts To Unwrap`}
                 </button>
               ) : (
                 <p className="text-4xl alt-font text-center mt-5">
