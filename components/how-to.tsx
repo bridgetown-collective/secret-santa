@@ -3,7 +3,7 @@ export default function HowTo() {
     <div className="howto md:pl-16 md:pr-16 lg:p-10" id="howto">
       <span>
         <p className="text-2xl text-bold howto-header text-shadow">
-          Step 1 - Wrap Your Gift → Give
+          Step 1)  Wrap Your Gift → Give
         </p>
         <p className="text-2xl font-extralight	">
           To mint your own Raging Santa you must provide a gift NFT of your
@@ -21,7 +21,7 @@ export default function HowTo() {
       <br />
       <span>
         <p className="text-2xl text-bold howto-header text-shadow">
-          Step 2 - Spread Cheer → Share
+          Step 2) Spread Cheer → Share
         </p>
         <p className="text-2xl font-extralight	">
           We are doing our best to get as many artists, builders, influencers,
@@ -41,7 +41,7 @@ export default function HowTo() {
       <br />
       <span>
         <p className="text-2xl text-black howto-header text-shadow">
-          Step 3 - Open Your Gifts → Claim
+          Step 3) Open Your Gifts → Claim
         </p>
         <p className="text-2xl font-extralight	">
           On Christmas Day, December 25th, 2021 12:00AM ET, participants holding

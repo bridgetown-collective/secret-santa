@@ -155,44 +155,44 @@ export default function Claim() {
           >
             Claim
           </h1>
-          {hasGifts ? (
+          {hasGifts || hasGiftsToClaim ? (
             <div className="flex flex-row justify-evenly">
-              <div className="w-6/12 mr-40">
-                <p className="text-3xl text-shadow mb-5">Gifts To Unwrap</p>
-                <div>
-                  {
-                    giftGroups.giftsToClaim.map(g => {
+              {hasGiftsToClaim && (
+                <div className="w-6/12 mr-40">
+                  <p className="text-3xl text-shadow mb-5">Gifts To Unwrap</p>
+                  <div>
+                    {giftGroups.giftsToClaim.map(g => {
                       return (
                         <RenderNFT
                           size={371}
                           nft={{
                             contractAddress: g.nftAdress, // replace this for testing
-                            tokenId: g.nftTokenId, // replace this for testing
+                            tokenId: g.nftTokenId // replace this for testing
                           }}
                         />
                       );
-                    })
-                  }
+                    })}
+                  </div>
                 </div>
-              </div>
-              <div className="">
-                <p className="text-3xl text-shadow mb-5">Gifts Owned</p>
-                <div>
-                  {
-                    giftGroups.giftsOwned.map(g => {
+              )}
+              {hasGifts && (
+                <div className="">
+                  <p className="text-3xl text-shadow mb-5">Gifts Owned</p>
+                  <div>
+                    {giftGroups.giftsOwned.map(g => {
                       return (
                         <RenderNFT
                           size={371}
                           nft={{
                             contractAddress: g.nftAdress, // replace this for testing
-                            tokenId: g.nftTokenId, // replace this for testing
+                            tokenId: g.nftTokenId // replace this for testing
                           }}
                         />
                       );
-                    })
-                  }
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           ) : (
             <>
@@ -209,7 +209,7 @@ export default function Claim() {
                 >
                   {isClaiming
                     ? "Unwrapping your gifts now..."
-                    : `Unwrap your ${santaIdsToClaim.length} gifts`}
+                    : santaIdsToClaim.length ? `Unwrap your ${santaIdsToClaim.length} gifts` : `You Have No Gifts To Unwrap`}
                 </button>
               ) : (
                 <p className="text-4xl alt-font text-center mt-5">

@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function FAQ() {
   return (
-    <div className="faq md:pl-16 md:pr-16 lg:p-10">
+    <div className="faq md:pl-16 md:pr-16 xl:p-10">
       <a className="anchor" id="faq"></a>
       <div>
         <h1
@@ -15,10 +15,10 @@ export default function FAQ() {
 
       <br />
       <span>
-        <p className="text-xl  text-shadow">
+        <p className="text-2xl  text-shadow">
           🎄 How many Raging Santa NFTs will be Mintable?
         </p>
-        <p className="text-lg">
+        <p className="text-xl">
           9,999 Raging Santas will be mintable starting on Monday, December
           13th, 2021 10:00AM ET.
           <br />
@@ -34,10 +34,10 @@ export default function FAQ() {
 
       <br />
       <span>
-        <p className="text-xl  text-shadow">
+        <p className="text-2xl  text-shadow">
           🎁 What will I receive if I mint?
         </p>
-        <p className="text-lg">
+        <p className="text-xl">
           <b>Immediately:</b> A one of a kind Raging Santa NFT - rage on!
           <br />
           <b>December 25th:</b> Starting on Christmas Day, the owner of any
@@ -48,10 +48,10 @@ export default function FAQ() {
 
       <br />
       <span>
-        <p className="text-xl  text-shadow">
+        <p className="text-2xl  text-shadow">
           💸 How do I ensure that the random gift I receive will be valuable?{" "}
         </p>
-        <p className="text-lg">
+        <p className="text-xl">
           You don't!
           <br />
           That is the fun of a Secret Santa Swap! (Psst, What do you think these
@@ -72,10 +72,10 @@ export default function FAQ() {
 
       <br />
       <span>
-        <p className="text-xl  text-shadow">
+        <p className="text-2xl  text-shadow">
           🧐  Please Keep in Mind{" "}
         </p>
-        <p className="text-lg">
+        <p className="text-xl">
           Raging Santas NFT is not responsible for the quality or value of gifts
           given or received.
           <br />
@@ -91,10 +91,10 @@ export default function FAQ() {
 
       <br />
       <span>
-        <p className="text-xl  text-shadow">
+        <p className="text-2xl  text-shadow">
           🔮 What does the future hold after Christmas?
         </p>
-        <p className="text-lg">
+        <p className="text-xl">
           This is simply the first of hopefully many swaps! We may run it back!
           You never know where Santa might show up next!
           <br />
@@ -113,13 +113,13 @@ export default function FAQ() {
         </p>
       </span>
       <style jsx global>{`
-        .faq p.text-xl {
+        .faq p.text-2xl {
           font-size: 2.25rem;
           line-height: 1.7em;
           color: var(--color-green);
         }
 
-        .faq span:nth-of-type(even) .text-xl {
+        .faq span:nth-of-type(even) .text-2xl {
           color: var(--color-pink);
         }
       `}</style>
