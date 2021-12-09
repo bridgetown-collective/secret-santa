@@ -1,7 +1,25 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { RenderNFT } from "../pages/my-gallery";
 
+import contractAbi from "../lib/contract-abi";
 import useWeb3 from "../lib/use-web3";
+
+interface Gift {
+  gifterTokenId: number;
+  gifteeTokenId: number;
+  nftTokenId: number;
+  nftAddress: string;
+  gifter: string;
+  giftee: string;
+  gifteeDelegator: string;
+  hasClaimed: bool;
+}
+
+interface GiftGroups {
+  giftsOwned: Gift[];
+  giftsToClaim: Gift[];
+}
 
 export default function Claim() {
   const {
@@ -15,6 +33,12 @@ export default function Claim() {
 
   const [isClaiming, setIsClaiming] = useState(null);
   const [allSantaIds, setAllSantaIds] = useState<number[]>([]);
+
+  const [giftGroups, setGiftGroups] = useState<GiftGroups>({
+    giftsOwned: [],
+    giftsToClaim: []
+  });
+
   const [santaIdsToClaim, setSantaIdsToClaim] = useState<number[]>([]);
 
   useEffect(() => {
@@ -60,12 +84,34 @@ export default function Claim() {
       )
     )
       .then(structs => {
-        return structs
-          .filter(v => v && !v.hasClaimed)
-          .map(v => v.gifteeTokenId);
+        giftGroups.giftsOwned = structs.filter(async v => {
+          const isClaimed = !!v.hasClaimed;
+          const nftContract = v.nftAddress;
+          let isOwned = v.giftee === account;
+
+          try {
+            const giftTokenContract = await new web3.eth.Contract(
+              contractAbi,
+              v.nftAddress
+            );
+
+            isOwned =
+              isOwned &&
+              (await giftTokenContract.methods.ownerOf(v.nftTokenId)) ==
+                account;
+          } catch (e) {}
+
+          return v && isClaimed && isOwned;
+        });
+
+        giftGroups.giftsToClaim = structs.filter(v => v && !v.hasClaimed);
+        console.log("giftGroups", giftGroups);
+
+        setGiftGroups(giftGroups);
+        return giftGroups.giftsToClaim.map(v => v.gifteeTokenId);
       })
       .then(setSantaIdsToClaim);
-  }, [contract, allSantaIds]);
+  }, [contract, account, allSantaIds]);
 
   const doClaim = async () => {
     setIsClaiming(true);
@@ -95,6 +141,9 @@ export default function Claim() {
     );
   }
 
+  const hasGifts = giftGroups.giftsOwned.length;
+  const hasGiftsToClaim = giftGroups.giftsToClaim.length;
+
   return (
     <div>
       <a className="anchor" id="claim"></a>
@@ -106,32 +155,75 @@ export default function Claim() {
           >
             Claim
           </h1>
-          <img
-            src="/assets/advent_calendar_01.gif"
-            className="rounded-md max-w-lg h-auto align-middle border-none nice-shadow"
-          />
-
-          {isClaimActive ? (
-            <button
-              disabled={isClaiming || !santaIdsToClaim.length}
-              className="text-xl w-96 rounded-md outline-none nice-shadow cursor-pointer mt-8 m-auto"
-              onClick={() => doClaim()}
-            >
-              {isClaiming
-                ? "Unwrapping your gifts now..."
-                : `Unwrap your ${santaIdsToClaim.length} gifts`}
-            </button>
+          {hasGifts ? (
+            <div className="flex flex-row justify-evenly">
+              <div className="w-6/12 mr-40">
+                <p className="text-3xl text-shadow mb-5">Gifts To Unwrap</p>
+                <div>
+                  {
+                    giftGroups.giftsToClaim.map(g => {
+                      return (
+                        <RenderNFT
+                          size={371}
+                          nft={{
+                            contractAddress: g.nftAdress, // replace this for testing
+                            tokenId: g.nftTokenId, // replace this for testing
+                          }}
+                        />
+                      );
+                    })
+                  }
+                </div>
+              </div>
+              <div className="">
+                <p className="text-3xl text-shadow mb-5">Gifts Owned</p>
+                <div>
+                  {
+                    giftGroups.giftsOwned.map(g => {
+                      return (
+                        <RenderNFT
+                          size={371}
+                          nft={{
+                            contractAddress: g.nftAdress, // replace this for testing
+                            tokenId: g.nftTokenId, // replace this for testing
+                          }}
+                        />
+                      );
+                    })
+                  }
+                </div>
+              </div>
+            </div>
           ) : (
-            <p className="text-4xl alt-font text-center mt-5">
-              {Math.floor(
-                (new Date("2021-12-25T00:00:00Z").getTime() - Date.now()) /
-                  1000 /
-                  60 /
-                  60 /
-                  24
-              )}{" "}
-              Days Until Christmas
-            </p>
+            <>
+              <img
+                src="/assets/advent_calendar_01.gif"
+                className="rounded-md max-w-lg h-auto align-middle border-none nice-shadow"
+              />
+
+              {isClaimActive ? (
+                <button
+                  disabled={isClaiming || !santaIdsToClaim.length}
+                  className="text-xl w-96 rounded-md outline-none nice-shadow cursor-pointer mt-8 m-auto"
+                  onClick={() => doClaim()}
+                >
+                  {isClaiming
+                    ? "Unwrapping your gifts now..."
+                    : `Unwrap your ${santaIdsToClaim.length} gifts`}
+                </button>
+              ) : (
+                <p className="text-4xl alt-font text-center mt-5">
+                  {Math.floor(
+                    (new Date("2021-12-25T00:00:00Z").getTime() - Date.now()) /
+                      1000 /
+                      60 /
+                      60 /
+                      24
+                  )}{" "}
+                  Days Until Christmas
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>

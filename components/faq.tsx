@@ -9,13 +9,13 @@ export default function FAQ() {
           className="text-center text-3xl mb-5 underline text-shadow"
           style={{ color: "var(--color-pink)" }}
         >
-          The Details
+          F.A.Q
         </h1>
       </div>
 
       <br />
       <span>
-        <p className="text-xl">
+        <p className="text-xl  text-shadow">
           🎄 How many Raging Santa NFTs will be Mintable?
         </p>
         <p className="text-lg">
@@ -34,7 +34,9 @@ export default function FAQ() {
 
       <br />
       <span>
-        <p className="text-xl">🎁 What will I receive if I mint?</p>
+        <p className="text-xl  text-shadow">
+          🎁 What will I receive if I mint?
+        </p>
         <p className="text-lg">
           <b>Immediately:</b> A one of a kind Raging Santa NFT - rage on!
           <br />
@@ -46,7 +48,7 @@ export default function FAQ() {
 
       <br />
       <span>
-        <p className="text-xl">
+        <p className="text-xl  text-shadow">
           💸 How do I ensure that the random gift I receive will be valuable?{" "}
         </p>
         <p className="text-lg">
@@ -70,34 +72,37 @@ export default function FAQ() {
 
       <br />
       <span>
-        <p className="text-xl">🧐  Please Keep in Mind </p>
-        <ul className="text-lg ml-5" style={{ listStyle: "default" }}>
-          <li>
-            Raging Santas NFT is not responsible for the quality or value of
-            gifts given or received.
-          </li>
-          <li>You may end up with gold OR a lump-of-coal!</li>
-          <li>This is an experimental project with cutting edge technology.</li>
-          <li>Participate in the swap at your own risk!</li>
-          <li>
-            A Raging Santa purchased on a secondary market at a later date may
-            have already been used to claim a gift.
-          </li>
-        </ul>
+        <p className="text-xl  text-shadow">
+          🧐  Please Keep in Mind{" "}
+        </p>
+        <p className="text-lg">
+          Raging Santas NFT is not responsible for the quality or value of gifts
+          given or received.
+          <br />
+          You may end up with gold OR a lump-of-coal!
+          <br />
+          This is an experimental project with cutting edge technology.
+          <br />
+          Participate in the swap at your own risk!
+          <br />A Raging Santa purchased on a secondary market at a later date
+          may have already been used to claim a gift.
+        </p>
       </span>
 
       <br />
       <span>
-        <p className="text-xl">🔮 What does the future hold after Christmas?</p>
+        <p className="text-xl  text-shadow">
+          🔮 What does the future hold after Christmas?
+        </p>
         <p className="text-lg">
-          There is no roadmap. This is simply the first of hopefully many swaps!
-          We may run it back! You never know where Santa might show up next!
+          This is simply the first of hopefully many swaps! We may run it back!
+          You never know where Santa might show up next!
           <br />
-          There is no currently no Discord. We are committed to rolling out a
-          Discord server if we hit 25% sold out.
+          There is no currently no Discord server. We are committed to rolling
+          out a Discord server if we hit 25% sold out.
           <br />
-          We love the Holiday Season! Everything done is in the spirit of good vibes, giving
-          and spreading cheer!
+          We love the Holiday Season! Everything done is in the spirit of good
+          vibes, giving and spreading cheer!
           <br />
           We are always open to community feedback! Message us on{" "}
           <Link href="https://twitter.com/RagingSantasNFT">
