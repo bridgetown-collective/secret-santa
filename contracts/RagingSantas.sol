@@ -65,11 +65,13 @@ contract RagingSantas is ERC721, Ownable, Functional {
 
     bool public mintActive;
     bool public claimActive;
+    bool public claimPaused;
     
     //there is a lot to unpack here
     constructor(uint256 supply) ERC721("Raging Santas", "RAGIN") {   
       mintActive = false;
       claimActive = false;
+      claimPaused = false;
       mintPrice = 0.03 ether;
       maxSupply = supply;
     }
@@ -99,6 +101,10 @@ contract RagingSantas is ERC721, Ownable, Functional {
         }
         _giftsByTID[giftPoolTokens[mLen]].gifteeTokenId = giftPoolTokens[0];
         _giftRefsToClaim[giftPoolTokens[0]] = giftPoolTokens[mLen];
+    }
+
+    function pauseClaim(bool value) external onlyOwner {
+        claimPaused = value;
     }
 
     function numGiftsLeft() external view virtual returns (uint256) {
@@ -133,12 +139,17 @@ contract RagingSantas is ERC721, Ownable, Functional {
      }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory){
-        require(_giftsByTID[tokenId].nftAddress != address(0), "Nonexistent token");
-        return string(abi.encodePacked(baseURI, toString(tokenId), ".json"));
+        this.ownerOf(tokenId);
+
+        if (claimActive) {
+          return string(abi.encodePacked(baseURI, toString(tokenId), ".json"));
+        }
+
+        return string(abi.encodePacked(baseURI, "prereveal.json"));
     }
 
     function contractURI() external view returns (string memory) {
-        return string(abi.encodePacked(baseURI,"contract.json"));
+        return string(abi.encodePacked(baseURI, "contract.json"));
     }
 
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
@@ -204,7 +215,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
 
     function claimGifts(uint256[] memory tokenIds, address gifteeAddress) external {
       // Can Claim At All
-      require(claimActive, "Claiming Inactive");
+      require(claimActive && !claimPaused, "Claiming Disabled");
 
       // Must Provide Tokens
       require(tokenIds.length > 0, "No Tokens");
@@ -223,9 +234,6 @@ contract RagingSantas is ERC721, Ownable, Functional {
 
         // Have these tokens been claimed yet?
         require(!giftToClaim.hasClaimed, "Gift Claimed");
-
-        // For Testing / Remove before deploying
-        require(giftToClaim.gifteeTokenId == tId, "Wrong Giftee");
 
         // Do the Transfer
         IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.nftTokenId);

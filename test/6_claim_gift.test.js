@@ -18,7 +18,8 @@ describe("SecretSanta - Claiming", async function () {
     rs = await RagingSantas.deploy(numSupply);
 
     const DummyCollection = await hre.ethers.getContractFactory(
-      "DummyCollection");
+      "DummyCollection"
+    );
     dc = await DummyCollection.deploy("Dummy", "DUM");
 
     console.log("rs contract address", rs.address);
@@ -40,8 +41,8 @@ describe("SecretSanta - Claiming", async function () {
       from: accounts[2].address,
       value: parseUnits(".03", "ether")
     });
-    console.log("accounts[1]", accounts[1].address, 'gifted dc:0');
-    console.log("accounts[2]", accounts[2].address, 'gifted dc:1');
+    console.log("accounts[1]", accounts[1].address, "gifted dc:0");
+    console.log("accounts[2]", accounts[2].address, "gifted dc:1");
   });
 
   it("should not allow claiming until activateClaim is flipped", async () => {
@@ -56,7 +57,7 @@ describe("SecretSanta - Claiming", async function () {
     await expect(
       rs.connect(accounts[1])["claimGifts(uint256[])"]([0])
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Claiming Inactive'"
+      "VM Exception while processing transaction: reverted with reason string 'Claiming Disabled'"
     );
 
     const rn_seed = 456123789;
@@ -97,7 +98,6 @@ describe("SecretSanta - Claiming", async function () {
     expect(giftIWillGet.gifteeDelgator).to.equal(undefined);
     expect(giftIWillGet.hasClaimed).to.equal(false);
   });
-
 
   it("should let someone claim a gift that is not their own", async () => {
     const rn_seed = 456123789;
@@ -166,14 +166,14 @@ describe("SecretSanta - Claiming", async function () {
     );
   });
 
-  describe('upon claims', async () => {
+  describe("upon claims", async () => {
     it("should keep giftpool up to date upon claim", async () => {
       expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.not.contain(
         accounts[3].address
       );
 
-      let numGiftsLeft = Number((await rs.numGiftsLeft()).toString())
-      expect(numGiftsLeft).to.equal(2)
+      let numGiftsLeft = Number((await rs.numGiftsLeft()).toString());
+      expect(numGiftsLeft).to.equal(2);
 
       const rn_seed = 456123789;
       await rs.connect(owner).activateClaim(rn_seed);
@@ -191,15 +191,12 @@ describe("SecretSanta - Claiming", async function () {
       expect(giftIGave.gifteeDelgator).to.equal(undefined);
       expect(giftIGave.hasClaimed).to.equal(false);
 
-      await rs
-        .connect(accounts[1])
-        ["claimGifts(uint256[])"]([0])
+      await rs.connect(accounts[1])["claimGifts(uint256[])"]([0]);
 
       expect(accounts[1].address).to.not.equal(await dc.ownerOf(0));
       expect(accounts[1].address).to.equal(await dc.ownerOf(1));
-      numGiftsLeft = Number((await rs.numGiftsLeft()).toString())
-      expect(numGiftsLeft).to.equal(1)
-
+      numGiftsLeft = Number((await rs.numGiftsLeft()).toString());
+      expect(numGiftsLeft).to.equal(1);
 
       let giftIGet = await rs.getGiftByGifteeToken(0);
       console.log(giftIGet);
@@ -226,6 +223,42 @@ describe("SecretSanta - Claiming", async function () {
       expect(otherGift.giftee).to.equal(AddressZero);
       expect(otherGift.gifteeDelgator).to.equal(undefined);
       expect(otherGift.hasClaimed).to.equal(false);
+    });
+
+    it.only("should allow for pausing / unpausing of claims", async () => {
+      expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.not.contain(
+        accounts[3].address
+      );
+
+      let numGiftsLeft = Number((await rs.numGiftsLeft()).toString());
+      expect(numGiftsLeft).to.equal(2);
+
+      const rn_seed = 4561289;
+      await rs.connect(owner).activateClaim(rn_seed);
+
+      await rs.connect(accounts[1])["claimGifts(uint256[])"]([0]);
+
+      expect(accounts[1].address).to.not.equal(await dc.ownerOf(0));
+      expect(accounts[1].address).to.equal(await dc.ownerOf(1));
+      numGiftsLeft = Number((await rs.numGiftsLeft()).toString());
+      expect(numGiftsLeft).to.equal(1);
+
+      await rs.connect(owner).pauseClaim(true);
+
+      await expect(
+        rs.connect(accounts[2])["claimGifts(uint256[])"]([1])
+      ).to.be.revertedWith(
+        "VM Exception while processing transaction: reverted with reason string 'Claiming Disabled'"
+      );
+
+      await rs.connect(owner).pauseClaim(false);
+
+      await rs.connect(accounts[2])["claimGifts(uint256[])"]([1])
+
+      expect(accounts[2].address).to.not.equal(await dc.ownerOf(1));
+      expect(accounts[2].address).to.equal(await dc.ownerOf(0));
+      numGiftsLeft = Number((await rs.numGiftsLeft()).toString());
+      expect(numGiftsLeft).to.equal(0);
     });
   });
 });
