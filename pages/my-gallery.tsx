@@ -78,6 +78,7 @@ export function OwnerGallery({
 }: {
   owner: string;
 }): JSX.Element {
+  const { network } = useWeb3();
   const { loading, nfts } = useNFTsByOwnerQuery(owner);
 
   if (!owner) {
@@ -85,6 +86,23 @@ export function OwnerGallery({
   }
 
   if (nfts.length == 0 && !loading) {
+    if (network !== "main") {
+      return (
+        <div className="flex flex-wrap justify-center align-center owner-gallery">
+          <RenderNFT
+            nft={{
+              contractAddress: "0x04025c765b3de739640035c4ca58efbc6688fa57", // replace this for testing
+              tokenId: "1", // replace this for testing
+              metadata: {
+                name: "TESTNET NFT",
+              },
+            }}
+            {...props}
+          />
+        </div>
+      );
+    }
+
     return (
       <div className="flex flex-col justify-center align-middle w-full h-full text-white text-center">
         <h1 className="text-7xl" style={{ color: "var(--color-yellow)" }}>

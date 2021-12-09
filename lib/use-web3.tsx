@@ -48,7 +48,6 @@ export default function useWeb3() {
       return;
     }
 
-    console.log("See Network", network);
     if (network === "main") {
       setContractAddress(CONTRACT_ADDRESSES.mainnet);
     } else {
@@ -76,7 +75,6 @@ export default function useWeb3() {
         .mintActive()
         .call()
         .then((isActive) => {
-          console.log('mintActive', isActive);
           setIsMintActive(isActive);
         });
 
