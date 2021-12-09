@@ -1,10 +1,10 @@
 import "styled-jsx";
 
+import Claim from "../components/claim";
 import FAQ from "../components/faq";
 import Hero from "../components/hero";
-import Mint from "../components/mint";
 import HowTo from "../components/how-to";
-import Reveal from "../components/reveal";
+import Mint from "../components/mint";
 import TheSantas from "../components/the-santas";
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
       </div>
 
       <div className="section justify-around mx-12 md:mx-0">
-        <Reveal />
+        <Claim />
       </div>
 
       <div className="section justify-around mx-12 md:mx-0">
@@ -49,10 +49,9 @@ export default function Home() {
           box-shadow: var(--shadow-elevation-high-red);
         }
 
-        .section:first-of-type{
+        .section:first-of-type {
           margin-top: 8em;
         }
-
       `}</style>
     </div>
   );

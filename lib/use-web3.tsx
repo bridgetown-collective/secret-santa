@@ -15,6 +15,7 @@ export default function useWeb3() {
   const [contract, setContract] = useState<any>(null);
   const [contractAddress, setContractAddress] = useState<string>(null);
   const [hasWeb3, setHasWeb3] = useState<boolean>(false);
+  const [isClaimActive, setIsClaimActive] = useState<boolean>(false);
   const [isMintActive, setIsMintActive] = useState<boolean>(false);
   const [network, setNetwork] = useState<string>(null);
   const [totalMinted, setTotalMinted] = useState<number>(-1);
@@ -79,6 +80,13 @@ export default function useWeb3() {
         });
 
       contract.methods
+        .claimActive()
+        .call()
+        .then((isActive) => {
+          setIsClaimActive(isActive);
+        });
+
+      contract.methods
         .totalSupply()
         .call()
         .then((totalSupply) => {
@@ -106,6 +114,7 @@ export default function useWeb3() {
     account,
     contract,
     contractAddress,
+    isClaimActive,
     isMintActive,
     hasWeb3,
     network,

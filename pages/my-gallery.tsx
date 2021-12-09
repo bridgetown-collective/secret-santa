@@ -92,9 +92,11 @@ export function OwnerGallery({
           <RenderNFT
             nft={{
               contractAddress: "0x04025c765b3de739640035c4ca58efbc6688fa57", // replace this for testing
-              tokenId: "1", // replace this for testing
+              tokenId: "2", // replace this for testing
               metadata: {
                 name: "TESTNET NFT",
+                image:
+                  "https://lh3.googleusercontent.com/bXQ7PUJ2k_dzuIQMFrfiKJ0wKjGDeWm2EPDuNXqLiW6z9ZY5HnDagZl3Lhufv8rop_G9B9O7Pb7nqrj0gdyPXTH-=s0",
               },
             }}
             {...props}

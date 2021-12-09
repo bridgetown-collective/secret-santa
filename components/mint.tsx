@@ -13,6 +13,7 @@ export default function Mint() {
     contract,
     contractAddress: ragingSantasContractAddress,
     hasWeb3,
+    isClaimActive,
     isMintActive,
     requestConnection,
     totalMinted,
@@ -21,6 +22,7 @@ export default function Mint() {
   const [isMinting, setIsMinting] = useState<boolean>(false);
   const [selectedNFT, setSelectedNFT] = useState(null);
   const [showNFTSelectionModal, setShowNFTSelectionModal] = useState(false);
+  const [mintingMessage, setMintingMessage] = useState(null);
 
   if (!hasWeb3 || !account) {
     return (
@@ -34,7 +36,11 @@ export default function Mint() {
   }
 
   if (!isMintActive) {
-    return <p className="text-3xl">Patience - the mint isn't active yet</p>;
+    if (!isClaimActive) {
+      return <p className="text-3xl">Patience - the mint isn't active yet</p>;
+    }
+
+    return <p className="text-3xl">Santa's on his way</p>;
   }
 
   const doMint = async (contractAddress: string, tokenId: string) => {
@@ -46,20 +52,29 @@ export default function Mint() {
         contractAddress
       );
 
+      setMintingMessage("Wrapping your gift...");
+
       await selectedTokenContract.methods
         .approve(ragingSantasContractAddress, tokenId)
         .send({ from: account });
+
+      setMintingMessage("Sending it to Santa...");
 
       await contract.methods
         .mint(1, [contractAddress], [tokenId])
         .send({ from: account, value: Web3.utils.toWei("0.03", "ether") });
 
       setIsMinting(false);
+      setMintingMessage("Santa thanks you!");
+      setSelectedNFT(null);
       toast.success("Success!");
+
       // @TODO: do something post mint - i.e. redirect to gift share page
     } catch (e) {
       console.error(e);
       toast.error(e.message);
+      setIsMinting(false);
+      setMintingMessage(null);
     }
   };
 
@@ -138,7 +153,9 @@ export default function Mint() {
                     doMint(selectedNFT.contractAddress, selectedNFT.tokenId)
                   }
                 >
-                  Wrap This Gift For 0.03 ETH
+                  {mintingMessage
+                    ? mintingMessage
+                    : "Wrap This Gift For 0.03 ETH"}
                 </button>
                 <p className="mt-1">
                   It better be a good one!
