@@ -10,7 +10,7 @@ export default function Claim() {
     hasWeb3,
     isClaimActive,
     network,
-    requestConnection,
+    requestConnection
   } = useWeb3();
 
   const [isClaiming, setIsClaiming] = useState(null);
@@ -25,6 +25,7 @@ export default function Claim() {
     if (network === "main") {
       // @TODO: fetch data from Paris
     } else {
+      // Get all the santa ids for this wallet
       Promise.all(
         Array(20)
           .fill(0)
@@ -34,7 +35,7 @@ export default function Claim() {
               .call()
               .catch(() => "")
           )
-      ).then((addrs) => {
+      ).then(addrs => {
         setAllSantaIds(
           addrs
             .map((a, i) => [a, i])
@@ -46,19 +47,23 @@ export default function Claim() {
   }, [account, contract, isClaimActive, network]);
 
   useEffect(() => {
-    if (!santaIdsToClaim.length) {
+    if (!allSantaIds.length) {
       return;
     }
 
     Promise.all(
-      santaIdsToClaim.map((sid) =>
+      allSantaIds.map(sid =>
         contract.methods
           .getGiftByGifteeToken(sid)
           .call()
           .catch(() => null)
       )
     )
-      .then((structs) => structs.filter((v) => v && !v.hasClaimed))
+      .then(structs => {
+        return structs
+          .filter(v => v && !v.hasClaimed)
+          .map(v => v.gifteeTokenId);
+      })
       .then(setSantaIdsToClaim);
   }, [contract, allSantaIds]);
 
