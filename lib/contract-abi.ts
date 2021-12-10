@@ -3,29 +3,15 @@ import { AbiItem } from "web3-utils";
 // @TOOD: replace this with Raging Santas ABI once deployed
 const abi: AbiItem[] = [
   {
-    anonymous: false,
     inputs: [
       {
-        indexed: true,
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "approved",
-        type: "address",
-      },
-      {
-        indexed: true,
         internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
+        name: "supply",
+        type: "uint256"
+      }
     ],
-    name: "Approval",
-    type: "event",
+    stateMutability: "nonpayable",
+    type: "constructor"
   },
   {
     anonymous: false,
@@ -34,23 +20,48 @@ const abi: AbiItem[] = [
         indexed: true,
         internalType: "address",
         name: "owner",
-        type: "address",
+        type: "address"
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "approved",
+        type: "address"
+      },
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256"
+      }
+    ],
+    name: "Approval",
+    type: "event"
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "owner",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "address",
         name: "operator",
-        type: "address",
+        type: "address"
       },
       {
         indexed: false,
         internalType: "bool",
         name: "approved",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     name: "ApprovalForAll",
-    type: "event",
+    type: "event"
   },
   {
     anonymous: false,
@@ -59,17 +70,17 @@ const abi: AbiItem[] = [
         indexed: true,
         internalType: "address",
         name: "previousOwner",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "address",
         name: "newOwner",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     name: "OwnershipTransferred",
-    type: "event",
+    type: "event"
   },
   {
     anonymous: false,
@@ -78,307 +89,84 @@ const abi: AbiItem[] = [
         indexed: true,
         internalType: "address",
         name: "from",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "address",
         name: "to",
-        type: "address",
+        type: "address"
       },
       {
         indexed: true,
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "Transfer",
-    type: "event",
+    type: "event"
+  },
+  {
+    stateMutability: "payable",
+    type: "fallback"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "seed",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "activateClaim",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
     name: "activateMint",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "to",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "approve",
     outputs: [],
     stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256[]",
-        name: "tokenIds",
-        type: "uint256[]",
-      },
-      {
-        internalType: "address",
-        name: "gifteeAddress",
-        type: "address",
-      },
-    ],
-    name: "claimGifts",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256[]",
-        name: "tokenIds",
-        type: "uint256[]",
-      },
-    ],
-    name: "claimGifts",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "qty",
-        type: "uint256",
-      },
-      {
-        internalType: "address[]",
-        name: "nftAddresses",
-        type: "address[]",
-      },
-      {
-        internalType: "uint256[]",
-        name: "nftTokenIds",
-        type: "uint256[]",
-      },
-    ],
-    name: "mint",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "safeTransferFrom",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-      {
-        internalType: "bytes",
-        name: "_data",
-        type: "bytes",
-      },
-    ],
-    name: "safeTransferFrom",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "operator",
-        type: "address",
-      },
-      {
-        internalType: "bool",
-        name: "approved",
-        type: "bool",
-      },
-    ],
-    name: "setApprovalForAll",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "newURI",
-        type: "string",
-      },
-    ],
-    name: "setBaseURI",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "newHash",
-        type: "string",
-      },
-    ],
-    name: "setProvHashMatch",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "string",
-        name: "newHash",
-        type: "string",
-      },
-    ],
-    name: "setProvHashMint",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "from",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "to",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "transferFrom",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "withdraw",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    stateMutability: "payable",
-    type: "fallback",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "supply",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "owner",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     name: "balanceOf",
     outputs: [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -387,11 +175,11 @@ const abi: AbiItem[] = [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -400,11 +188,55 @@ const abi: AbiItem[] = [
       {
         internalType: "bool",
         name: "",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "tokenIds",
+        type: "uint256[]"
+      },
+      {
+        internalType: "address",
+        name: "gifteeAddress",
+        type: "address"
+      }
+    ],
+    name: "claimGifts",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "tokenIds",
+        type: "uint256[]"
+      }
+    ],
+    name: "claimGifts",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "claimPaused",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
   },
   {
     inputs: [],
@@ -413,38 +245,38 @@ const abi: AbiItem[] = [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "getApproved",
     outputs: [
       {
         internalType: "address",
         name: "",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "tId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "getGiftByGifteeToken",
     outputs: [
@@ -453,59 +285,59 @@ const abi: AbiItem[] = [
           {
             internalType: "uint256",
             name: "gifterTokenId",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "uint256",
             name: "gifteeTokenId",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "uint256",
             name: "nftTokenId",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "address",
             name: "nftAddress",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "address",
             name: "gifter",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "address",
             name: "giftee",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "address",
             name: "gifteeDelegator",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "bool",
             name: "hasClaimed",
-            type: "bool",
-          },
+            type: "bool"
+          }
         ],
         internalType: "struct RagingSantas.Gift",
         name: "",
-        type: "tuple",
-      },
+        type: "tuple"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "tId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "getGiftByGifterToken",
     outputs: [
@@ -514,75 +346,75 @@ const abi: AbiItem[] = [
           {
             internalType: "uint256",
             name: "gifterTokenId",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "uint256",
             name: "gifteeTokenId",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "uint256",
             name: "nftTokenId",
-            type: "uint256",
+            type: "uint256"
           },
           {
             internalType: "address",
             name: "nftAddress",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "address",
             name: "gifter",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "address",
             name: "giftee",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "address",
             name: "gifteeDelegator",
-            type: "address",
+            type: "address"
           },
           {
             internalType: "bool",
             name: "hasClaimed",
-            type: "bool",
-          },
+            type: "bool"
+          }
         ],
         internalType: "struct RagingSantas.Gift",
         name: "",
-        type: "tuple",
-      },
+        type: "tuple"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "address",
         name: "owner",
-        type: "address",
+        type: "address"
       },
       {
         internalType: "address",
         name: "operator",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     name: "isApprovedForAll",
     outputs: [
       {
         internalType: "bool",
         name: "",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -591,11 +423,11 @@ const abi: AbiItem[] = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -604,11 +436,34 @@ const abi: AbiItem[] = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "qty",
+        type: "uint256"
+      },
+      {
+        internalType: "address[]",
+        name: "nftAddresses",
+        type: "address[]"
+      },
+      {
+        internalType: "uint256[]",
+        name: "nftTokenIds",
+        type: "uint256[]"
+      }
+    ],
+    name: "mint",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function"
   },
   {
     inputs: [],
@@ -617,11 +472,11 @@ const abi: AbiItem[] = [
       {
         internalType: "bool",
         name: "",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -630,11 +485,11 @@ const abi: AbiItem[] = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -643,37 +498,11 @@ const abi: AbiItem[] = [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "numberClaimed",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "numberMinted",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -682,11 +511,37 @@ const abi: AbiItem[] = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "numberClaimed",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "numberMinted",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256"
+      }
+    ],
+    stateMutability: "view",
+    type: "function"
   },
   {
     inputs: [],
@@ -695,30 +550,43 @@ const abi: AbiItem[] = [
       {
         internalType: "address",
         name: "",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "ownerOf",
     outputs: [
       {
         internalType: "address",
         name: "",
-        type: "address",
-      },
+        type: "address"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "bool",
+        name: "value",
+        type: "bool"
+      }
+    ],
+    name: "pauseClaim",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     inputs: [],
@@ -727,11 +595,11 @@ const abi: AbiItem[] = [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -740,30 +608,145 @@ const abi: AbiItem[] = [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "from",
+        type: "address"
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address"
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256"
+      }
+    ],
+    name: "safeTransferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "from",
+        type: "address"
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address"
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256"
+      },
+      {
+        internalType: "bytes",
+        name: "_data",
+        type: "bytes"
+      }
+    ],
+    name: "safeTransferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "operator",
+        type: "address"
+      },
+      {
+        internalType: "bool",
+        name: "approved",
+        type: "bool"
+      }
+    ],
+    name: "setApprovalForAll",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "newURI",
+        type: "string"
+      }
+    ],
+    name: "setBaseURI",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "newHash",
+        type: "string"
+      }
+    ],
+    name: "setProvHashMatch",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "string",
+        name: "newHash",
+        type: "string"
+      }
+    ],
+    name: "setProvHashMint",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "bytes4",
         name: "interfaceId",
-        type: "bytes4",
-      },
+        type: "bytes4"
+      }
     ],
     name: "supportsInterface",
     outputs: [
       {
         internalType: "bool",
         name: "",
-        type: "bool",
-      },
+        type: "bool"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -772,30 +755,30 @@ const abi: AbiItem[] = [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [
       {
         internalType: "uint256",
         name: "tokenId",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     name: "tokenURI",
     outputs: [
       {
         internalType: "string",
         name: "",
-        type: "string",
-      },
+        type: "string"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
   {
     inputs: [],
@@ -804,12 +787,55 @@ const abi: AbiItem[] = [
       {
         internalType: "uint256",
         name: "",
-        type: "uint256",
-      },
+        type: "uint256"
+      }
     ],
     stateMutability: "view",
-    type: "function",
+    type: "function"
   },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "from",
+        type: "address"
+      },
+      {
+        internalType: "address",
+        name: "to",
+        type: "address"
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256"
+      }
+    ],
+    name: "transferFrom",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address"
+      }
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [],
+    name: "withdraw",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function"
+  }
 ];
 
 export default abi;

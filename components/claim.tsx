@@ -5,7 +5,7 @@ import { RenderNFT } from "../pages/my-gallery";
 import contractAbi from "../lib/contract-abi";
 import useWeb3 from "../lib/use-web3";
 
-interface Gift {
+export interface Gift {
   gifterTokenId: number;
   gifteeTokenId: number;
   nftTokenId: number;

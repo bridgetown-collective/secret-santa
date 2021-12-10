@@ -56,25 +56,25 @@ export default function Nav({}) {
       >
         <div className="text-md font-semibold	pt-2 lg:pt-0 lg:flex-grow text-red-700">
           <a
-            href="#mint"
+            href="/#mint"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
             GIVE
           </a>
           <a
-            href="#claim"
+            href="/#claim"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
             CLAIM
           </a>
           <a
-            href="#faq"
+            href="/#faq"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
             FAQ
           </a>
           <a
-            href="#the-santas"
+            href="/#the-santas"
             className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4 cursor-pointer"
           >
             TEAM

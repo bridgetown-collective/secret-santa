@@ -158,7 +158,7 @@ export default function Mint() {
                     : "Wrap This Gift For 0.03 ETH"}
                 </button>
                 <p className="mt-1">
-                  It better be a good one!
+                  Make sure it's a good one!
                   <br />
                   You don't want coal for Christmas, <i>do you</i>?
                 </p>

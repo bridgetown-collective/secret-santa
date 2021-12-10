@@ -5,7 +5,8 @@ import "styled-jsx";
 
 import useWeb3 from "../lib/use-web3";
 
-const PLACEHOLDER_IMAGE = "/assets/hi-res-logo.png";
+//const PLACEHOLDER_IMAGE = "/assets/hi-res-logo.png";
+const PLACEHOLDER_IMAGE = "/assets/ShortSanta.png";
 
 export function RenderNFT({
   nft,
@@ -92,7 +93,7 @@ export function OwnerGallery({
           <RenderNFT
             nft={{
               contractAddress: "0x04025c765b3de739640035c4ca58efbc6688fa57", // replace this for testing
-              tokenId: "2", // replace this for testing
+              tokenId: "1", // replace this for testing
               metadata: {
                 name: "TESTNET NFT",
                 image:

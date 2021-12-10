@@ -5,7 +5,10 @@ import contractAbi from "./contract-abi";
 
 const CONTRACT_ADDRESSES = {
   mainnet: "0x9048de699869385756939a7bb0a22b6d6cb63a83", // @TODO: replace this LizardLab address
-  testnet: "0x9d12BD80274cF93079ccBEE7D1F44664363dCfA4", // this is for rinkeby testnet
+  // First Deployed Rinkeby
+  //  testnet: "0x9d12BD80274cF93079ccBEE7D1F44664363dCfA4", // this is for rinkeby testnet
+  // Second Deployed Rinkeby
+  testnet: "0xE87124262C58430738DceFf08dd498EAa071bE1E", // this is for rinkeby testnet
 };
 
 let web3: Web3 | null = null;
