@@ -18,7 +18,7 @@ const NFTWrapper = ({ contractAddress, tokenId }) => {
 };
 
 export default function GiftWrapper({ gifteeTokenId, gifterTokenId }) {
-  if (!((gifteeTokenId != null) ^ (gifterTokenId != null))) {
+  if ((gifteeTokenId != null) == (gifterTokenId != null)) {
     throw "Please define either gifteeTokenId or gifterTokenId but not both";
   }
 
