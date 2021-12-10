@@ -17,7 +17,13 @@ const NFTWrapper = ({ contractAddress, tokenId }) => {
   );
 };
 
-export default function GiftWrapper({ gifteeTokenId, gifterTokenId }) {
+
+interface GiftWrapperProps {
+    gifteeTokenId?: number,
+    gifterTokenId?: number
+}
+
+export default function GiftWrapper({gifteeTokenId, gifterTokenId}: GiftWrapperProps) {
   if ((gifteeTokenId != null) == (gifterTokenId != null)) {
     throw "Please define either gifteeTokenId or gifterTokenId but not both";
   }
@@ -26,18 +32,13 @@ export default function GiftWrapper({ gifteeTokenId, gifterTokenId }) {
     account,
     contract,
     contractAddress,
-    hasWeb3,
-    isClaimActive,
-    network,
-    requestConnection,
-    web3
   } = useWeb3();
 
   const [giftToRender, setGiftToRender] = useState<Gift>(null);
-  const [isLoading, setisLoading] = useState<bool>(true);
-  const [nft, setNft] = useState<any>(null);
+  //const [isLoading, setisLoading] = useState<bool>(true);
+  // const [nft, setNft] = useState<any>(null);
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!account || !contract || !contractAddress) {
       return;
     }
@@ -49,7 +50,7 @@ export default function GiftWrapper({ gifteeTokenId, gifterTokenId }) {
     }
 
     // Null check to handle tokenId=0 case
-    let gift = await getGiftFn(tokenId)
+    let gift = getGiftFn(tokenId)
       .call()
       .catch(() => null);
     setGiftToRender(gift);
