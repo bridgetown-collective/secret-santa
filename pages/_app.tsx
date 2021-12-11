@@ -114,6 +114,10 @@ export default function App({ Component, pageProps }) {
           text-shadow: 2px 1px var(--toastify-color-dark);
         }
 
+        .text-shadow-green {
+          text-shadow: 3px 1px var(--toastify-color-progress-success);
+        }
+
         .iniya-header {
           font-family: "Iniya";
           text-shadow: 3px 1px var(--toastify-color-dark);

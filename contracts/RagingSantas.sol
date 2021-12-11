@@ -204,6 +204,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
     }
 
     function getGiftByGifteeToken(uint256 tId) external view virtual returns (Gift memory) {
+        require(claimActive, "Matchmaking Incomplete");
         this.ownerOf(tId);
         uint256 tIdClaim = _giftRefsToClaim[tId];
         return _giftsByTID[tIdClaim];

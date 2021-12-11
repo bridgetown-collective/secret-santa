@@ -61,8 +61,10 @@ export default function useWeb3() {
 
   useEffect(() => {
     try {
-      const contract = new web3.eth.Contract(contractAbi, contractAddress);
-      setContract(contract);
+      if(contractAddress) {
+        const contract = new web3.eth.Contract(contractAbi, contractAddress);
+        setContract(contract);
+      }
     } catch (e) {
       // we failed communicating with the contract here
       console.error(e);

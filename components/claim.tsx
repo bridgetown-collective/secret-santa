@@ -16,7 +16,7 @@ export interface Gift {
   hasClaimed: boolean;
 }
 
-interface GiftGroups {
+export interface GiftGroups {
   giftsOwned: Gift[];
   giftsToClaim: Gift[];
 }
