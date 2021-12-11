@@ -214,7 +214,7 @@ export default function Claim() {
                     : `You Have No Gifts To Unwrap`}
                 </button>
               ) : (
-                <p className="text-4xl alt-font text-center mt-5">
+                <p className="text-4xl alt-font text-center mt-5 iniya-header">
                   {Math.floor(
                     (new Date("2021-12-25T00:00:00Z").getTime() - Date.now()) /
                       1000 /

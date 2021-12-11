@@ -9,11 +9,11 @@ export default function About() {
           </tr>
           <tr>
             <td>🎄</td>
-            <td>Give an NFT to the Gift Pool!</td>
+            <td>Give an NFT to the Gift Swap!</td>
           </tr>
           <tr>
             <td>🎁</td>
-            <td>Claim a Random Gift from the Pool!</td>
+            <td>Claim a Random Gift from the Swap!</td>
           </tr>
         </table>
       </div>

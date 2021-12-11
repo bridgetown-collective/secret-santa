@@ -42,7 +42,7 @@ export default function FAQ() {
           <br />
           <b>December 25th:</b> Starting on Christmas Day, the owner of any
           Raging Santa NFT will be able to claim a random, gifted NFT 🎁 (or
-          regift to a wallet of choice) from the Raging Santas Gift Pool.
+          regift to a wallet of choice) from the Raging Santas Gift Swap.
         </p>
       </span>
 
@@ -66,7 +66,7 @@ export default function FAQ() {
               <u className="cursor-pointer">check us out on Twitter</u>
             </a>
           </Link>{" "}
-          to see the latest featured NFTs added to the Gift Pool!
+          to see the latest featured NFTs added to the Gift Swap!
         </p>
       </span>
 

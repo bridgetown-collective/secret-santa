@@ -104,7 +104,7 @@ export default function Mint() {
           </div>
           <div className="flex flex-col lg:flex-row justify-center">
             <div className="flex flex-col text-center">
-              <Image src="/assets/eth_box_01.svg" height="364" width="364" />
+              <Image src="/assets/eth_box.png" height="364" width="364" />
               <h1 className="text-4xl lg:pt-12 iniya-header">0.03 ETH</h1>
             </div>
             <div className="flex align-middle text-center m-auto h-36 lg:h-auto flex-col">
@@ -116,7 +116,7 @@ export default function Mint() {
               <div className="flex flex-col justify-center">
                 <Image
                   className="cursor-pointer"
-                  src="/assets/gift_nft_exchange_ribbon_01.svg"
+                  src="/assets/gift_NFT_box_closed.png"
                   height="364"
                   width="364"
                   onClick={() =>

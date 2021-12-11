@@ -7,14 +7,14 @@ export default function HowTo() {
         </p>
         <p className="text-2xl font-extralight	">
           To mint your own Raging Santa you must provide a gift NFT of your
-          choice for the Raging Santas Gift Pool.
+          choice for the Raging Santas Gift Swap.
           <br />
           <br />
-          Each Raging Santa costs 0.03 ETH + gas to mint.
+          Each Raging Santa costs 0.03 ETH + a gift NFT of your choice in order to mint. 
           <br />
           <br />
           Your Raging Santa will be proof that you gave generously to the Gift
-          Pool and will also be proof of your claim to a Free Gift on Christmas Day!
+          Swap and will also be proof of your claim to a Free Gift on Christmas Day!
         </p>
       </span>
 
@@ -25,14 +25,14 @@ export default function HowTo() {
         </p>
         <p className="text-2xl font-extralight	">
           We are doing our best to get as many artists, builders, influencers,
-          and every day NFT holders to give something to the Raging Santas Gift Pool.
+          and every day NFT holders to give something to the Raging Santas Gift Swap.
           <br />
           <br />
           Share Your{" "}
           <a href="/gift-showcase" target="_blank">
             Gift Page
           </a>{" "}
-          to show others what you generously gave to the Gift Pool. It may
+          to show others what you generously gave to the Gift Swap. It may
           inspire others to join in on the First Ever On-Chain NFT Secret Santa
           Gift Swap!
         </p>
@@ -46,7 +46,7 @@ export default function HowTo() {
         <p className="text-2xl font-extralight	">
           On Christmas Day, December 25th, 2021 12:00AM ET, participants holding
           a Raging Santa NFT will be eligible to claim a random gift (1 per Raging
-          Santa) from the Raging Santas Gift Pool!
+          Santa) from the Raging Santas Gift Swap!
           <br /> <br />
           You will have 6 months (until June 25th, 2022) to claim your gift!
           <br /> <br />
