@@ -35,7 +35,7 @@ function main(quantity: number): void {
       fs.writeFileSync(jsonPath, JSON.stringify(RagingSantaTraits(i / 1000)));
       const inputBuffer = Buffer.from(svgString);
       let pngPath = path.join(folderName, `${i}.png`);
-      sharp(inputBuffer).resize(500, 500).toFile(pngPath);
+      sharp(inputBuffer, {density: 400}).resize(500, 500).toFile(pngPath);
     }
 
     console.log("Directory is created.");
