@@ -302,7 +302,7 @@ describe.only("SecretSanta - FreeMinting", async function () {
 
       await dc.connect(accounts[2]).approve(rs.address, 1);
       await expect(
-        await rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+        rs.connect(accounts[2]).mint(1, [dc.address], [1], {
           from: accounts[2].address,
           value: parseUnits("0.028", "ether")
         })
