@@ -42,6 +42,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
     uint256 public mintPrice;
     uint256 public numberMinted;
     uint256 public numberClaimed;
+    uint256 public freeMintsAllowed;
 
     struct Gift {
       uint256 gifterTokenId;
@@ -68,12 +69,13 @@ contract RagingSantas is ERC721, Ownable, Functional {
     bool public claimPaused;
     
     //there is a lot to unpack here
-    constructor(uint256 supply) ERC721("Raging Santas", "RAGIN") {   
+    constructor(uint256 supply, uint256 freeMintsSupply) ERC721("Raging Santas", "RAGIN") {
       mintActive = false;
       claimActive = false;
       claimPaused = false;
-      mintPrice = 0.03 ether;
       maxSupply = supply;
+      mintPrice = 0.03 ether;
+      freeMintsAllowed = freeMintsSupply;
     }
 
     function activateMint() external onlyOwner {
@@ -153,12 +155,15 @@ contract RagingSantas is ERC721, Ownable, Functional {
     }
 
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
+
         // Validate Mint
         require(mintActive, "Minting Inactive");
         require((qty + numberMinted) <= maxSupply, "Mint Sold Out");
-        require(qty <= 10, "Exceeded Max Per Txn");
+        require((qty > 0 && qty <= 10), "Valid Quantity");
         require((this.balanceOf(_msgSender()) + qty) <= 30, "Exceed Max Per Wallet");
-        require(msg.value >= qty * mintPrice, "Insufficient Funds");
+
+        uint256 price = (numberMinted + 1 > freeMintsAllowed) ? mintPrice : 0 ether;
+        require(msg.value >= qty * price, "Insufficient Funds");
 
         // Validate Gifts
         require(nftAddresses.length == qty, "Invalid gift");

@@ -15,7 +15,8 @@ describe("SecretSanta - Large Claiming", async function () {
     [owner] = accounts;
 
     const numSupply = accounts.length;
-    rs = await RagingSantas.deploy(numSupply);
+    const freeMints = 0;
+    rs = await RagingSantas.deploy(numSupply, freeMints);
     rs.connect(owner).setProvHashMint('abcdef');
     rs.connect(owner).setProvHashMatch('012345');
 
