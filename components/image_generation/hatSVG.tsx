@@ -17,6 +17,9 @@ export default function Hat(
     case roll <= 0.6:
       variant = "reindeer_hand_horns_half_mask";
       break;
+    case roll <= 0.8:
+      variant = "reindeer_horns_half_mask";
+      break;
     default:
   }
 
