@@ -9,11 +9,8 @@ export default function Arms(
   const rnd = new RND(150992 * seed);
   const roll = rnd.rb(0, 1);
 
-  let variant = "black";
+  let variant = "toothpicks";
   switch (true) {
-    case roll <= 0.5:
-      variant = "popsicle_sticks";
-      break;
     default:
   }
 

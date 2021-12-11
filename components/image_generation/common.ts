@@ -1,13 +1,13 @@
 export type TraitTypes = "arms" | "background" | "beard" | "body" | "brows" | "eyes" | "glasses" | "hat" | "head" | "mouth" | "nose" ;
 export type Trait = {trait_type: TraitTypes, value: string}
 
-export function getSVGMap(fs, path): Record<string, string> {
+export function getSVGMap(fs, path, env): Record<string, string> {
   const pathMap: Record<string, string> = {};
 
   const assetPath = path.join(
     __dirname,
     __dirname.includes(".next") ? ".." : "",
-    "../../public/assets/raging-santas"
+    "../../public/assets/new-traits"
   );
   const files = fs.readdirSync(assetPath);
 

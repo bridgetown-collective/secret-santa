@@ -65,6 +65,7 @@ export const RagingSantaTraits = (seed: number): Array<Trait> => {
     traitObj.push(Glasses(seed));
   }
   traitObj.push(Nose(seed));
+  console.log(traitObj);
   return traitObj;
 };
 

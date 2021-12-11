@@ -9,13 +9,19 @@ export default function Background(
   const rnd = new RND(142442 * seed);
   const roll = rnd.rb(0, 1);
 
-  let variant = "baby_blue";
+  let variant = "green_textured";
   switch (true) {
-    case roll < 0.333:
-      variant = "green";
+    case roll < 0.2:
+      variant = "camo_grey_fill";
       break;
-    case roll < 0.666:
-      variant = "pink";
+    case roll < 0.4:
+      variant = "rainbow_gradient";
+      break;
+    case roll < 0.6:
+      variant = "mountains";
+      break;
+    case roll < 0.8:
+      variant = "forest";
       break;
     default:
   }
