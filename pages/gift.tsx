@@ -6,7 +6,7 @@ import useWeb3 from "../lib/use-web3";
 import contractAbi from "../lib/contract-abi";
 
 export default function GiftPage() {
-  const { account, contract, contractAddress, isClaimActive, network, web3 } =
+  const { account, contract, contractAddress, network, web3 } =
     useWeb3();
 
   const [mySantaIds, setMySantaIds] = useState<number[]>([]);
