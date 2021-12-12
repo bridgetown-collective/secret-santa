@@ -62,7 +62,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
     mapping(uint256 => uint256) private _giftRefsToClaim;
 
     // The Gift Pool
-    uint256[] private giftPoolTokens;
+    uint256[] public giftPoolTokens;
 
     bool public mintActive;
     bool public claimActive;

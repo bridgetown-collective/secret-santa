@@ -221,7 +221,7 @@ describe("RagingSantas - Minting", async function () {
   });
 });
 
-describe.only("SecretSanta - FreeMinting", async function () {
+describe("SecretSanta - FreeMinting", async function () {
   let rs = null;
   let ss = null;
   let owner = null;
@@ -232,11 +232,11 @@ describe.only("SecretSanta - FreeMinting", async function () {
     accounts = await hre.ethers.getSigners();
     [owner] = accounts;
     const numSupply = 5;
-    const numFreeMints = 1;
+    const numFreeMints = 2;
     rs = await RagingSantas.deploy(numSupply, numFreeMints);
   });
 
-  it("should allow free minting", async () => {
+  it("not accept invalid gift parameters", async () => {
     expect(await rs.mintActive()).to.equal(false);
     await rs.connect(accounts[0]).activateMint();
     expect(await rs.mintActive()).to.equal(true);
@@ -310,7 +310,7 @@ describe.only("SecretSanta - FreeMinting", async function () {
         "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
       );
 
-      const numMinted = await rs.numberMinted();
+      let numMinted = await rs.numberMinted();
       expect(numMinted.toString()).to.equal("2");
 
       expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
@@ -319,6 +319,22 @@ describe.only("SecretSanta - FreeMinting", async function () {
 
       await expectTokenOwnedToBe(rs, accounts[0].address, []);
       await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1]);
+
+      rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+        from: accounts[2].address,
+        value: parseUnits("0.038", "ether")
+      })
+
+      numMinted = await rs.numberMinted();
+      expect(numMinted.toString()).to.equal("2");
+
+      expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
+      expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
+      expect(await rs.numGiftsLeft()).to.equal(3);
+
+      await expectTokenOwnedToBe(rs, accounts[0].address, []);
+      await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1]);
+      await expectTokenOwnedToBe(rs, accounts[2].address, [2]);
     });
   });
 });
