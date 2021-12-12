@@ -232,7 +232,7 @@ describe("SecretSanta - FreeMinting", async function () {
     accounts = await hre.ethers.getSigners();
     [owner] = accounts;
     const numSupply = 5;
-    const numFreeMints = 2;
+    const numFreeMints = 3;
     rs = await RagingSantas.deploy(numSupply, numFreeMints);
   });
 
@@ -291,15 +291,20 @@ describe("SecretSanta - FreeMinting", async function () {
 
     it("should use regular mint price once num free gifts exhausted", async () => {
       await dc.connect(accounts[1]).mint(accounts[1].address);
+      await dc.connect(accounts[1]).mint(accounts[1].address);
       await dc.connect(accounts[1]).approve(rs.address, 0);
       await dc.connect(accounts[1]).approve(rs.address, 2);
+      await dc.connect(accounts[1]).approve(rs.address, 3);
 
       await rs.connect(accounts[0]).activateMint();
-      await rs.connect(accounts[1]).mint(2, [dc.address, dc.address], [0, 2], {
+
+      // Account 1 Mints 3
+      await rs.connect(accounts[1]).mint(3, [dc.address, dc.address, dc.address], [0, 2, 3], {
         from: accounts[1].address,
         value: parseUnits("0", "ether")
       });
 
+      // Account 2 Mints 1 with not enough ether (free mints ran out)
       await dc.connect(accounts[2]).approve(rs.address, 1);
       await expect(
         rs.connect(accounts[2]).mint(1, [dc.address], [1], {
@@ -311,30 +316,93 @@ describe("SecretSanta - FreeMinting", async function () {
       );
 
       let numMinted = await rs.numberMinted();
-      expect(numMinted.toString()).to.equal("2");
+      expect(numMinted.toString()).to.equal("3");
 
       expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
       expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
-      expect(await rs.numGiftsLeft()).to.equal(2);
+      expect(await rs.ownerOf(2)).to.equal(accounts[1].address);
+      expect(await rs.numGiftsLeft()).to.equal(3);
 
       await expectTokenOwnedToBe(rs, accounts[0].address, []);
-      await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1]);
+      await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1, 2]);
+      await expectTokenOwnedToBe(rs, accounts[2].address, []);
 
-      rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+      // Account 2 Mints 1 with enough ether
+      await rs.connect(accounts[2]).mint(1, [dc.address], [1], {
         from: accounts[2].address,
         value: parseUnits("0.038", "ether")
       })
 
       numMinted = await rs.numberMinted();
-      expect(numMinted.toString()).to.equal("2");
+      expect(numMinted.toString()).to.equal("4");
 
       expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
       expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
-      expect(await rs.numGiftsLeft()).to.equal(3);
+      expect(await rs.ownerOf(2)).to.equal(accounts[1].address);
+      expect(await rs.ownerOf(3)).to.equal(accounts[2].address);
+      expect(await rs.numGiftsLeft()).to.equal(4);
+
+      await expectTokenOwnedToBe(rs, accounts[0].address, []);
+      await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1, 2]);
+      await expectTokenOwnedToBe(rs, accounts[2].address, [3]);
+    });
+
+    it("should allow free minting for the whole txn", async () => {
+      await dc.connect(accounts[1]).mint(accounts[1].address);
+      await dc.connect(accounts[1]).approve(rs.address, 0);
+      await dc.connect(accounts[1]).approve(rs.address, 2);
+
+      await rs.connect(accounts[0]).activateMint();
+
+      // Account 1 Mints 2 for free
+      await rs.connect(accounts[1]).mint(2, [dc.address, dc.address], [0, 2], {
+        from: accounts[1].address,
+        value: parseUnits("0", "ether")
+      });
+
+      // Account 2 Mints 2 for free 
+      await dc.connect(accounts[2]).mint(accounts[2].address);
+      await dc.connect(accounts[2]).approve(rs.address, 1);
+      await dc.connect(accounts[2]).approve(rs.address, 3);
+      await  rs.connect(accounts[2]).mint(2, [dc.address, dc.address], [1, 3], {
+          from: accounts[2].address,
+          value: parseUnits("0", "ether")
+        })
+
+      let numMinted = await rs.numberMinted();
+      expect(numMinted.toString()).to.equal("4");
+
+      expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
+      expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
+      expect(await rs.ownerOf(2)).to.equal(accounts[2].address);
+      expect(await rs.ownerOf(3)).to.equal(accounts[2].address);
+      expect(await rs.numGiftsLeft()).to.equal(4);
 
       await expectTokenOwnedToBe(rs, accounts[0].address, []);
       await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1]);
-      await expectTokenOwnedToBe(rs, accounts[2].address, [2]);
+      await expectTokenOwnedToBe(rs, accounts[2].address, [2, 3]);
+
+      // Account 2 Mints 1 more and tries to get it for free
+      await dc.connect(accounts[2]).mint(accounts[2].address);
+      await dc.connect(accounts[2]).approve(rs.address, 4);
+
+      await expect(
+        rs.connect(accounts[2]).mint(1, [dc.address], [4], {
+          from: accounts[2].address,
+          value: parseUnits("0", "ether")
+        })
+      ).to.be.revertedWith(
+        "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
+      );
+
+      await expect(
+        rs.connect(accounts[2]).mint(1, [dc.address], [4], {
+          from: accounts[2].address,
+          value: parseUnits("0.028", "ether")
+        })
+      ).to.be.revertedWith(
+        "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
+      );
     });
   });
 });

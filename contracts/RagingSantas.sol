@@ -37,12 +37,15 @@ contract RagingSantas is ERC721, Ownable, Functional {
     string public baseURI;
 
     uint256 public matchSeed;
-    uint256 public totalGifts;
-    uint256 public maxSupply;
     uint256 public mintPrice;
-    uint256 public numberMinted;
+
+    uint256 public totalGifts;
     uint256 public numberClaimed;
-    uint256 public freeMintsAllowed;
+
+    uint256 public maxSupply;
+    uint256 public maxFreeMints;
+    uint256 public numberMinted;
+    uint256 public numberFreeMints;
 
     struct Gift {
       uint256 gifterTokenId;
@@ -75,7 +78,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
       claimPaused = false;
       maxSupply = supply;
       mintPrice = 0.03 ether;
-      freeMintsAllowed = freeMintsSupply;
+      maxFreeMints = freeMintsSupply;
     }
 
     function activateMint() external onlyOwner {
@@ -109,16 +112,8 @@ contract RagingSantas is ERC721, Ownable, Functional {
         claimPaused = value;
     }
 
-    function numGiftsLeft() external view virtual returns (uint256) {
-        return giftPoolTokens.length - numberClaimed;
-    }
-
     function setBaseURI(string memory newURI) external onlyOwner {
         baseURI = newURI;
-    }
-
-    function _baseURI() internal view override returns (string memory) {
-        return baseURI;
     }
 
     function setProvHashMint(string memory newHash) external onlyOwner {
@@ -150,6 +145,14 @@ contract RagingSantas is ERC721, Ownable, Functional {
         return string(abi.encodePacked(baseURI, "prereveal.json"));
     }
 
+    function numGiftsLeft() external view virtual returns (uint256) {
+        return giftPoolTokens.length - numberClaimed;
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+
     function contractURI() external view returns (string memory) {
         return string(abi.encodePacked(baseURI, "contract.json"));
     }
@@ -162,7 +165,11 @@ contract RagingSantas is ERC721, Ownable, Functional {
         require((qty > 0 && qty <= 10), "Valid Quantity");
         require((this.balanceOf(_msgSender()) + qty) <= 30, "Exceed Max Per Wallet");
 
-        uint256 price = (numberMinted + 1 > freeMintsAllowed) ? mintPrice : 0 ether;
+        // TODO: check WL
+
+        // Ok with making the whole txn free if before the cutoff
+        bool isNotFreeMint = (numberFreeMints + 1 > maxFreeMints);
+        uint256 price = isNotFreeMint ? mintPrice : 0 ether;
         require(msg.value >= qty * price, "Insufficient Funds");
 
         // Validate Gifts
@@ -175,7 +182,12 @@ contract RagingSantas is ERC721, Ownable, Functional {
         for(uint256 i = 0; i < qty; i++) {
             _addGiftToPool(firstMintTokenId + i, _msgSender(), nftAddresses[i], nftTokenIds[i]);
             _safeMint(_msgSender(), firstMintTokenId + i);
-            numberMinted++;
+        }
+
+        numberMinted += qty;
+
+        if (!isNotFreeMint) {
+          numberFreeMints += qty;
         }
     }
 
