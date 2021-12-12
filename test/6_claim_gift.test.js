@@ -58,7 +58,7 @@ describe("SecretSanta - Claiming", async function () {
     await expect(
       rs.connect(accounts[1])["claimGifts(uint256[])"]([0])
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Claiming Disabled'"
+      "VM Exception while processing transaction: reverted with reason string 'ClaimDisabled'"
     );
 
     const rn_seed = 456123789;
@@ -123,7 +123,7 @@ describe("SecretSanta - Claiming", async function () {
     await expect(
       rs.connect(accounts[1])["claimGifts(uint256[])"]([0])
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Gift Claimed'"
+      "VM Exception while processing transaction: reverted with reason string 'GiftClaimed'"
     );
   });
 
@@ -134,7 +134,7 @@ describe("SecretSanta - Claiming", async function () {
     await expect(
       rs.connect(accounts[1])["claimGifts(uint256[])"]([1])
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Not Owner'"
+      "VM Exception while processing transaction: reverted with reason string 'NotOwner'"
     );
   });
 
@@ -145,7 +145,7 @@ describe("SecretSanta - Claiming", async function () {
     await expect(
       rs.connect(accounts[1])["claimGifts(uint256[])"]([])
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'No Tokens'"
+      "VM Exception while processing transaction: reverted with reason string 'NoTokens'"
     );
   });
 
@@ -249,7 +249,7 @@ describe("SecretSanta - Claiming", async function () {
       await expect(
         rs.connect(accounts[2])["claimGifts(uint256[])"]([1])
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Claiming Disabled'"
+        "VM Exception while processing transaction: reverted with reason string 'ClaimDisabled'"
       );
 
       await rs.connect(owner).pauseClaim(false);

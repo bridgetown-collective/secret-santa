@@ -28,7 +28,7 @@ describe("RagingSantas - Minting", async function () {
     expect(await rs.mintActive()).to.equal(false);
 
     expect(rs.connect(accounts[1]).mint(1, [], [])).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Minting Inactive'"
+      "VM Exception while processing transaction: reverted with reason string 'MintInactive'"
     );
   });
 
@@ -44,7 +44,7 @@ describe("RagingSantas - Minting", async function () {
         value: parseUnits(".0299", "ether")
       })
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
+      "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
     );
 
     // Just short of 2 mints
@@ -54,7 +54,7 @@ describe("RagingSantas - Minting", async function () {
         value: parseUnits(".0599", "ether")
       })
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
+      "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
     );
 
     const numMinted = await rs.numberMinted();
@@ -71,7 +71,7 @@ describe("RagingSantas - Minting", async function () {
         value: parseUnits(".03", "ether")
       })
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
+      "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
     );
   });
 
@@ -102,7 +102,7 @@ describe("RagingSantas - Minting", async function () {
           value: parseUnits(".06", "ether")
         })
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
+        "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
       );
 
       await expect(
@@ -111,7 +111,7 @@ describe("RagingSantas - Minting", async function () {
           value: parseUnits(".03", "ether")
         })
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
+        "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
       );
 
       await expect(
@@ -120,7 +120,7 @@ describe("RagingSantas - Minting", async function () {
           value: parseUnits(".03", "ether")
         })
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
+        "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
       );
     });
 
@@ -247,7 +247,7 @@ describe("SecretSanta - FreeMinting", async function () {
         value: parseUnits("0", "ether")
       })
     ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'Invalid gift'"
+      "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
     );
 
     const numMinted = await rs.numberMinted();
@@ -312,7 +312,7 @@ describe("SecretSanta - FreeMinting", async function () {
           value: parseUnits("0.028", "ether")
         })
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
+        "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
       );
 
       let numMinted = await rs.numberMinted();
@@ -392,7 +392,7 @@ describe("SecretSanta - FreeMinting", async function () {
           value: parseUnits("0", "ether")
         })
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
+        "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
       );
 
       await expect(
@@ -401,7 +401,7 @@ describe("SecretSanta - FreeMinting", async function () {
           value: parseUnits("0.028", "ether")
         })
       ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'Insufficient Funds'"
+        "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
       );
     });
   });

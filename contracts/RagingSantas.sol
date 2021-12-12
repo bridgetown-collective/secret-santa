@@ -37,7 +37,7 @@ contract RagingSantas is ERC721, Ownable, Functional {
     string public baseURI;
 
     uint256 public matchSeed;
-    uint256 public mintPrice;
+    uint256 public constant mintPrice = 0.03 ether;
 
     uint256 public totalGifts;
     uint256 public numberClaimed;
@@ -64,6 +64,9 @@ contract RagingSantas is ERC721, Ownable, Functional {
     // Mapping from token ID (to make a claim) to token ID tied to claimed gift
     mapping(uint256 => uint256) private _giftRefsToClaim;
 
+    // Mapping address for whitelist membership (gets free mint)
+    mapping(address => bool) public whitelist;
+
     // The Gift Pool
     uint256[] public giftPoolTokens;
 
@@ -77,7 +80,6 @@ contract RagingSantas is ERC721, Ownable, Functional {
       claimActive = false;
       claimPaused = false;
       maxSupply = supply;
-      mintPrice = 0.03 ether;
       maxFreeMints = freeMintsSupply;
     }
 
@@ -112,16 +114,22 @@ contract RagingSantas is ERC721, Ownable, Functional {
         claimPaused = value;
     }
 
-    function setBaseURI(string memory newURI) external onlyOwner {
+    function setBaseURI(string calldata newURI) external onlyOwner {
         baseURI = newURI;
     }
 
-    function setProvHashMint(string memory newHash) external onlyOwner {
+    function setProvHashMint(string calldata newHash) external onlyOwner {
         provHashMint = newHash;
     }
     
-    function setProvHashMatch(string memory newHash) external onlyOwner {
+    function setProvHashMatch(string calldata newHash) external onlyOwner {
         provHashMatch = newHash;
+    }
+
+    function addWhitelist(address[] calldata addresses) external onlyOwner {
+      for(uint256 i = 0; i < addresses.length; i++) {
+        whitelist[addresses[i]] = true;
+      }
     }
 
      // Standard Withdraw function for the owner to pull the contract
@@ -158,36 +166,39 @@ contract RagingSantas is ERC721, Ownable, Functional {
     }
 
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
+        address sender = _msgSender();
 
         // Validate Mint
-        require(mintActive, "Minting Inactive");
-        require((qty + numberMinted) <= maxSupply, "Mint Sold Out");
-        require((qty > 0 && qty <= 10), "Valid Quantity");
-        require((this.balanceOf(_msgSender()) + qty) <= 30, "Exceed Max Per Wallet");
+        require(mintActive, "MintInactive");
+        require((qty + numberMinted) <= maxSupply, "SoldOut");
+        require((qty > 0 && qty <= 10), "ValidQuty");
+        require((this.balanceOf(sender) + qty) <= 30, "ExceedMax");
 
-        // TODO: check WL
+        bool isWhitelist = whitelist[sender];
 
         // Ok with making the whole txn free if before the cutoff
         bool isNotFreeMint = (numberFreeMints + 1 > maxFreeMints);
-        uint256 price = isNotFreeMint ? mintPrice : 0 ether;
-        require(msg.value >= qty * price, "Insufficient Funds");
+
+        uint256 price = (isNotFreeMint && !isWhitelist) ? mintPrice : 0 ether;
+        require(msg.value >= qty * price, "InsufficientFunds");
 
         // Validate Gifts
-        require(nftAddresses.length == qty, "Invalid gift");
-        require(nftTokenIds.length == qty, "Invalid gift");
-
-        uint256 firstMintTokenId = numberMinted;
+        require(nftAddresses.length == qty, "InvalidGift");
+        require(nftTokenIds.length == qty, "InvalidGift");
 
         // Do the Thing
         for(uint256 i = 0; i < qty; i++) {
-            _addGiftToPool(firstMintTokenId + i, _msgSender(), nftAddresses[i], nftTokenIds[i]);
-            _safeMint(_msgSender(), firstMintTokenId + i);
+            _addGiftToPool(numberMinted + i, sender, nftAddresses[i], nftTokenIds[i]);
+            _safeMint(sender, numberMinted + i);
         }
 
         numberMinted += qty;
 
-        if (!isNotFreeMint) {
+        if (!isNotFreeMint && !isWhitelist) {
           numberFreeMints += qty;
+        }
+        if(isWhitelist) {
+          whitelist[sender] = false;
         }
     }
 
@@ -233,10 +244,10 @@ contract RagingSantas is ERC721, Ownable, Functional {
 
     function claimGifts(uint256[] memory tokenIds, address gifteeAddress) external {
       // Can Claim At All
-      require(claimActive && !claimPaused, "Claiming Disabled");
+      require(claimActive && !claimPaused, "ClaimDisabled");
 
       // Must Provide Tokens
-      require(tokenIds.length > 0, "No Tokens");
+      require(tokenIds.length > 0, "NoTokens");
 
       bool wasDelegated = tx.origin != gifteeAddress;
 
@@ -245,13 +256,13 @@ contract RagingSantas is ERC721, Ownable, Functional {
         uint256 tId = tokenIds[i];
 
         // Does Sender own these tokens?
-        require(this.ownerOf(tId) == tx.origin, "Not Owner");
+        require(this.ownerOf(tId) == tx.origin, "NotOwner");
 
         uint256 tIdClaim = _giftRefsToClaim[tId];
         Gift memory giftToClaim = _giftsByTID[tIdClaim];
 
         // Have these tokens been claimed yet?
-        require(!giftToClaim.hasClaimed, "Gift Claimed");
+        require(!giftToClaim.hasClaimed, "GiftClaimed");
 
         // Do the Transfer
         IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.nftTokenId);
