@@ -143,7 +143,6 @@ contract RagingSantas is ERC721, Ownable {
 
     function tokenURI(uint256 tokenId) public view override returns (string memory){
         this.ownerOf(tokenId);
-
         if (claimActive) {
           return string(abi.encodePacked(baseURI, toString(tokenId), ".json"));
         }
@@ -164,15 +163,13 @@ contract RagingSantas is ERC721, Ownable {
     }
 
     function mint(uint256 qty, address[] memory nftAddresses, uint256[] memory nftTokenIds) external payable {
-        address sender = _msgSender();
-
         // Validate Mint
         require(mintActive, "MintInactive");
         require((qty + numberMinted) <= maxSupply, "SoldOut");
         require((qty > 0 && qty <= 10), "ValidQuty");
-        require((this.balanceOf(sender) + qty) <= 30, "ExceedMax");
+        require((this.balanceOf(msg.sender) + qty) <= 30, "ExceedMax");
 
-        bool isWhitelist = whitelist[sender];
+        bool isWhitelist = whitelist[msg.sender];
 
         // Ok with making the whole txn free if before the cutoff
         bool isNotFreeMint = (numberFreeMints + 1 > maxFreeMints);
@@ -181,13 +178,12 @@ contract RagingSantas is ERC721, Ownable {
         require(msg.value >= qty * price, "InsufficientFunds");
 
         // Validate Gifts
-        require(nftAddresses.length == qty, "InvalidGift");
-        require(nftTokenIds.length == qty, "InvalidGift");
+        require(nftAddresses.length == qty && nftTokenIds.length == qty, "InvalidGift");
 
         // Do the Thing
         for(uint256 i = 0; i < qty; i++) {
-            _addGiftToPool(numberMinted + i, sender, nftAddresses[i], nftTokenIds[i]);
-            _safeMint(sender, numberMinted + i);
+            _addGiftToPool(numberMinted + i, msg.sender, nftAddresses[i], nftTokenIds[i]);
+            _safeMint(msg.sender, numberMinted + i);
         }
 
         numberMinted += qty;
@@ -196,7 +192,7 @@ contract RagingSantas is ERC721, Ownable {
           numberFreeMints += qty;
         }
         if(isWhitelist) {
-          whitelist[sender] = false;
+          whitelist[msg.sender] = false;
         }
     }
 
