@@ -5,15 +5,15 @@ export default function About() {
         <table>
           <tr>
             <td className="pr-5">🎅</td>
-            <td>Mint a Raging Santa!</td>
-          </tr>
-          <tr>
-            <td>🎄</td>
-            <td>Give an NFT to the Gift Swap!</td>
+            <td>Mint a Raging Santa by Giving an NFT to the Gift Swap!</td>
           </tr>
           <tr>
             <td>🎁</td>
             <td>Claim a Random Gift from the Swap!</td>
+          </tr>
+          <tr>
+            <td>🎄</td>
+            <td>Share Your Good Tidings With NFT Friends!</td>
           </tr>
         </table>
       </div>

@@ -10,7 +10,10 @@ export default function HowTo() {
           choice for the Raging Santas Gift Swap.
           <br />
           <br />
-          Each Raging Santa costs 0.03 ETH + a gift NFT of your choice in order to mint. 
+          Each Raging Santa costs 0.03 ETH + a gift NFT of your choice in order to mint.
+          <br />
+          <br />
+          The first 250 mints will be free (0 ETH) mints and will only cost a gift NFT of your choice. 
           <br />
           <br />
           Your Raging Santa will be your P.O.S (Proof of Santa) that you gave generously to the Gift
@@ -32,8 +35,8 @@ export default function HowTo() {
           <a href="/gift-showcase" target="_blank">
             Gift Page
           </a>{" "}
-          to show others what you generously gave to the Gift Swap. It may
-          inspire others to join in on the First Ever On-Chain NFT Secret Santa
+          to show others how you decided to pay it forward! It may
+          inspire them to join in on the First Ever On-Chain NFT Secret Santa
           Gift Swap!
         </p>
       </span>

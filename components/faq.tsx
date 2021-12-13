@@ -19,8 +19,8 @@ export default function FAQ() {
           🎄 How many Raging Santa NFTs will be Mintable?
         </p>
         <p className="text-xl">
-          9,999 Raging Santas will be mintable starting on Monday, December
-          13th, 2021 10:00AM ET.
+          9,999 Raging Santas will be mintable starting on Thursday, December
+          16th, 2021 10:00AM ET.
           <br />
           Follow us on{" "}
           <Link href="https://twitter.com/RagingSantasNFT">
@@ -41,8 +41,7 @@ export default function FAQ() {
           <b>Immediately:</b> A one of a kind Raging Santa NFT - rage on!
           <br />
           <b>December 25th:</b> Starting on Christmas Day, the owner of any
-          Raging Santa NFT will be able to claim a random, gifted NFT 🎁 (or
-          regift to a wallet of choice) from the Raging Santas Gift Swap.
+          Raging Santa NFT will be able to claim a random, gifted NFT 🎁 from the Raging Santas Gift Swap.
         </p>
       </span>
 
@@ -54,10 +53,10 @@ export default function FAQ() {
         <p className="text-xl">
           You don't!
           <br />
-          That is the fun of a Secret Santa Swap! (Psst, What do you think these
+          That is part of the fun of a Secret Santa Swap! (Psst, What do you think these
           Raging Santas are Raging about?)
           <br />
-          Some participants may give high-value NFTs while others may give more
+          Some participants may decide to give high-value NFTs while others may give more
           obscure or sentimental ones.
           <br />
           You can always{" "}
@@ -73,7 +72,7 @@ export default function FAQ() {
       <br />
       <span>
         <p className="text-2xl  text-shadow">
-          🧐  Please Keep in Mind{" "}
+          🧐 Please Keep in Mind{" "}
         </p>
         <p className="text-xl">
           Raging Santas NFT is not responsible for the quality or value of gifts
@@ -81,11 +80,12 @@ export default function FAQ() {
           <br />
           You may end up with gold OR a lump-of-coal!
           <br />
-          This is an experimental project with cutting edge technology.
+          This is an experimental game-theory based project using blockchain technology.
           <br />
           Participate in the swap at your own risk!
-          <br />A Raging Santa purchased on a secondary market at a later date
-          may have already been used to claim a gift.
+          <br />
+          <br />Be mindful that a Raging Santa purchased on a secondary market at a later date
+          may have already been used to claim a gift from the giftpool.
         </p>
       </span>
 
