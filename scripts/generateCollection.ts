@@ -20,6 +20,7 @@ function main(quantity: number): void {
   var folderName = `collection-${ds.getFullYear()}-${
     ds.getMonth() + 1
   }-${ds.getDate()}-${ds.getHours()}-${ds.getMinutes()}-${ds.getSeconds()}`;
+  const mapCounts = {};
 
   fs.mkdir(folderName, (err) => {
     if (err) {
@@ -27,17 +28,29 @@ function main(quantity: number): void {
     }
     const svgMap = getSVGMap(fs, path);
     for (let i = 0; i < quantity; i++) {
-      let svgPath = path.join(folderName, `${i}.svg`);
       const svgString = RagingSantaSVGString(i / 1000, svgMap);
-      fs.writeFileSync(svgPath, svgString);
 
       let jsonPath = path.join(folderName, `${i}.json`);
-      fs.writeFileSync(jsonPath, JSON.stringify(RagingSantaTraits(i / 1000)));
+      let traits = RagingSantaTraits(i / 1000);
+      for(let x = 0; x < traits.length; x++) {
+        const {trait_type, value} = traits[x];
+        if(!mapCounts[trait_type]) {
+          mapCounts[trait_type] = {}
+        }
+        if(!mapCounts[trait_type][value]) {
+          mapCounts[trait_type][value] = 0
+        }
+        mapCounts[trait_type][value]++;
+      }
+      fs.writeFileSync(jsonPath, JSON.stringify(traits));
       const inputBuffer = Buffer.from(svgString);
       let pngPath = path.join(folderName, `${i}.png`);
       sharp(inputBuffer, {density: 400}).resize(500, 500).toFile(pngPath);
     }
 
+
+    let countPath = path.join(folderName, 'count.json');
+    fs.writeFileSync(countPath, JSON.stringify(mapCounts));
     console.log("Directory is created.");
   });
 }
