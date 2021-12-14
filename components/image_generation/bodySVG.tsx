@@ -98,7 +98,6 @@ export default function Body(seed: number): Trait {
       break;
     default:
   }
-  console.log("body", variant);
 
   return {
     trait_type: "body",

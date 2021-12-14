@@ -45,6 +45,9 @@ export default function Hat(seed: number): Trait {
     case roll <= 0.78:
       variant = "burglar_mask";
       break;
+    case roll <= 0.795:
+      variant = "camo_8_bit";
+      break;
     case roll <= 0.81:
       variant = "ushanka_gingerbread_wreath";
       break;
@@ -62,6 +65,9 @@ export default function Hat(seed: number): Trait {
       break;
     case roll <= 0.96:
       variant = "burglar_mask_purple";
+      break;
+    case roll <= 0.98:
+      variant = "paper_towel_core";
       break;
     default:
   }
