@@ -33,7 +33,6 @@ export default function Nose(seed: number): Trait {
 
     default:
   }
-    console.log('nose',variant);
 
   return {
     trait_type: "nose",
