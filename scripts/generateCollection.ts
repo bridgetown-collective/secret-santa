@@ -22,16 +22,17 @@ function main(quantity: number): void {
   }-${ds.getDate()}-${ds.getHours()}-${ds.getMinutes()}-${ds.getSeconds()}`;
   const mapCounts = {};
 
-  fs.mkdir(folderName, (err) => {
+  fs.mkdir(folderName, async (err) => {
     if (err) {
       throw err;
     }
     const svgMap = getSVGMap(fs, path);
     for (let i = 0; i < quantity; i++) {
       const svgString = RagingSantaSVGString(i / 1000, svgMap);
-
       let jsonPath = path.join(folderName, `${i}.json`);
+      let pngPath = path.join(folderName, `${i}.png`);
       let traits = RagingSantaTraits(i / 1000);
+
       for(let x = 0; x < traits.length; x++) {
         const {trait_type, value} = traits[x];
         if(!mapCounts[trait_type]) {
@@ -42,12 +43,11 @@ function main(quantity: number): void {
         }
         mapCounts[trait_type][value]++;
       }
+
       fs.writeFileSync(jsonPath, JSON.stringify(traits));
       const inputBuffer = Buffer.from(svgString);
-      let pngPath = path.join(folderName, `${i}.png`);
-      sharp(inputBuffer, {density: 400}).resize(500, 500).toFile(pngPath);
+      await sharp(inputBuffer, {density: 400}).resize(500, 500).toFile(pngPath);
     }
-
 
     let countPath = path.join(folderName, 'count.json');
     fs.writeFileSync(countPath, JSON.stringify(mapCounts));

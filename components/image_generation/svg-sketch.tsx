@@ -90,7 +90,6 @@ export const RagingSantaTraits = (seed: number): Array<Trait> => {
   let roll = rnd.rb(0, 1);
   let traits = [];
 
-  console.log(roll);
   switch(true) {
     case roll < 1:
       traits = generateSanta(seed);
@@ -107,6 +106,7 @@ export const RagingSantaTraits = (seed: number): Array<Trait> => {
     default:
   }
 
+  console.log(roll);
   console.log(traits);
   return traits;
 };
