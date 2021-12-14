@@ -15,6 +15,8 @@ import Mouth, { mouthPrefix } from "./mouthSVG";
 import Nose, { nosePrefix } from "./noseSVG";
 import { Trait } from "./common";
 
+import generateElf from './elf/index';
+
 const SvgContainerDiv = styled.svg`
   border: 0.0625rem solid black;
   border-radius: 0.25rem;
@@ -77,12 +79,6 @@ const generateReindeer = (seed:number): Array<Trait> => {
   return traits;
 };
 
-const generateElf = (seed:number): Array<Trait> => {
-  const traits = [];
-  traits.push(Background(seed));
-  return traits;
-};
-
 const generateDoodle = (seed:number): Array<Trait> => {
   const traits = [];
   traits.push(Background(seed));
@@ -96,7 +92,7 @@ export const RagingSantaTraits = (seed: number): Array<Trait> => {
 
   console.log(roll);
   switch(true) {
-    case roll < 0.99:
+    case roll < 1:
       traits = generateSanta(seed);
       break;
     case roll < 0.90:

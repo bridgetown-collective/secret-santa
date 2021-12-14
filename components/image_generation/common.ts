@@ -1,4 +1,4 @@
-export type TraitTypes = "arms" | "background" | "beard" | "body" | "brows" | "eyes" | "glasses" | "hat" | "head" | "mouth" | "nose" ;
+export type TraitTypes = "arms" | "background" | "beard" | "body" | "bodyShadow" | "brows" | "eyes" | "glasses" | "hat" | "head" | "mouth" | "nose" ;
 export type Trait = {trait_type: TraitTypes, value: string}
 
 export function getSVGMap(fs, path): Record<string, string> {
