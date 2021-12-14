@@ -6,8 +6,8 @@ import Arms, { armsPrefix } from "./armsSVG";
 import Background, { backgroundPrefix } from "./backgroundSVG";
 import Beard, { beardPrefix } from "./beardSVG";
 import Body, { bodyPrefix } from "./bodySVG";
-import Brows, { browsPrefix } from "./browsSVG";
-import Eyes, { eyesPrefix } from "./eyesSVG";
+import BodyShadow, { bodyShadowPrefix } from "./bodyShadowSVG";
+import Brows, { browsPrefix } from "./browsSVG"; import Eyes, { eyesPrefix } from "./eyesSVG";
 import Glasses, { glassesPrefix } from "./glassesSVG";
 import Hat, { hatPrefix } from "./hatSVG";
 import Head, { headPrefix } from "./headSVG";
@@ -27,6 +27,7 @@ const SvgContainerDiv = styled.svg`
 const traitPrefixMap = {
   background: backgroundPrefix,
   body: bodyPrefix,
+  bodyShadow: bodyShadowPrefix,
   head: headPrefix,
   hat: hatPrefix,
   eyes: eyesPrefix,
@@ -38,35 +39,80 @@ const traitPrefixMap = {
   nose: nosePrefix,
 };
 
-export const RagingSantaTraits = (seed: number): Array<Trait> => {
+const generateSanta = (seed:number): Array<Trait> => {
   const rnd = new RND(9998 * seed);
   let roll = rnd.rb(0, 1);
-  const hasHat = roll < 0.8;
+  const hasHat = roll < 0.9;
   roll = rnd.rb(0, 1);
   const hasArms = roll < 0.2;
   roll = rnd.rb(0, 1);
   const hasGlasses = roll < 0.1;
 
-  const traitObj = [];
-  traitObj.push(Background(seed));
-  traitObj.push(Body(seed));
-  traitObj.push(Head(seed));
+  const traits = [];
+  traits.push(Background(seed));
+  traits.push(BodyShadow(seed));
+  traits.push(Body(seed));
+  traits.push(Head(seed));
   if (hasHat) {
-    traitObj.push(Hat(seed));
+    traits.push(Hat(seed));
   }
-  traitObj.push(Eyes(seed));
+  traits.push(Eyes(seed));
   if (hasArms) {
-    traitObj.push(Arms(seed));
+    traits.push(Arms(seed));
   }
-  traitObj.push(Brows(seed));
-  traitObj.push(Beard(seed));
-  traitObj.push(Mouth(seed));
-  if (hasGlasses) {
-    traitObj.push(Glasses(seed));
+  traits.push(Brows(seed));
+  traits.push(Beard(seed));
+  //traits.push(Mouth(seed));
+  //if (hasGlasses) {
+  //  traits.push(Glasses(seed));
+  //}
+  //traits.push(Nose(seed));
+
+  return traits;
+}
+
+const generateReindeer = (seed:number): Array<Trait> => {
+  const traits = [];
+  traits.push(Background(seed));
+  return traits;
+};
+
+const generateElf = (seed:number): Array<Trait> => {
+  const traits = [];
+  traits.push(Background(seed));
+  return traits;
+};
+
+const generateDoodle = (seed:number): Array<Trait> => {
+  const traits = [];
+  traits.push(Background(seed));
+  return traits;
+};
+
+export const RagingSantaTraits = (seed: number): Array<Trait> => {
+  const rnd = new RND(11118 * seed);
+  let roll = rnd.rb(0, 1);
+  let traits = [];
+
+  console.log(roll);
+  switch(true) {
+    case roll < 0.99:
+      traits = generateSanta(seed);
+      break;
+    case roll < 0.90:
+      traits = generateElf(seed);
+      break;
+    case roll < 0.95:
+      traits = generateReindeer(seed);
+      break;
+    case roll < 1:
+      traits = generateDoodle(seed);
+      break;
+    default:
   }
-  traitObj.push(Nose(seed));
-  console.log(traitObj);
-  return traitObj;
+
+  console.log(traits);
+  return traits;
 };
 
 export const RagingSantaSVGString = (
