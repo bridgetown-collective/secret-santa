@@ -69,7 +69,6 @@ export default function Beard(seed: number): Trait {
     default:
   }
 
-  console.log("beard", variant);
   return {
     trait_type: "beard",
     value: variant

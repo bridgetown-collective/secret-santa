@@ -62,11 +62,11 @@ const generateSanta = (seed:number): Array<Trait> => {
   }
   traits.push(Brows(seed));
   traits.push(Beard(seed));
-  //traits.push(Mouth(seed));
-  //if (hasGlasses) {
-  //  traits.push(Glasses(seed));
-  //}
-  //traits.push(Nose(seed));
+  traits.push(Mouth(seed));
+  if (hasGlasses) {
+    traits.push(Glasses(seed));
+  }
+  traits.push(Nose(seed));
 
   return traits;
 }
