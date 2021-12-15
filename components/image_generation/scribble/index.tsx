@@ -1,0 +1,30 @@
+import RND from "../randomizer";
+import { Trait } from "./../common";
+import Background from "./backgroundSVG";
+import BodyShadow from "./bodyShadowSVG";
+import Body from "./bodySVG";
+import Head from "./headSVG";
+import Hat from "./hatSVG";
+import Eyes from "./eyesSVG";
+import Beard from "./beardSVG";
+import Mouth from "./mouthSVG";
+
+const generateScribble = (seed: number): Array<Trait> => {
+  const rnd = new RND(3158009668298 * seed);
+
+  let roll = rnd.rb(0, 1);
+  const hasGlasses = roll < 0.1;
+
+  const traits = [];
+  traits.push(Background(seed));
+  traits.push(BodyShadow(seed));
+  traits.push(Body(seed));
+  traits.push(Head(seed));
+  traits.push(Hat(seed));
+  traits.push(Eyes(seed));
+  traits.push(Beard(seed));
+  traits.push(Mouth(seed));
+  return traits;
+};
+
+export default generateScribble;
