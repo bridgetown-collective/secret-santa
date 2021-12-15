@@ -91,18 +91,19 @@ export const RagingSantaTraits = (seed: number): Array<Trait> => {
   let traits = [];
 
   switch(true) {
-    case roll < 1:
+    case roll < 0.95:
       traits = generateSanta(roll);
       break;
-    case roll < 0.90:
+    //case roll < 0.9666:
+    case roll < 1:
       traits = generateElf(roll);
       break;
-    case roll < 0.95:
-      traits = generateReindeer(roll);
-      break;
-    case roll < 1:
-      traits = generateDoodle(roll);
-      break;
+    //case roll < 0.9833333:
+    //  traits = generateReindeer(roll);
+    //  break;
+    //case roll <= 1:
+    //  traits = generateDoodle(roll);
+    //  break;
     default:
   }
 
