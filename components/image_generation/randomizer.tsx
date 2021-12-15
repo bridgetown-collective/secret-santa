@@ -1,8 +1,19 @@
+import crypto from "crypto";
+
 class RND {
   private seed: number;
 
   constructor(seed: number) {
-    this.seed = seed;
+    this.seed = this.scramble(seed);
+  }
+
+  scramble(n) {
+    let seedStr = crypto
+      .createHash("sha256")
+      .update(n.toString())
+      .digest("hex");
+    let truncateStr = seedStr.substr(seedStr.length - 10);
+    return Number(`0x${truncateStr}`);
   }
 
   rd() {
@@ -29,7 +40,7 @@ class RND {
       // And swap it with the current element.
       [array[currentIndex], array[randomIndex]] = [
         array[randomIndex],
-        array[currentIndex],
+        array[currentIndex]
       ];
     }
 

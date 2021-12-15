@@ -76,28 +76,26 @@ const generateSanta = (seed:number): Array<Trait> => {
 }
 
 export const RagingSantaTraits = (seed: number): Array<Trait> => {
-  const rnd = new RND(166018 * seed);
+  const rnd = new RND(166013 * seed);
   let roll = rnd.rb(0, 1);
   let traits = [];
 
   switch(true) {
     case roll < 0.95:
-      traits = generateSanta(roll);
+      traits = generateSanta(seed);
       break;
     case roll < 0.9666:
-      traits = generateElf(roll);
+      traits = generateElf(seed);
       break;
     case roll < 0.99:
-      traits = generateReindeer(roll);
+      traits = generateReindeer(seed);
       break;
     case roll <= 1:
-      traits = generateScribble(roll);
+      traits = generateScribble(seed);
       break;
     default:
   }
 
-  console.log(roll);
-  console.log(traits);
   return traits;
 };
 

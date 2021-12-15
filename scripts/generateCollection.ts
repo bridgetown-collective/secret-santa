@@ -38,7 +38,7 @@ function main(quantity: number): void {
     }
     const svgMap = getSVGMap(fs, path);
     for (let i = 0; i < quantity; i++) {
-      let seed = 709 * i + 1;
+      let seed = i;
       const svgString = RagingSantaSVGString(seed, svgMap);
       let jsonPath = path.join(folderName, `${i}.json`);
       let pngPath = path.join(folderName, `${i}.png`);
