@@ -1,4 +1,4 @@
-import { Trait } from "./common";
+import { Trait } from "../common";
 
 export const headPrefix = "3000_face_";
 

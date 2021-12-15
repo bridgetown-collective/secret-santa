@@ -1,4 +1,4 @@
-import { Trait } from './common';
+import { Trait } from '../common';
 
 export const glassesPrefix = "8100_glasses_";
 
