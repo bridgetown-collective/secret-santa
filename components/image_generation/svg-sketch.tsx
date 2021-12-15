@@ -16,6 +16,7 @@ import Nose, { nosePrefix } from "./noseSVG";
 import { Trait } from "./common";
 
 import generateElf from './elf/index';
+import generateReindeer from './reindeer/index';
 
 const SvgContainerDiv = styled.svg`
   border: 0.0625rem solid black;
@@ -42,7 +43,7 @@ const traitPrefixMap = {
 };
 
 const generateSanta = (seed:number): Array<Trait> => {
-  const rnd = new RND(9998 * seed);
+  const rnd = new RND(9971598 * seed);
   let roll = rnd.rb(0, 1);
   const hasHat = roll < 0.9;
   roll = rnd.rb(0, 1);
@@ -73,17 +74,11 @@ const generateSanta = (seed:number): Array<Trait> => {
   return traits;
 }
 
-const generateReindeer = (seed:number): Array<Trait> => {
-  const traits = [];
-  traits.push(Background(seed));
-  return traits;
-};
-
-const generateDoodle = (seed:number): Array<Trait> => {
-  const traits = [];
-  traits.push(Background(seed));
-  return traits;
-};
+//const generateDoodle = (seed:number): Array<Trait> => {
+//  const traits = [];
+//  traits.push(Background(seed));
+//  return traits;
+//};
 
 export const RagingSantaTraits = (seed: number): Array<Trait> => {
   const rnd = new RND(166018 * seed);
@@ -94,13 +89,13 @@ export const RagingSantaTraits = (seed: number): Array<Trait> => {
     case roll < 0.95:
       traits = generateSanta(roll);
       break;
-    //case roll < 0.9666:
-    case roll < 1:
+    case roll < 0.9666:
       traits = generateElf(roll);
       break;
-    //case roll < 0.9833333:
-    //  traits = generateReindeer(roll);
-    //  break;
+    case roll < 1:
+    case roll < 0.9833333:
+      traits = generateReindeer(roll);
+      break;
     //case roll <= 1:
     //  traits = generateDoodle(roll);
     //  break;
