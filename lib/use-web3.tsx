@@ -8,7 +8,7 @@ const CONTRACT_ADDRESSES = {
   // First Deployed Rinkeby
   //  testnet: "0x9d12BD80274cF93079ccBEE7D1F44664363dCfA4", // this is for rinkeby testnet
   // Second Deployed Rinkeby
-  testnet: "0x27f2850F5eFce26DE940d29306f8Ea95615CB595", // this is for rinkeby testnet
+  testnet: "0xd3e2cbE01575948dA4e50F9fa3d30192e2B1007c", // this is for rinkeby testnet
 };
 
 let web3: Web3 | null = null;
@@ -93,7 +93,7 @@ export default function useWeb3() {
         });
 
       contract.methods
-        .totalSupply()
+        .maxSupply()
         .call()
         .then((totalSupply) => {
           setTotalMinted(totalSupply);
@@ -107,6 +107,7 @@ export default function useWeb3() {
         });
     } catch (e) {
       // we failed communicating with the contract here
+      console.log(e);
     }
   }, [contract]);
 
@@ -127,6 +128,7 @@ export default function useWeb3() {
     account,
     contract,
     contractAddress,
+    freeMintsLeft,
     isClaimActive,
     isMintActive,
     hasWeb3,

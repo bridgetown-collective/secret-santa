@@ -270,6 +270,19 @@ const abi: AbiItem[] = [
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "freeMintsLeft",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -455,32 +468,6 @@ const abi: AbiItem[] = [
 	},
 	{
 		"inputs": [],
-		"name": "matchSeed",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "maxFreeMints",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "maxSupply",
 		"outputs": [
 			{
@@ -570,19 +557,6 @@ const abi: AbiItem[] = [
 	{
 		"inputs": [],
 		"name": "numberClaimed",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "numberFreeMints",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -762,6 +736,19 @@ const abi: AbiItem[] = [
 			}
 		],
 		"name": "setBaseURI",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_freeMintsLeft",
+				"type": "uint256"
+			}
+		],
+		"name": "setFreeMintsLeft",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"

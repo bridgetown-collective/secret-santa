@@ -86,26 +86,26 @@ export function OwnerGallery({
     return null;
   }
 
-  if (nfts.length == 0 && !loading) {
-    if (network !== "main") {
-      return (
-        <div className="flex flex-wrap justify-center align-center owner-gallery">
-          <RenderNFT
-            nft={{
-              contractAddress: "0x9d12bd80274cf93079ccbee7d1f44664363dcfa4", // replace this for testing
-              tokenId: "1", // replace this for testing
-              metadata: {
-                name: "TESTNET NFT",
-                image:
-                  "https://lh3.googleusercontent.com/bXQ7PUJ2k_dzuIQMFrfiKJ0wKjGDeWm2EPDuNXqLiW6z9ZY5HnDagZl3Lhufv8rop_G9B9O7Pb7nqrj0gdyPXTH-=s0",
-              },
-            }}
-            {...props}
-          />
-        </div>
-      );
-    }
+  if (network !== "main") {
+    return (
+      <div className="flex flex-wrap justify-center align-center owner-gallery">
+        <RenderNFT
+          nft={{
+            contractAddress: "0xe87124262c58430738dceff08dd498eaa071be1e", // replace this for testing
+            tokenId: "0", // replace this for testing
+            metadata: {
+              name: "TESTNET NFT",
+              image:
+                "https://lh3.googleusercontent.com/bXQ7PUJ2k_dzuIQMFrfiKJ0wKjGDeWm2EPDuNXqLiW6z9ZY5HnDagZl3Lhufv8rop_G9B9O7Pb7nqrj0gdyPXTH-=s0",
+            },
+          }}
+          {...props}
+        />
+      </div>
+    );
+  }
 
+  if (nfts.length == 0 && !loading) {
     return (
       <div className="flex flex-col justify-center align-middle w-full h-full text-white text-center">
         <h1 className="text-7xl" style={{ color: "var(--color-yellow)" }}>

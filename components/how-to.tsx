@@ -17,7 +17,7 @@ export default function HowTo() {
           <br />
           <br />
           Your Raging Santa will be your P.O.S (Proof of Santa) that you gave generously to the Gift
-          Swap and will also be proof of your claim to a Free Gift on Christmas Day!
+          Swap and will also be proof of your claim to a Gift on Christmas Day!
         </p>
       </span>
 

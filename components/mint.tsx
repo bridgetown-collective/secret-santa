@@ -18,7 +18,7 @@ export default function Mint() {
     isMintActive,
     requestConnection,
     totalMinted,
-    web3,
+    web3
   } = useWeb3();
   const [isMinting, setIsMinting] = useState<boolean>(false);
   const [selectedNFT, setSelectedNFT] = useState(null);
@@ -108,9 +108,13 @@ export default function Mint() {
           <div className="flex flex-col lg:flex-row justify-center">
             <div className="flex flex-col text-center">
               <Image src="/assets/eth_box.png" height="364" width="364" />
-              <h1 className="text-4xl lg:pt-12 iniya-header">{
-                !!freeMintsLeft ? `${freeMintsLeft} Free Mints Left!` : "0.03 ETH"
-              }</h1>
+              <h1 className="text-4xl lg:pt-12 iniya-header">
+                {!!freeMintsLeft
+                  ? `${freeMintsLeft} Free Mint${
+                      freeMintsLeft > 1 ? "s" : ""
+                    } Left!`
+                  : "0.03 ETH"}
+              </h1>
             </div>
             <div className="flex align-middle text-center m-auto h-36 lg:h-auto flex-col">
               <h1 className="text-9xl font-black color-pink mt-0 mx-8 mb-40">
@@ -180,7 +184,7 @@ export default function Mint() {
         >
           <MyGallery
             size={150}
-            onSelection={(nft) => {
+            onSelection={nft => {
               setSelectedNFT(nft);
               setShowNFTSelectionModal(false);
             }}
