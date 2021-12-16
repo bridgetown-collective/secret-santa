@@ -66,7 +66,7 @@ describe("SecretSanta - FreeMinting", async function () {
 
     expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
     expect(await rs.numGiftsLeft()).to.equal(1);
-    expect(await rs.numberFreeMints()).to.equal(0);
+    expect(await rs.freeMintsLeft()).to.equal(1);
 
     await expectTokenOwnedToBe(rs, accounts[0].address, []);
     await expectTokenOwnedToBe(rs, accounts[1].address, [0]);
@@ -84,7 +84,7 @@ describe("SecretSanta - FreeMinting", async function () {
 
     expect(await rs.ownerOf(1)).to.equal(accounts[2].address);
     expect(await rs.numGiftsLeft()).to.equal(2);
-    expect(await rs.numberFreeMints()).to.equal(1);
+    expect(await rs.freeMintsLeft()).to.equal(0);
 
     await expectTokenOwnedToBe(rs, accounts[2].address, [1]);
 
@@ -102,7 +102,7 @@ describe("SecretSanta - FreeMinting", async function () {
     numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("2");
     expect(await rs.numGiftsLeft()).to.equal(2);
-    expect(await rs.numberFreeMints()).to.equal(1);
+    expect(await rs.freeMintsLeft()).to.equal(0);
     await expectTokenOwnedToBe(rs, accounts[3].address, []);
 
     await rs.connect(accounts[0]).addWhitelist([accounts[3].address]);
@@ -117,7 +117,7 @@ describe("SecretSanta - FreeMinting", async function () {
     numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("3");
     expect(await rs.numGiftsLeft()).to.equal(3);
-    expect(await rs.numberFreeMints()).to.equal(1);
+    expect(await rs.freeMintsLeft()).to.equal(0);
     await expectTokenOwnedToBe(rs, accounts[3].address, [2]);
   });
 
@@ -143,7 +143,7 @@ describe("SecretSanta - FreeMinting", async function () {
 
     expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
     expect(await rs.numGiftsLeft()).to.equal(1);
-    expect(await rs.numberFreeMints()).to.equal(0);
+    expect(await rs.freeMintsLeft()).to.equal(1);
 
     await expectTokenOwnedToBe(rs, accounts[0].address, []);
     await expectTokenOwnedToBe(rs, accounts[1].address, [0]);
@@ -162,7 +162,7 @@ describe("SecretSanta - FreeMinting", async function () {
 
     expect(await rs.ownerOf(1)).to.equal(accounts[2].address);
     expect(await rs.numGiftsLeft()).to.equal(2);
-    expect(await rs.numberFreeMints()).to.equal(1);
+    expect(await rs.freeMintsLeft()).to.equal(0);
 
     await expectTokenOwnedToBe(rs, accounts[2].address, [1]);
 
@@ -179,7 +179,7 @@ describe("SecretSanta - FreeMinting", async function () {
     numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("2");
     expect(await rs.numGiftsLeft()).to.equal(2);
-    expect(await rs.numberFreeMints()).to.equal(1);
+    expect(await rs.freeMintsLeft()).to.equal(0);
     expect(await rs.whitelist(accounts[1].address)).to.equal(false);
     await expectTokenOwnedToBe(rs, accounts[1].address, [0]);
   });

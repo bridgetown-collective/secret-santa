@@ -13,6 +13,7 @@ export default function Mint() {
     contract,
     contractAddress: ragingSantasContractAddress,
     hasWeb3,
+    freeMintsLeft,
     isClaimActive,
     isMintActive,
     requestConnection,
@@ -60,9 +61,11 @@ export default function Mint() {
 
       setMintingMessage("Sending it to Santa...");
 
+      const price = Boolean(freeMintsLeft) ? "0" : "0.03";
+
       await contract.methods
         .mint(1, [contractAddress], [tokenId])
-        .send({ from: account, value: Web3.utils.toWei("0.03", "ether") });
+        .send({ from: account, value: Web3.utils.toWei(price, "ether") });
 
       setIsMinting(false);
       setMintingMessage("Santa thanks you!");
@@ -105,7 +108,9 @@ export default function Mint() {
           <div className="flex flex-col lg:flex-row justify-center">
             <div className="flex flex-col text-center">
               <Image src="/assets/eth_box.png" height="364" width="364" />
-              <h1 className="text-4xl lg:pt-12 iniya-header">0.03 ETH</h1>
+              <h1 className="text-4xl lg:pt-12 iniya-header">{
+                !!freeMintsLeft ? `${freeMintsLeft} Free Mints Left!` : "0.03 ETH"
+              }</h1>
             </div>
             <div className="flex align-middle text-center m-auto h-36 lg:h-auto flex-col">
               <h1 className="text-9xl font-black color-pink mt-0 mx-8 mb-40">

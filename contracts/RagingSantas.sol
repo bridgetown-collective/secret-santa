@@ -15,16 +15,14 @@ contract RagingSantas is ERC721, Ownable {
     string public provHashMatch;
     string public baseURI;
 
-    uint256 public matchSeed;
     uint256 public constant mintPrice = 0.03 ether;
 
     uint256 public totalGifts;
     uint256 public numberClaimed;
 
     uint256 public maxSupply;
-    uint256 public maxFreeMints;
     uint256 public numberMinted;
-    uint256 public numberFreeMints;
+    uint256 public freeMintsLeft;
 
     struct Gift {
       uint256 gifterTokenId;
@@ -59,7 +57,7 @@ contract RagingSantas is ERC721, Ownable {
       claimActive = false;
       claimPaused = false;
       maxSupply = supply;
-      maxFreeMints = freeMintsSupply;
+      freeMintsLeft = freeMintsSupply;
     }
 
     function toString(uint256 value) internal pure returns (string memory) {
@@ -90,11 +88,10 @@ contract RagingSantas is ERC721, Ownable {
         require(totalGifts > 1);
 
         claimActive = true;
-        matchSeed = seed;
         mintActive = false;
 
         // Fisher Yates Shuffle
-        uint256 mLen = totalGifts - 1;
+        uint256 mLen = totalGifts.sub(1);
         for (uint256 i = 0; i < mLen; i++) {
           uint256 n = uint256(keccak256(abi.encodePacked(i + seed))) % (totalGifts);
           (giftPoolTokens[i], giftPoolTokens[n]) = (giftPoolTokens[n], giftPoolTokens[i]);
@@ -122,6 +119,10 @@ contract RagingSantas is ERC721, Ownable {
     
     function setProvHashMatch(string calldata newHash) external onlyOwner {
         provHashMatch = newHash;
+    }
+
+    function setFreeMintsLeft(uint256 _freeMintsLeft) external onlyOwner {
+        freeMintsLeft = _freeMintsLeft;
     }
 
     function addWhitelist(address[] calldata addresses) external onlyOwner {
@@ -172,7 +173,7 @@ contract RagingSantas is ERC721, Ownable {
         bool isWhitelist = whitelist[msg.sender];
 
         // Ok with making the whole txn free if before the cutoff
-        bool isNotFreeMint = (numberFreeMints + 1 > maxFreeMints);
+        bool isNotFreeMint = (freeMintsLeft == 0);
 
         uint256 price = (isNotFreeMint && !isWhitelist) ? mintPrice : 0 ether;
         require(msg.value >= qty * price, "InsufficientFunds");
@@ -186,10 +187,10 @@ contract RagingSantas is ERC721, Ownable {
             _safeMint(msg.sender, numberMinted + i);
         }
 
-        numberMinted += qty;
+        numberMinted = numberMinted.add(qty);
 
         if (!isNotFreeMint && !isWhitelist) {
-          numberFreeMints += qty;
+          freeMintsLeft = (freeMintsLeft > qty) ? freeMintsLeft.sub(qty) : 0;
         }
         if(isWhitelist) {
           whitelist[msg.sender] = false;
@@ -268,7 +269,7 @@ contract RagingSantas is ERC721, Ownable {
           _giftsByTID[tIdClaim].gifteeDelegator = tx.origin;
         }
       }
-      numberClaimed += tokenIds.length;
+      numberClaimed = numberClaimed.add(tokenIds.length);
     }
 
     receive() external payable {}

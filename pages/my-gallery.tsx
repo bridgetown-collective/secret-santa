@@ -92,7 +92,7 @@ export function OwnerGallery({
         <div className="flex flex-wrap justify-center align-center owner-gallery">
           <RenderNFT
             nft={{
-              contractAddress: "0x04025c765b3de739640035c4ca58efbc6688fa57", // replace this for testing
+              contractAddress: "0x9d12bd80274cf93079ccbee7d1f44664363dcfa4", // replace this for testing
               tokenId: "1", // replace this for testing
               metadata: {
                 name: "TESTNET NFT",
