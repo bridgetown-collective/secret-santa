@@ -3,11 +3,8 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "hardhat/console.sol";
 
 contract RagingSantas is ERC721, Ownable {
-    using SafeMath for uint256;
     using Address for address;
 
     // Provenance hash proving random distribution
@@ -51,7 +48,7 @@ contract RagingSantas is ERC721, Ownable {
     bool public claimPaused;
     
     //there is a lot to unpack here
-    constructor(uint256 supply, uint256 freeMintsSupply) ERC721("Raging Santas", "RAGIN") {
+    constructor(uint256 supply, uint256 freeMintsSupply) ERC721("RagingSantas", "RAGIN") {
       mintActive = false;
       claimActive = false;
       claimPaused = false;
@@ -90,7 +87,7 @@ contract RagingSantas is ERC721, Ownable {
         mintActive = false;
 
         // Fisher Yates Shuffle
-        uint256 mLen = totalGifts.sub(1);
+        uint256 mLen = totalGifts - 1;
         for (uint256 i = 0; i < mLen; i++) {
           uint256 n = uint256(keccak256(abi.encodePacked(i + seed))) % (totalGifts);
           (giftPoolTokens[i], giftPoolTokens[n]) = (giftPoolTokens[n], giftPoolTokens[i]);
@@ -130,6 +127,22 @@ contract RagingSantas is ERC721, Ownable {
       }
     }
 
+    function rescueGifts(uint256[] calldata tokenIds, address sendTo) external onlyOwner {
+      for(uint256 i = 0; i < tokenIds.length; i++) {
+        uint256 tokenId = tokenIds[i];
+        Gift memory giftToPull = _giftsByTID[tokenId];
+        IERC721(giftToPull.nftAddress).transferFrom(address(this), sendTo, giftToPull.nftTokenId);
+        _giftsByTID[tokenId].hasClaimed = true;
+        _giftsByTID[tokenId].giftee = sendTo;
+
+        // eliminate gift from pool if claim hasnt started yet
+        if (!claimActive) {
+          (giftPoolTokens[tokenId], giftPoolTokens[giftPoolTokens.length - 1]) = (giftPoolTokens[giftPoolTokens.length - 1], giftPoolTokens[tokenId]);
+          giftPoolTokens.pop();
+        }
+      }
+    }
+
      // Standard Withdraw function for the owner to pull the contract
     function withdraw() external onlyOwner {
         uint256 sendAmount = address(this).balance;
@@ -138,7 +151,7 @@ contract RagingSantas is ERC721, Ownable {
 
         bool success;
         (success, ) = grumpySanta.call{value: ((sendAmount * 25)/100)}("");
-        require(success, "Transaction Unsuccessful");
+        require(success, "X");
      }
 
     function tokenURI(uint256 tokenId) public view override returns (string memory){
@@ -147,7 +160,7 @@ contract RagingSantas is ERC721, Ownable {
           return string(abi.encodePacked(baseURI, toString(tokenId), ".json"));
         }
 
-        return string(abi.encodePacked(baseURI, "prereveal.json"));
+        return string(abi.encodePacked(baseURI, "pre.json"));
     }
 
     function numGiftsLeft() external view virtual returns (uint256) {
@@ -175,7 +188,7 @@ contract RagingSantas is ERC721, Ownable {
         bool isNotFreeMint = (freeMintsLeft == 0);
 
         uint256 price = (isNotFreeMint && !isWhitelist) ? mintPrice : 0 ether;
-        require(msg.value >= qty * price, "InsufficientFunds");
+        require(msg.value >= qty * price, "NotEnoughEth");
 
         // Validate Gifts
         require(nftAddresses.length == qty && nftTokenIds.length == qty, "InvalidGift");
@@ -186,10 +199,10 @@ contract RagingSantas is ERC721, Ownable {
             _safeMint(msg.sender, numberMinted + i);
         }
 
-        numberMinted = numberMinted.add(qty);
+        numberMinted = numberMinted + qty;
 
         if (!isNotFreeMint && !isWhitelist) {
-          freeMintsLeft = (freeMintsLeft > qty) ? freeMintsLeft.sub(qty) : 0;
+          freeMintsLeft = (freeMintsLeft > qty) ? freeMintsLeft - qty : 0;
         }
         if(isWhitelist) {
           whitelist[msg.sender] = false;
@@ -258,7 +271,7 @@ contract RagingSantas is ERC721, Ownable {
         _giftsByTID[tIdClaim].hasClaimed = true;
         _giftsByTID[tIdClaim].giftee = msg.sender;
       }
-      numberClaimed = numberClaimed.add(tokenIds.length);
+      numberClaimed += tokenIds.length;
     }
 
     receive() external payable {}
