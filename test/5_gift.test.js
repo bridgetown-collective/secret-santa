@@ -203,7 +203,6 @@ describe("RagingSantas - Minting", async function () {
       expect(gift.nftTokenId).to.equal(1);
       expect(gift.gifter).to.equal(accounts[2].address);
       expect(gift.giftee).to.equal(AddressZero);
-      expect(gift.gifteeDelegator).to.equal(AddressZero);
       expect(gift.hasClaimed).to.equal(false);
 
       gift = await rs.getGiftByGifterToken(1);
@@ -211,7 +210,6 @@ describe("RagingSantas - Minting", async function () {
       expect(gift.nftTokenId).to.equal(0);
       expect(gift.gifter).to.equal(accounts[1].address);
       expect(gift.giftee).to.equal(AddressZero);
-      expect(gift.gifteeDelegator).to.equal(AddressZero);
       expect(gift.hasClaimed).to.equal(false);
 
       await expect(rs.getGiftByGifterToken(2)).to.be.revertedWith(

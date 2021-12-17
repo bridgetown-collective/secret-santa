@@ -31,7 +31,6 @@ contract RagingSantas is ERC721, Ownable {
       address nftAddress;
       address gifter;
       address giftee;
-      address gifteeDelegator;
       bool hasClaimed;
     }
 
@@ -167,7 +166,7 @@ contract RagingSantas is ERC721, Ownable {
         // Validate Mint
         require(mintActive, "MintInactive");
         require((qty + numberMinted) <= maxSupply, "SoldOut");
-        require((qty > 0 && qty <= 10), "ValidQuty");
+        require((qty > 0 && qty <= 10), "ValidQty");
         require((this.balanceOf(msg.sender) + qty) <= 30, "ExceedMax");
 
         bool isWhitelist = whitelist[msg.sender];
@@ -214,7 +213,6 @@ contract RagingSantas is ERC721, Ownable {
         nftAddress,
         from,
         address(0),
-        address(0),
         false
       );
 
@@ -234,24 +232,18 @@ contract RagingSantas is ERC721, Ownable {
     }
 
     function claimGifts(uint256[] memory tokenIds) external {
-      this.claimGifts(tokenIds, _msgSender());
-    }
-
-    function claimGifts(uint256[] memory tokenIds, address gifteeAddress) external {
       // Can Claim At All
       require(claimActive && !claimPaused, "ClaimDisabled");
 
       // Must Provide Tokens
       require(tokenIds.length > 0, "NoTokens");
 
-      bool wasDelegated = tx.origin != gifteeAddress;
-
       // Iterate through RagingSanta token Ids
       for(uint256 i = 0; i < tokenIds.length; i++) {
         uint256 tId = tokenIds[i];
 
         // Does Sender own these tokens?
-        require(this.ownerOf(tId) == tx.origin, "NotOwner");
+        require(this.ownerOf(tId) == msg.sender, "NotOwner");
 
         uint256 tIdClaim = _giftRefsToClaim[tId];
         Gift memory giftToClaim = _giftsByTID[tIdClaim];
@@ -260,14 +252,11 @@ contract RagingSantas is ERC721, Ownable {
         require(!giftToClaim.hasClaimed, "GiftClaimed");
 
         // Do the Transfer
-        IERC721(giftToClaim.nftAddress).transferFrom(address(this), gifteeAddress, giftToClaim.nftTokenId);
+        IERC721(giftToClaim.nftAddress).transferFrom(address(this), msg.sender, giftToClaim.nftTokenId);
 
         // Update the gift object
         _giftsByTID[tIdClaim].hasClaimed = true;
-        _giftsByTID[tIdClaim].giftee = gifteeAddress;
-        if (wasDelegated) {
-          _giftsByTID[tIdClaim].gifteeDelegator = tx.origin;
-        }
+        _giftsByTID[tIdClaim].giftee = msg.sender;
       }
       numberClaimed = numberClaimed.add(tokenIds.length);
     }

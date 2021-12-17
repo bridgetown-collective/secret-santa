@@ -149,24 +149,6 @@ describe("SecretSanta - Claiming", async function () {
     );
   });
 
-  it("should let someone send their gift to a wallet of choice", async () => {
-    expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.not.contain(
-      accounts[3].address
-    );
-
-    const rn_seed = 456123789;
-    await rs.connect(owner).activateClaim(rn_seed);
-    await rs
-      .connect(accounts[1])
-      ["claimGifts(uint256[],address)"]([0], accounts[3].address);
-
-    expect(accounts[1].address).to.not.equal(await dc.ownerOf(0));
-    expect(accounts[1].address).to.not.equal(await dc.ownerOf(1));
-    expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.contain(
-      accounts[3].address
-    );
-  });
-
   describe("upon claims", async () => {
     it("should keep giftpool up to date upon claim", async () => {
       expect([await dc.ownerOf(0), await dc.ownerOf(1)]).to.not.contain(
