@@ -27,7 +27,11 @@ describe("RagingSantas - Minting", async function () {
   it("should not allow minting if minting hasnt been activated", async () => {
     expect(await rs.mintActive()).to.equal(false);
 
-    expect(rs.connect(accounts[1]).mint(1, [], [])).to.be.revertedWith(
+    await expect(
+      rs
+        .connect(accounts[1])
+        .mint("0x0000000000000000000000000000000000000000", 1)
+    ).to.be.revertedWith(
       "VM Exception while processing transaction: reverted with reason string 'MintInactive'"
     );
   });
@@ -39,20 +43,24 @@ describe("RagingSantas - Minting", async function () {
 
     // Just short of the 0.03 mint price
     await expect(
-      rs.connect(accounts[1]).mint(1, [], [], {
-        from: accounts[1].address,
-        value: parseUnits(".0299", "ether")
-      })
+      rs
+        .connect(accounts[1])
+        .mint("0x0000000000000000000000000000000000000000", 1, {
+          from: accounts[1].address,
+          value: parseUnits(".0299", "ether"),
+        })
     ).to.be.revertedWith(
       "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
     );
 
-    // Just short of 2 mints
+    // Just short of 1 mint
     await expect(
-      rs.connect(accounts[1]).mint(2, [], [], {
-        from: accounts[1].address,
-        value: parseUnits(".0599", "ether")
-      })
+      rs
+        .connect(accounts[1])
+        .mint("0x0000000000000000000000000000000000000000", 1, {
+          from: accounts[1].address,
+          value: parseUnits(".0299", "ether"),
+        })
     ).to.be.revertedWith(
       "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
     );
@@ -61,18 +69,6 @@ describe("RagingSantas - Minting", async function () {
     expect(numMinted.toString()).to.equal("0");
 
     await expectTokenOwnedToBe(rs, accounts[1].address, []);
-  });
-
-  it("should not allow minting if insufficient entry fee gift", async () => {
-    await rs.connect(accounts[0]).activateMint();
-    await expect(
-      rs.connect(accounts[1]).mint(1, [], [], {
-        from: accounts[1].address,
-        value: parseUnits(".03", "ether")
-      })
-    ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
-    );
   });
 
   describe("assuming I have some nfts to gift", async () => {
@@ -87,65 +83,6 @@ describe("RagingSantas - Minting", async function () {
       await dc.connect(accounts[2]).mint(accounts[2].address);
     });
 
-    it("should not allow minting when gift parameters are invalid", async () => {
-      // Verify account owns the first token of dummy collection
-      expect(accounts[1].address).to.equal(await dc.ownerOf(0));
-
-      // Approve RagingSanta for gifting this token (to happen in webUI)
-      dc.connect(accounts[1]).approve(rs.address, 0);
-
-      await rs.connect(accounts[0]).activateMint();
-
-      await expect(
-        rs.connect(accounts[1]).mint(2, [dc.address], [0], {
-          from: accounts[1].address,
-          value: parseUnits(".06", "ether")
-        })
-      ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
-      );
-
-      await expect(
-        rs.connect(accounts[1]).mint(1, [dc.address], [0, 1], {
-          from: accounts[1].address,
-          value: parseUnits(".03", "ether")
-        })
-      ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
-      );
-
-      await expect(
-        rs.connect(accounts[1]).mint(1, [dc.address, dc.address], [0], {
-          from: accounts[1].address,
-          value: parseUnits(".03", "ether")
-        })
-      ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
-      );
-    });
-
-    it("should allow minting multiple", async () => {
-      await dc.connect(accounts[1]).mint(accounts[1].address);
-      await dc.connect(accounts[1]).approve(rs.address, 0);
-      await dc.connect(accounts[1]).approve(rs.address, 2);
-
-      await rs.connect(accounts[0]).activateMint();
-      await rs.connect(accounts[1]).mint(2, [dc.address, dc.address], [0, 2], {
-        from: accounts[1].address,
-        value: parseUnits(".06", "ether")
-      });
-
-      const numMinted = await rs.numberMinted();
-      expect(numMinted.toString()).to.equal("2");
-
-      expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
-      expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
-      expect(await rs.numGiftsLeft()).to.equal(2);
-
-      await expectTokenOwnedToBe(rs, accounts[0].address, []);
-      await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1]);
-    });
-
     it("should allow minting if all conditions are met", async () => {
       // Verify account owns the first token of dummy collection
       expect(accounts[1].address).to.equal(await dc.ownerOf(0));
@@ -157,14 +94,14 @@ describe("RagingSantas - Minting", async function () {
 
       await rs.connect(accounts[0]).activateMint();
 
-      await rs.connect(accounts[1]).mint(1, [dc.address], [0], {
+      await rs.connect(accounts[1]).mint(dc.address, 0, {
         from: accounts[1].address,
-        value: parseUnits(".03", "ether")
+        value: parseUnits(".03", "ether"),
       });
 
-      await rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+      await rs.connect(accounts[2]).mint(dc.address, 1, {
         from: accounts[2].address,
-        value: parseUnits(".03", "ether")
+        value: parseUnits(".03", "ether"),
       });
 
       expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
@@ -185,14 +122,14 @@ describe("RagingSantas - Minting", async function () {
 
       await rs.connect(accounts[0]).activateMint();
 
-      await rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+      await rs.connect(accounts[2]).mint(dc.address, 1, {
         from: accounts[2].address,
-        value: parseUnits(".03", "ether")
+        value: parseUnits(".03", "ether"),
       });
 
-      await rs.connect(accounts[1]).mint(1, [dc.address], [0], {
+      await rs.connect(accounts[1]).mint(dc.address, 0, {
         from: accounts[1].address,
-        value: parseUnits(".03", "ether")
+        value: parseUnits(".03", "ether"),
       });
 
       await expectTokenOwnedToBe(rs, accounts[2].address, [0]);
@@ -234,25 +171,6 @@ describe("SecretSanta - FreeMinting", async function () {
     rs = await RagingSantas.deploy(numSupply, numFreeMints);
   });
 
-  it("not accept invalid gift parameters", async () => {
-    expect(await rs.mintActive()).to.equal(false);
-    await rs.connect(accounts[0]).activateMint();
-    expect(await rs.mintActive()).to.equal(true);
-
-    await expect(
-      rs.connect(accounts[1]).mint(1, [], [], {
-        from: accounts[1].address,
-        value: parseUnits("0", "ether")
-      })
-    ).to.be.revertedWith(
-      "VM Exception while processing transaction: reverted with reason string 'InvalidGift'"
-    );
-
-    const numMinted = await rs.numberMinted();
-    expect(numMinted.toString()).to.equal("0");
-    await expectTokenOwnedToBe(rs, accounts[1].address, []);
-  });
-
   describe("assuming I have some nfts to gift", async () => {
     let dc;
 
@@ -271,9 +189,13 @@ describe("SecretSanta - FreeMinting", async function () {
       await dc.connect(accounts[1]).approve(rs.address, 2);
 
       await rs.connect(accounts[0]).activateMint();
-      await rs.connect(accounts[1]).mint(2, [dc.address, dc.address], [0, 2], {
+      await rs.connect(accounts[1]).mint(dc.address, 0, {
         from: accounts[1].address,
-        value: parseUnits("0", "ether")
+        value: parseUnits("0", "ether"),
+      });
+      await rs.connect(accounts[1]).mint(dc.address, 2, {
+        from: accounts[1].address,
+        value: parseUnits("0", "ether"),
       });
 
       const numMinted = await rs.numberMinted();
@@ -297,17 +219,25 @@ describe("SecretSanta - FreeMinting", async function () {
       await rs.connect(accounts[0]).activateMint();
 
       // Account 1 Mints 3
-      await rs.connect(accounts[1]).mint(3, [dc.address, dc.address, dc.address], [0, 2, 3], {
+      await rs.connect(accounts[1]).mint(dc.address, 0, {
         from: accounts[1].address,
-        value: parseUnits("0", "ether")
+        value: parseUnits("0", "ether"),
+      });
+      await rs.connect(accounts[1]).mint(dc.address, 2, {
+        from: accounts[1].address,
+        value: parseUnits("0", "ether"),
+      });
+      await rs.connect(accounts[1]).mint(dc.address, 3, {
+        from: accounts[1].address,
+        value: parseUnits("0", "ether"),
       });
 
       // Account 2 Mints 1 with not enough ether (free mints ran out)
       await dc.connect(accounts[2]).approve(rs.address, 1);
       await expect(
-        rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+        rs.connect(accounts[2]).mint(dc.address, 1, {
           from: accounts[2].address,
-          value: parseUnits("0.028", "ether")
+          value: parseUnits("0.028", "ether"),
         })
       ).to.be.revertedWith(
         "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
@@ -326,10 +256,10 @@ describe("SecretSanta - FreeMinting", async function () {
       await expectTokenOwnedToBe(rs, accounts[2].address, []);
 
       // Account 2 Mints 1 with enough ether
-      await rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+      await rs.connect(accounts[2]).mint(dc.address, 1, {
         from: accounts[2].address,
-        value: parseUnits("0.038", "ether")
-      })
+        value: parseUnits("0.038", "ether"),
+      });
 
       numMinted = await rs.numberMinted();
       expect(numMinted.toString()).to.equal("4");
@@ -345,62 +275,63 @@ describe("SecretSanta - FreeMinting", async function () {
       await expectTokenOwnedToBe(rs, accounts[2].address, [3]);
     });
 
-    it("should allow free minting for the whole txn", async () => {
-      await dc.connect(accounts[1]).mint(accounts[1].address);
-      await dc.connect(accounts[1]).approve(rs.address, 0);
-      await dc.connect(accounts[1]).approve(rs.address, 2);
+    // @TODO: remove this test?
+    // it("should allow free minting for the whole txn", async () => {
+    //   await dc.connect(accounts[1]).mint(accounts[1].address);
+    //   await dc.connect(accounts[1]).approve(rs.address, 0);
+    //   await dc.connect(accounts[1]).approve(rs.address, 2);
 
-      await rs.connect(accounts[0]).activateMint();
+    //   await rs.connect(accounts[0]).activateMint();
 
-      // Account 1 Mints 2 for free
-      await rs.connect(accounts[1]).mint(2, [dc.address, dc.address], [0, 2], {
-        from: accounts[1].address,
-        value: parseUnits("0", "ether")
-      });
+    //   // Account 1 Mints 2 for free
+    //   await rs.connect(accounts[1]).mint(2, [dc.address, dc.address], [0, 2], {
+    //     from: accounts[1].address,
+    //     value: parseUnits("0", "ether")
+    //   });
 
-      // Account 2 Mints 2 for free 
-      await dc.connect(accounts[2]).mint(accounts[2].address);
-      await dc.connect(accounts[2]).approve(rs.address, 1);
-      await dc.connect(accounts[2]).approve(rs.address, 3);
-      await  rs.connect(accounts[2]).mint(2, [dc.address, dc.address], [1, 3], {
-          from: accounts[2].address,
-          value: parseUnits("0", "ether")
-        })
+    //   // Account 2 Mints 2 for free
+    //   await dc.connect(accounts[2]).mint(accounts[2].address);
+    //   await dc.connect(accounts[2]).approve(rs.address, 1);
+    //   await dc.connect(accounts[2]).approve(rs.address, 3);
+    //   await  rs.connect(accounts[2]).mint(2, [dc.address, dc.address], [1, 3], {
+    //       from: accounts[2].address,
+    //       value: parseUnits("0", "ether")
+    //     })
 
-      let numMinted = await rs.numberMinted();
-      expect(numMinted.toString()).to.equal("4");
+    //   let numMinted = await rs.numberMinted();
+    //   expect(numMinted.toString()).to.equal("4");
 
-      expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
-      expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
-      expect(await rs.ownerOf(2)).to.equal(accounts[2].address);
-      expect(await rs.ownerOf(3)).to.equal(accounts[2].address);
-      expect(await rs.numGiftsLeft()).to.equal(4);
+    //   expect(await rs.ownerOf(0)).to.equal(accounts[1].address);
+    //   expect(await rs.ownerOf(1)).to.equal(accounts[1].address);
+    //   expect(await rs.ownerOf(2)).to.equal(accounts[2].address);
+    //   expect(await rs.ownerOf(3)).to.equal(accounts[2].address);
+    //   expect(await rs.numGiftsLeft()).to.equal(4);
 
-      await expectTokenOwnedToBe(rs, accounts[0].address, []);
-      await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1]);
-      await expectTokenOwnedToBe(rs, accounts[2].address, [2, 3]);
+    //   await expectTokenOwnedToBe(rs, accounts[0].address, []);
+    //   await expectTokenOwnedToBe(rs, accounts[1].address, [0, 1]);
+    //   await expectTokenOwnedToBe(rs, accounts[2].address, [2, 3]);
 
-      // Account 2 Mints 1 more and tries to get it for free
-      await dc.connect(accounts[2]).mint(accounts[2].address);
-      await dc.connect(accounts[2]).approve(rs.address, 4);
+    //   // Account 2 Mints 1 more and tries to get it for free
+    //   await dc.connect(accounts[2]).mint(accounts[2].address);
+    //   await dc.connect(accounts[2]).approve(rs.address, 4);
 
-      await expect(
-        rs.connect(accounts[2]).mint(1, [dc.address], [4], {
-          from: accounts[2].address,
-          value: parseUnits("0", "ether")
-        })
-      ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
-      );
+    //   await expect(
+    //     rs.connect(accounts[2]).mint(1, [dc.address], [4], {
+    //       from: accounts[2].address,
+    //       value: parseUnits("0", "ether")
+    //     })
+    //   ).to.be.revertedWith(
+    //     "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
+    //   );
 
-      await expect(
-        rs.connect(accounts[2]).mint(1, [dc.address], [4], {
-          from: accounts[2].address,
-          value: parseUnits("0.028", "ether")
-        })
-      ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
-      );
-    });
+    //   await expect(
+    //     rs.connect(accounts[2]).mint(1, [dc.address], [4], {
+    //       from: accounts[2].address,
+    //       value: parseUnits("0.028", "ether")
+    //     })
+    //   ).to.be.revertedWith(
+    //     "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
+    //   );
+    // });
   });
 });

@@ -18,7 +18,7 @@ export default function Mint() {
     isMintActive,
     requestConnection,
     totalMinted,
-    web3
+    web3,
   } = useWeb3();
   const [isMinting, setIsMinting] = useState<boolean>(false);
   const [selectedNFT, setSelectedNFT] = useState(null);
@@ -64,7 +64,7 @@ export default function Mint() {
       const price = Boolean(freeMintsLeft) ? "0" : "0.03";
 
       await contract.methods
-        .mint(1, [contractAddress], [tokenId])
+        .mint(contractAddress, tokenId)
         .send({ from: account, value: Web3.utils.toWei(price, "ether") });
 
       setIsMinting(false);
@@ -184,7 +184,7 @@ export default function Mint() {
         >
           <MyGallery
             size={150}
-            onSelection={nft => {
+            onSelection={(nft) => {
               setSelectedNFT(nft);
               setShowNFTSelectionModal(false);
             }}
