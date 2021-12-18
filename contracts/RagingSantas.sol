@@ -48,7 +48,6 @@ contract RagingSantas is ERC721, Ownable {
 
     bool public mintActive;
     bool public claimActive;
-    bool public claimPaused;
 
     //there is a lot to unpack here
     constructor(uint256 supply, uint256 freeMintsSupply)
@@ -56,7 +55,6 @@ contract RagingSantas is ERC721, Ownable {
     {
         mintActive = false;
         claimActive = false;
-        claimPaused = false;
         maxSupply = supply;
         freeMintsLeft = freeMintsSupply;
     }
@@ -89,6 +87,12 @@ contract RagingSantas is ERC721, Ownable {
         require(totalGifts > 1);
 
         claimActive = true;
+
+        if (mintActive == false) {
+            // don't reshuffle if mint wasn't active
+            return;
+        }
+
         mintActive = false;
 
         // Fisher Yates Shuffle
@@ -112,8 +116,8 @@ contract RagingSantas is ERC721, Ownable {
         _giftRefsToClaim[giftPoolTokens[0]] = giftPoolTokens[mLen];
     }
 
-    function pauseClaim(bool value) external onlyOwner {
-        claimPaused = value;
+    function pauseClaim() external onlyOwner {
+        claimActive = false;
     }
 
     function setBaseURI(string calldata newURI) external onlyOwner {
@@ -138,32 +142,26 @@ contract RagingSantas is ERC721, Ownable {
         }
     }
 
-    function rescueGifts(uint256[] calldata tokenIds, address sendTo)
-        external
-        onlyOwner
-    {
-        for (uint256 i = 0; i < tokenIds.length; i++) {
-            uint256 tokenId = tokenIds[i];
-            Gift memory giftToPull = _giftsByTID[tokenId];
-            IERC721(giftToPull.nftAddress).transferFrom(
-                address(this),
-                sendTo,
-                giftToPull.nftTokenId
-            );
-            _giftsByTID[tokenId].hasClaimed = true;
-            _giftsByTID[tokenId].giftee = sendTo;
+    function rescueGift(uint256 tokenId, address sendTo) external onlyOwner {
+        Gift memory giftToPull = _giftsByTID[tokenId];
+        IERC721(giftToPull.nftAddress).transferFrom(
+            address(this),
+            sendTo,
+            giftToPull.nftTokenId
+        );
+        _giftsByTID[tokenId].hasClaimed = true;
+        _giftsByTID[tokenId].giftee = sendTo;
 
-            // eliminate gift from pool if claim hasnt started yet
-            if (!claimActive) {
-                (
-                    giftPoolTokens[tokenId],
-                    giftPoolTokens[giftPoolTokens.length - 1]
-                ) = (
-                    giftPoolTokens[giftPoolTokens.length - 1],
-                    giftPoolTokens[tokenId]
-                );
-                giftPoolTokens.pop();
-            }
+        // eliminate gift from pool if claim hasnt started yet
+        if (!claimActive) {
+            (
+                giftPoolTokens[tokenId],
+                giftPoolTokens[giftPoolTokens.length - 1]
+            ) = (
+                giftPoolTokens[giftPoolTokens.length - 1],
+                giftPoolTokens[tokenId]
+            );
+            giftPoolTokens.pop();
         }
     }
 
@@ -222,6 +220,7 @@ contract RagingSantas is ERC721, Ownable {
         require(mintActive, "MintInactive");
         require((1 + numberMinted) <= maxSupply, "SoldOut");
         require((this.balanceOf(msg.sender) + 1) <= 30, "ExceedMax");
+        require(nftAddress != address(this), "CantRegift");
 
         bool isWhitelist = whitelist[msg.sender];
 
@@ -292,7 +291,7 @@ contract RagingSantas is ERC721, Ownable {
 
     function claimGifts(uint256[] memory tokenIds) external {
         // Can Claim At All
-        require(claimActive && !claimPaused, "ClaimDisabled");
+        require(claimActive, "ClaimDisabled");
 
         // Must Provide Tokens
         require(tokenIds.length > 0, "NoTokens");

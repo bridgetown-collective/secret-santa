@@ -226,7 +226,7 @@ describe("SecretSanta - Claiming", async function () {
       numGiftsLeft = Number((await rs.numGiftsLeft()).toString());
       expect(numGiftsLeft).to.equal(1);
 
-      await rs.connect(owner).pauseClaim(true);
+      await rs.connect(owner).pauseClaim();
 
       await expect(
         rs.connect(accounts[2])["claimGifts(uint256[])"]([1])
@@ -234,7 +234,7 @@ describe("SecretSanta - Claiming", async function () {
         "VM Exception while processing transaction: reverted with reason string 'ClaimDisabled'"
       );
 
-      await rs.connect(owner).pauseClaim(false);
+      await rs.connect(owner).activateClaim(0);
 
       await rs.connect(accounts[2])["claimGifts(uint256[])"]([1]);
 
