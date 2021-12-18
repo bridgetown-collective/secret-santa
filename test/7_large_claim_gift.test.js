@@ -17,26 +17,26 @@ describe("SecretSanta - Large Claiming", async function () {
     const numSupply = accounts.length;
     const freeMints = 0;
     rs = await RagingSantas.deploy(numSupply, freeMints);
-    rs.connect(owner).setProvHashMint('abcdef');
-    rs.connect(owner).setProvHashMatch('012345');
+    rs.connect(owner).setProvHashMint("abcdef");
+    rs.connect(owner).setProvHashMatch("012345");
 
     const DummyCollection = await hre.ethers.getContractFactory(
       "DummyCollection"
     );
     dc = await DummyCollection.deploy("Dummy", "DUM");
 
-    for(let i = 1; i < accounts.length; i++) {
-      console.log(i-1, accounts[i].address);
+    for (let i = 1; i < accounts.length; i++) {
+      console.log(i - 1, accounts[i].address);
       await dc.connect(accounts[i]).mint(accounts[i].address);
-      dc.connect(accounts[i]).approve(rs.address, i-1);
+      dc.connect(accounts[i]).approve(rs.address, i - 1);
     }
 
     await rs.connect(owner).activateMint();
 
-    for(let i = 1; i < accounts.length; i++) {
-      await rs.connect(accounts[i]).mint(1, [dc.address], [i-1], {
+    for (let i = 1; i < accounts.length; i++) {
+      await rs.connect(accounts[i]).mint(dc.address, i - 1, {
         from: accounts[i].address,
-        value: parseUnits(".03", "ether")
+        value: parseUnits(".03", "ether"),
       });
     }
   });
@@ -45,12 +45,19 @@ describe("SecretSanta - Large Claiming", async function () {
     const rn = 17261481202;
     await rs.connect(owner).activateClaim(rn);
 
-    for(let i = 1; i < accounts.length; i++) {
-      await rs.connect(accounts[i])["claimGifts(uint256[])"]([i-1]);
+    for (let i = 1; i < accounts.length; i++) {
+      await rs.connect(accounts[i])["claimGifts(uint256[])"]([i - 1]);
 
-      let giftGetting = await rs.getGiftByGifteeToken(i-1);
-      console.log('TokenId', i-1, 'GETTING GIFT FROM TokenId ', giftGetting.gifterTokenId.toString());
-      expect(await dc.ownerOf(giftGetting.nftTokenId)).to.equal(accounts[i].address);
+      let giftGetting = await rs.getGiftByGifteeToken(i - 1);
+      console.log(
+        "TokenId",
+        i - 1,
+        "GETTING GIFT FROM TokenId ",
+        giftGetting.gifterTokenId.toString()
+      );
+      expect(await dc.ownerOf(giftGetting.nftTokenId)).to.equal(
+        accounts[i].address
+      );
       expect(giftGetting.giftee).to.equal(accounts[i].address);
       expect(giftGetting.hasClaimed).to.equal(true);
 

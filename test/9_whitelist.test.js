@@ -34,15 +34,16 @@ describe("SecretSanta - FreeMinting", async function () {
   });
 
   it("should not let you whitelist an address if youre not owner", async () => {
-    await expect(rs.connect(accounts[1]).addWhitelist([accounts[1].address])
-    ).to.be.revertedWith(
-      'Ownable: caller is not the owner'
-    );
+    await expect(
+      rs.connect(accounts[1]).addWhitelist([accounts[1].address])
+    ).to.be.revertedWith("Ownable: caller is not the owner");
   });
 
   it("should let you whitelist an address(s) if you're the owner", async () => {
     await rs.connect(accounts[0]).addWhitelist([accounts[1].address]);
-    await rs.connect(accounts[0]).addWhitelist([accounts[2].address, accounts[3].address]);
+    await rs
+      .connect(accounts[0])
+      .addWhitelist([accounts[2].address, accounts[3].address]);
   });
 
   it("should give free mint if you're on whitelist", async () => {
@@ -54,12 +55,10 @@ describe("SecretSanta - FreeMinting", async function () {
     await rs.connect(accounts[0]).activateMint();
 
     // Account 1 Mints 1 (whitelist)
-    await rs
-      .connect(accounts[1])
-      .mint(1, [dc.address], [0], {
-        from: accounts[1].address,
-        value: parseUnits("0", "ether")
-      });
+    await rs.connect(accounts[1]).mint(dc.address, 0, {
+      from: accounts[1].address,
+      value: parseUnits("0", "ether"),
+    });
 
     let numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("1");
@@ -72,12 +71,10 @@ describe("SecretSanta - FreeMinting", async function () {
     await expectTokenOwnedToBe(rs, accounts[1].address, [0]);
 
     // Account 2 Mints 1 (free mint)
-    await rs
-      .connect(accounts[2])
-      .mint(1, [dc.address], [1], {
-        from: accounts[2].address,
-        value: parseUnits("0", "ether")
-      });
+    await rs.connect(accounts[2]).mint(dc.address, 1, {
+      from: accounts[2].address,
+      value: parseUnits("0", "ether"),
+    });
 
     numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("2");
@@ -89,14 +86,13 @@ describe("SecretSanta - FreeMinting", async function () {
     await expectTokenOwnedToBe(rs, accounts[2].address, [1]);
 
     // Account 3 Mints 1 (free mint fails)
-    await expect(rs
-      .connect(accounts[3])
-      .mint(1, [dc.address], [2], {
+    await expect(
+      rs.connect(accounts[3]).mint(dc.address, 2, {
         from: accounts[3].address,
-        value: parseUnits("0", "ether")
+        value: parseUnits("0", "ether"),
       })
     ).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
+      "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
     );
 
     numMinted = await rs.numberMinted();
@@ -107,12 +103,10 @@ describe("SecretSanta - FreeMinting", async function () {
 
     await rs.connect(accounts[0]).addWhitelist([accounts[3].address]);
 
-    await rs
-      .connect(accounts[3])
-      .mint(1, [dc.address], [2], {
-        from: accounts[3].address,
-        value: parseUnits("0", "ether")
-      });
+    await rs.connect(accounts[3]).mint(dc.address, 2, {
+      from: accounts[3].address,
+      value: parseUnits("0", "ether"),
+    });
 
     numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("3");
@@ -131,12 +125,10 @@ describe("SecretSanta - FreeMinting", async function () {
 
     // Account 1 Mints 1 (whitelist)
     expect(await rs.whitelist(accounts[1].address)).to.equal(true);
-    await rs
-      .connect(accounts[1])
-      .mint(1, [dc.address], [0], {
-        from: accounts[1].address,
-        value: parseUnits("0", "ether")
-      });
+    await rs.connect(accounts[1]).mint(dc.address, 0, {
+      from: accounts[1].address,
+      value: parseUnits("0", "ether"),
+    });
 
     let numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("1");
@@ -150,12 +142,10 @@ describe("SecretSanta - FreeMinting", async function () {
     expect(await rs.whitelist(accounts[0].address)).to.equal(false);
 
     // Account 2 Mints 1 (free mint)
-    await rs
-      .connect(accounts[2])
-      .mint(1, [dc.address], [1], {
-        from: accounts[2].address,
-        value: parseUnits("0", "ether")
-      });
+    await rs.connect(accounts[2]).mint(dc.address, 1, {
+      from: accounts[2].address,
+      value: parseUnits("0", "ether"),
+    });
 
     numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("2");
@@ -167,14 +157,14 @@ describe("SecretSanta - FreeMinting", async function () {
     await expectTokenOwnedToBe(rs, accounts[2].address, [1]);
 
     // Account 1 Mints 1 (whitelist)
-    await expect(rs
-      .connect(accounts[1])
-      .mint(1, [dc.address], [0], {
+    await expect(
+      rs.connect(accounts[1]).mint(dc.address, 0, {
         from: accounts[1].address,
-        value: parseUnits("0", "ether")
-      })).to.be.revertedWith(
-        "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
-      );
+        value: parseUnits("0", "ether"),
+      })
+    ).to.be.revertedWith(
+      "VM Exception while processing transaction: reverted with reason string 'InsufficientFunds'"
+    );
 
     numMinted = await rs.numberMinted();
     expect(numMinted.toString()).to.equal("2");

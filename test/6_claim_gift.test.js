@@ -34,13 +34,13 @@ describe("SecretSanta - Claiming", async function () {
     dc.connect(accounts[2]).approve(rs.address, 1);
 
     await rs.connect(owner).activateMint();
-    await rs.connect(accounts[1]).mint(1, [dc.address], [0], {
+    await rs.connect(accounts[1]).mint(dc.address, 0, {
       from: accounts[1].address,
-      value: parseUnits(".03", "ether")
+      value: parseUnits(".03", "ether"),
     });
-    await rs.connect(accounts[2]).mint(1, [dc.address], [1], {
+    await rs.connect(accounts[2]).mint(dc.address, 1, {
       from: accounts[2].address,
-      value: parseUnits(".03", "ether")
+      value: parseUnits(".03", "ether"),
     });
     console.log("accounts[1]", accounts[1].address, "gifted dc:0");
     console.log("accounts[2]", accounts[2].address, "gifted dc:1");
@@ -226,7 +226,7 @@ describe("SecretSanta - Claiming", async function () {
       numGiftsLeft = Number((await rs.numGiftsLeft()).toString());
       expect(numGiftsLeft).to.equal(1);
 
-      await rs.connect(owner).pauseClaim(true);
+      await rs.connect(owner).pauseClaim();
 
       await expect(
         rs.connect(accounts[2])["claimGifts(uint256[])"]([1])
@@ -234,9 +234,9 @@ describe("SecretSanta - Claiming", async function () {
         "VM Exception while processing transaction: reverted with reason string 'ClaimDisabled'"
       );
 
-      await rs.connect(owner).pauseClaim(false);
+      await rs.connect(owner).activateClaim(0);
 
-      await rs.connect(accounts[2])["claimGifts(uint256[])"]([1])
+      await rs.connect(accounts[2])["claimGifts(uint256[])"]([1]);
 
       expect(accounts[2].address).to.not.equal(await dc.ownerOf(1));
       expect(accounts[2].address).to.equal(await dc.ownerOf(0));
