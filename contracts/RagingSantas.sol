@@ -194,12 +194,7 @@ contract RagingSantas is ERC721, Ownable {
         returns (string memory)
     {
         this.ownerOf(tokenId);
-        if (claimActive) {
-            return
-                string(abi.encodePacked(baseURI, toString(tokenId), ".json"));
-        }
-
-        return string(abi.encodePacked(baseURI, "prereveal.json"));
+        return string(abi.encodePacked(baseURI, toString(tokenId), ".json"));
     }
 
     function numGiftsLeft() external view virtual returns (uint256) {
