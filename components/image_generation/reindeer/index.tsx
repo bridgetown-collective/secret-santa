@@ -11,7 +11,7 @@ import Mouth from "./mouthSVG";
 import Glasses from "./glassesSVG";
 import Nose from "./noseSVG";
 
-const generateReindeer = (seed: number): Array<Trait> => {
+const generateReindeer = (seed: number, includeShadow: boolean): Array<Trait> => {
   const rnd = new RND(16662348298 * seed);
 
   let roll = rnd.rb(0, 1);
@@ -19,7 +19,9 @@ const generateReindeer = (seed: number): Array<Trait> => {
 
   const traits = [];
   traits.push(Background(seed));
-  traits.push(BodyShadow(seed));
+  if (includeShadow) {
+    traits.push(BodyShadow(seed));
+  }
   traits.push(Body(seed));
   traits.push(Head(seed));
   traits.push(Hat(seed));

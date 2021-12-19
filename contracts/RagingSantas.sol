@@ -17,7 +17,6 @@ contract RagingSantas is ERC721, Ownable {
 
     uint256 public constant mintPrice = 0.03 ether;
 
-    uint256 public totalGifts;
     uint256 public numberClaimed;
 
     uint256 public maxSupply;
@@ -83,7 +82,7 @@ contract RagingSantas is ERC721, Ownable {
     }
 
     function activateClaim(uint256 seed) external onlyOwner {
-        totalGifts = giftPoolTokens.length;
+        uint256 totalGifts = giftPoolTokens.length;
         require(totalGifts > 1);
 
         claimActive = true;

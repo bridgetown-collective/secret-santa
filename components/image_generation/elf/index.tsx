@@ -11,7 +11,7 @@ import Mouth from "./mouthSVG";
 import Glasses from "./glassesSVG";
 import Nose from "./noseSVG";
 
-const generateElf = (seed: number): Array<Trait> => {
+const generateElf = (seed: number, includeShadow: boolean): Array<Trait> => {
   const rnd = new RND(18298 * seed);
 
   let roll = rnd.rb(0, 1);
@@ -21,7 +21,9 @@ const generateElf = (seed: number): Array<Trait> => {
 
   const traits = [];
   traits.push(Background(seed));
-  traits.push(BodyShadowElves(seed));
+  if (includeShadow) {
+    traits.push(BodyShadowElves(seed));
+  }
   traits.push(Body(seed));
   traits.push(Head(seed));
   traits.push(Hat(seed));

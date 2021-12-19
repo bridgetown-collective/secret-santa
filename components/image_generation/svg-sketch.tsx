@@ -43,7 +43,7 @@ const traitPrefixMap = {
   nose: nosePrefix,
 };
 
-const generateSanta = (seed:number): Array<Trait> => {
+const generateSanta = (seed:number, includeShadow: boolean): Array<Trait> => {
   const rnd = new RND(9971598 * seed);
   let roll = rnd.rb(0, 1);
   const hasHat = roll < 0.9;
@@ -54,7 +54,11 @@ const generateSanta = (seed:number): Array<Trait> => {
 
   const traits = [];
   traits.push(Background(seed));
-  traits.push(BodyShadow(seed));
+
+  if (includeShadow) {
+    traits.push(BodyShadow(seed));
+  }
+
   traits.push(Body(seed));
   traits.push(Head(seed));
   if (hasHat) {
@@ -75,23 +79,23 @@ const generateSanta = (seed:number): Array<Trait> => {
   return traits;
 }
 
-export const RagingSantaTraits = (seed: number): Array<Trait> => {
+export const RagingSantaTraits = (seed: number, includeShadow: boolean): Array<Trait> => {
   const rnd = new RND(166013 * seed);
   let roll = rnd.rb(0, 1);
   let traits = [];
 
   switch(true) {
     case roll < 0.95:
-      traits = generateSanta(seed);
+      traits = generateSanta(seed, includeShadow);
       break;
     case roll < 0.9666:
-      traits = generateElf(seed);
+      traits = generateElf(seed, includeShadow);
       break;
     case roll < 0.99:
-      traits = generateReindeer(seed);
+      traits = generateReindeer(seed, includeShadow);
       break;
     case roll <= 1:
-      traits = generateScribble(seed);
+      traits = generateScribble(seed, includeShadow);
       break;
     default:
   }
@@ -103,7 +107,7 @@ export const RagingSantaSVGString = (
   seed: number,
   svgMap: Record<string, string>
 ): string => {
-  const allElements = RagingSantaTraits(seed)
+  const allElements = RagingSantaTraits(seed, true)
     .filter(v => v)
     .map(({ trait_type, value }): string => {
       let prefix: string = traitPrefixMap[trait_type];

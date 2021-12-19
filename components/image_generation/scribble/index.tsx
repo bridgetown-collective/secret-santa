@@ -8,10 +8,12 @@ import Eyes from "./eyesSVG";
 import Beard from "./beardSVG";
 import Mouth from "./mouthSVG";
 
-const generateScribble = (seed: number): Array<Trait> => {
+const generateScribble = (seed: number, includeShadow: boolean): Array<Trait> => {
   const traits = [];
   traits.push(Background(seed));
-  traits.push(BodyShadow(seed));
+  if (includeShadow) {
+    traits.push(BodyShadow(seed));
+  }
   traits.push(Body(seed));
   traits.push(Head(seed));
   traits.push(Hat(seed));
