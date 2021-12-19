@@ -10,6 +10,7 @@ import {
   RagingSantaTraits
 } from "../components/image_generation/svg-sketch";
 
+const fsPromises = fs.promises;
 const program = new Command();
 program.option("-q, --quantity <quantity>", "number to generate");
 
@@ -35,11 +36,15 @@ function main(quantity: number): void {
     }
     const svgMap = getSVGMap(fs, path);
     let provenanceHashConcat = "";
+    await fsPromises.mkdir(path.join(folderName, "prereveal"));
+    await fsPromises.mkdir(path.join(folderName, "reveal"));
+
     for (let i = 0; i < quantity; i++) {
       let seed = i;
       const svgString = RagingSantaSVGString(seed, svgMap);
-      let jsonPath = path.join(folderName, `${i}.json`);
-      let pngPath = path.join(folderName, `${i}.png`);
+      let jsonPreRevealPath = path.join(folderName, "prereveal", `${i}.json`);
+      let jsonRevealPath = path.join(folderName, "reveal", `${i}.json`);
+      let pngPath = path.join(folderName, "reveal", `${i}.png`);
       let traits = RagingSantaTraits(seed, false);
       let jsonStr = JSON.stringify(traits);
 
@@ -75,6 +80,14 @@ function main(quantity: number): void {
       fs.writeFileSync(pngPath, buffer);
 
       const imageProvHash = genHash(buffer);
+      const prerevealMetadata = {
+        name: `Raging Santas #${i}`,
+        description: "An On-Chain NFT Secret Santa Swap",
+        image:
+          "https://www.ragingsantas.xyz/assets/raging_santas_animated_preview.gif"
+      };
+      fs.writeFileSync(jsonPreRevealPath, JSON.stringify(prerevealMetadata));
+
       const metadata = {
         name: `Raging Santas #${i}`,
         description: `An On-Chain NFT Secret Santa Swap`,
@@ -82,18 +95,20 @@ function main(quantity: number): void {
         attributes: traits,
         image: `<someIPFSUrl>/${i}.png`
       };
-      fs.writeFileSync(jsonPath, JSON.stringify(metadata));
+      fs.writeFileSync(jsonRevealPath, JSON.stringify(metadata));
       console.log(imageProvHash);
       provenanceHashConcat += imageProvHash;
     }
+
     console.log("fullconcat", provenanceHashConcat);
     const provHash = genHash(provenanceHashConcat);
     console.log("provHash", provHash);
-    let countPath = path.join(folderName, "count.json");
+
+    let summaryPath = path.join(folderName, "summary.json");
     fs.writeFileSync(
-      countPath,
+      summaryPath,
       JSON.stringify({
-        traits: mapCounts,
+        traitCounts: mapCounts,
         collisions,
         provenanceHash: provHash
       })
