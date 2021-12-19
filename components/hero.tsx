@@ -16,7 +16,7 @@ export default function Hero() {
       <div className="pl-0 text-center pb-12 santa-gif">
         <Image
           className="rounded-full nice-shadow"
-          src="/assets/raging_santas_slowed_2.gif"
+          src="/assets/raging_santas_animated_preview.gif"
           alt=""
           width={400}
           height={400}
