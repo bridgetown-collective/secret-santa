@@ -4,6 +4,7 @@ import { Command } from "commander";
 import sharp from "sharp";
 import crypto from "crypto";
 
+import generateProvenanceMatchHash from "./generateProvenanceMatchHash";
 import { getSVGMap } from "../components/image_generation/common";
 import {
   RagingSantaSVGString,
@@ -96,13 +97,14 @@ function main(quantity: number): void {
         image: `<someIPFSUrl>/${i}.png`
       };
       fs.writeFileSync(jsonRevealPath, JSON.stringify(metadata));
-      console.log(imageProvHash);
+      console.log(`Processing Token ${i}`);
+      console.log('imageHash', imageProvHash);
       provenanceHashConcat += imageProvHash;
     }
 
-    console.log("fullconcat", provenanceHashConcat);
     const provHash = genHash(provenanceHashConcat);
-    console.log("provHash", provHash);
+    const { seed: provMatchSeed, hash: provMatchHash } =
+      generateProvenanceMatchHash();
 
     let summaryPath = path.join(folderName, "summary.json");
     fs.writeFileSync(
@@ -110,7 +112,9 @@ function main(quantity: number): void {
       JSON.stringify({
         traitCounts: mapCounts,
         collisions,
-        provenanceHash: provHash
+        provenanceImageHash: provHash,
+        provenanceMatchSeed: provMatchSeed,
+        provenanceMatchHash: provMatchHash
       })
     );
     console.log("Directory is created.");
