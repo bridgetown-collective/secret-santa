@@ -243,5 +243,8 @@ describe("SecretSanta - Claiming", async function () {
       numGiftsLeft = Number((await rs.numGiftsLeft()).toString());
       expect(numGiftsLeft).to.equal(0);
     });
+
+    it("should allow owner to pull gifts", async () => {
+    });
   });
 });

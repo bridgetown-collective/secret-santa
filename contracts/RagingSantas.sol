@@ -17,10 +17,9 @@ contract RagingSantas is ERC721, Ownable {
 
     uint256 public constant mintPrice = 0.03 ether;
 
-    uint256 public numberClaimed;
-
     uint256 public maxSupply;
     uint256 public numberMinted;
+    uint256 public numberClaimed;
     uint256 public freeMintsLeft;
 
     struct Gift {
@@ -141,6 +140,7 @@ contract RagingSantas is ERC721, Ownable {
         }
     }
 
+    // Should only be run before claiming begins
     function rescueGift(uint256 tokenId, address sendTo) external onlyOwner {
         Gift memory giftToPull = _giftsByTID[tokenId];
         IERC721(giftToPull.nftAddress).transferFrom(
@@ -199,14 +199,6 @@ contract RagingSantas is ERC721, Ownable {
 
     function numGiftsLeft() external view virtual returns (uint256) {
         return giftPoolTokens.length - numberClaimed;
-    }
-
-    function _baseURI() internal view override returns (string memory) {
-        return baseURI;
-    }
-
-    function contractURI() external view returns (string memory) {
-        return string(abi.encodePacked(baseURI, "contract.json"));
     }
 
     function mint(address nftAddress, uint256 nftTokenId) external payable {

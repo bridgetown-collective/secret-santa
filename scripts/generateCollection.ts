@@ -38,14 +38,15 @@ function main(quantity: number): void {
     const svgMap = getSVGMap(fs, path);
     let provenanceHashConcat = "";
     await fsPromises.mkdir(path.join(folderName, "prereveal"));
-    await fsPromises.mkdir(path.join(folderName, "reveal"));
+    await fsPromises.mkdir(path.join(folderName, "revealJSON"));
+    await fsPromises.mkdir(path.join(folderName, "revealPNG"));
+    let jsonPreRevealPath = path.join(folderName, "prereveal", `prereveal.json`);
 
     for (let i = 0; i < quantity; i++) {
       let seed = i;
       const svgString = RagingSantaSVGString(seed, svgMap);
-      let jsonPreRevealPath = path.join(folderName, "prereveal", `${i}.json`);
-      let jsonRevealPath = path.join(folderName, "reveal", `${i}.json`);
-      let pngPath = path.join(folderName, "reveal", `${i}.png`);
+      let jsonRevealPath = path.join(folderName, "revealJSON", `${i}.json`);
+      let pngPath = path.join(folderName, "revealPNG", `${i}.png`);
       let traits = RagingSantaTraits(seed, false);
       let jsonStr = JSON.stringify(traits);
 
@@ -81,13 +82,6 @@ function main(quantity: number): void {
       fs.writeFileSync(pngPath, buffer);
 
       const imageProvHash = genHash(buffer);
-      const prerevealMetadata = {
-        name: `Raging Santas #${i}`,
-        description: "An On-Chain NFT Secret Santa Swap",
-        image:
-          "https://www.ragingsantas.xyz/assets/raging_santas_animated_preview.gif"
-      };
-      fs.writeFileSync(jsonPreRevealPath, JSON.stringify(prerevealMetadata));
 
       const metadata = {
         name: `Raging Santas #${i}`,
@@ -101,6 +95,13 @@ function main(quantity: number): void {
       console.log('imageHash', imageProvHash);
       provenanceHashConcat += imageProvHash;
     }
+
+    const prerevealMetadata = {
+      description: "an on-chain nft secret santa swap",
+      image:
+        "https://www.ragingsantas.xyz/assets/raging_santas_animated_preview.gif"
+    };
+    fs.writeFileSync(jsonPreRevealPath, JSON.stringify(prerevealMetadata));
 
     const provHash = genHash(provenanceHashConcat);
     const { seed: provMatchSeed, hash: provMatchHash } =
