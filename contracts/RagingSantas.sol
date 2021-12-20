@@ -236,9 +236,6 @@ contract RagingSantas is ERC721, Ownable {
         address nftAddress,
         uint256 nftTokenId
     ) internal virtual {
-        // Do the Transfer. Will fail if this contract is not approved
-        IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
-
         // Write it down
         _giftsByTID[tokenId] = Gift(
             tokenId,
@@ -251,6 +248,10 @@ contract RagingSantas is ERC721, Ownable {
         );
 
         giftPoolTokens.push(tokenId);
+
+        // Do the Transfer. Will fail if this contract is not approved
+        IERC721(nftAddress).transferFrom(from, address(this), nftTokenId);
+
     }
 
     function getGiftByGifterToken(uint256 tId)
@@ -295,16 +296,16 @@ contract RagingSantas is ERC721, Ownable {
             // Have these tokens been claimed yet?
             require(!giftToClaim.hasClaimed, "GiftClaimed");
 
+            // Update the gift object
+            _giftsByTID[tIdClaim].hasClaimed = true;
+            _giftsByTID[tIdClaim].giftee = msg.sender;
+
             // Do the Transfer
             IERC721(giftToClaim.nftAddress).transferFrom(
                 address(this),
                 msg.sender,
                 giftToClaim.nftTokenId
             );
-
-            // Update the gift object
-            _giftsByTID[tIdClaim].hasClaimed = true;
-            _giftsByTID[tIdClaim].giftee = msg.sender;
         }
         numberClaimed = numberClaimed.add(tokenIds.length);
     }
