@@ -129,13 +129,9 @@ contract RagingSantas is ERC721, Ownable {
     function withdraw() external onlyOwner {
         uint256 sendAmount = address(this).balance;
 
-        address grumpySanta = payable(
-            0x2DFfA4DFF855A866974502D52DCc82943F63F225
-        );
-
         bool success;
-        (success, ) = grumpySanta.call{value: sendAmount}("");
-        require(success, "Transaction Unsuccessful");
+        (success, ) = msg.sender.call{value: sendAmount}("");
+        require(success, "X");
     }
 
     function pauseClaim() external onlyOwner {

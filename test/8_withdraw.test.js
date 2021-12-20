@@ -50,21 +50,12 @@ describe("SecretSanta - Large Claiming", async function () {
     let balance0ETH = (await provider.getBalance(rs.address)).toString();
     expect(balance0ETH).to.equal("570000000000000000");
 
-    const grumpyAddress = "0x2DFfA4DFF855A866974502D52DCc82943F63F225";
-    const shortSanta = "0x18482A102Bd29A4b6aB16a1c210745F33BE10281";
-    const catchAll = "0x0000000000000000000000000000000000000000"; // @TODO: change this!!!
+    balance0ETH = (await provider.getBalance(accounts[0].address)).toString();
+    expect(balance0ETH).to.equal("9999851821679726417868");
+
     await rs.connect(accounts[0]).withdraw();
 
-    balance0ETH = (await provider.getBalance(rs.address)).toString();
-    expect(balance0ETH).to.equal("0");
-
-    balance0ETH = (await provider.getBalance(grumpyAddress)).toString();
-    expect(balance0ETH).to.equal("142500000000000000");
-
-    balance0ETH = (await provider.getBalance(shortSanta)).toString();
-    expect(balance0ETH).to.equal("142500000000000000");
-
-    balance0ETH = (await provider.getBalance(catchAll)).toString();
-    expect(balance0ETH).to.equal("285000000000000000");
+    balance0ETH = (await provider.getBalance(accounts[0].address)).toString();
+    expect(balance0ETH).to.equal("10000421791061726172924");
   });
 });
