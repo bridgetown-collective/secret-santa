@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "hardhat/console.sol";
 
 contract RagingSantas is ERC721, Ownable {
     using SafeMath for uint256;
@@ -23,8 +24,8 @@ contract RagingSantas is ERC721, Ownable {
     uint256 public freeMintsLeft;
 
     struct Gift {
-        uint256 gifterTokenId;
         uint256 gifteeTokenId;
+        uint256 gifterTokenId;
         uint256 nftTokenId;
         address nftAddress;
         address gifter;
@@ -81,8 +82,6 @@ contract RagingSantas is ERC721, Ownable {
     }
 
     function activateClaim(uint256 seed) external onlyOwner {
-        uint256 totalGifts = giftPoolTokens.length;
-        require(totalGifts > 1);
 
         claimActive = true;
 
@@ -93,25 +92,50 @@ contract RagingSantas is ERC721, Ownable {
 
         mintActive = false;
 
-        // Fisher Yates Shuffle
+        // Do the first element
+        uint256 totalGifts = giftPoolTokens.length;
+        uint256 n = uint256(keccak256(abi.encodePacked(seed))) % totalGifts;
+        uint256 lastTokenId = giftPoolTokens[n];
+        uint256 thisTokenId;
+
+        (giftPoolTokens[0], giftPoolTokens[n]) = (
+            lastTokenId,
+            giftPoolTokens[0]
+        );
+
         uint256 mLen = totalGifts.sub(1);
-        for (uint256 i = 0; i < mLen; i++) {
-            uint256 n = uint256(keccak256(abi.encodePacked(i + seed))) %
-                (totalGifts);
+        // Fisher Yates Shuffle
+        for (uint256 i = 1; i < mLen; i++) {
+            n = i + uint256(keccak256(abi.encodePacked(i + seed))) %
+                (totalGifts - i);
+            thisTokenId = giftPoolTokens[n];
             (giftPoolTokens[i], giftPoolTokens[n]) = (
-                giftPoolTokens[n],
+                thisTokenId,
                 giftPoolTokens[i]
             );
+            _giftsByTID[lastTokenId].gifteeTokenId = thisTokenId;
+            _giftRefsToClaim[thisTokenId] = lastTokenId;
+            lastTokenId = thisTokenId;
         }
 
-        for (uint256 i = 0; i < mLen; i++) {
-            _giftsByTID[giftPoolTokens[i]].gifteeTokenId = giftPoolTokens[
-                i + 1
-            ];
-            _giftRefsToClaim[giftPoolTokens[i + 1]] = giftPoolTokens[i];
-        }
+        _giftsByTID[giftPoolTokens[mLen-1]].gifteeTokenId = giftPoolTokens[mLen];
+        _giftRefsToClaim[giftPoolTokens[mLen]] = giftPoolTokens[mLen-1];
         _giftsByTID[giftPoolTokens[mLen]].gifteeTokenId = giftPoolTokens[0];
         _giftRefsToClaim[giftPoolTokens[0]] = giftPoolTokens[mLen];
+    }
+
+    
+    // Standard Withdraw function for the owner to pull the contract
+    function withdraw() external onlyOwner {
+        uint256 sendAmount = address(this).balance;
+
+        address grumpySanta = payable(
+            0x2DFfA4DFF855A866974502D52DCc82943F63F225
+        );
+
+        bool success;
+        (success, ) = grumpySanta.call{value: sendAmount}("");
+        require(success, "Transaction Unsuccessful");
     }
 
     function pauseClaim() external onlyOwner {
@@ -162,29 +186,6 @@ contract RagingSantas is ERC721, Ownable {
             );
             giftPoolTokens.pop();
         }
-    }
-
-    // Standard Withdraw function for the owner to pull the contract
-    function withdraw() external onlyOwner {
-        uint256 sendAmount = address(this).balance;
-
-        address grumpySanta = payable(
-            0x2DFfA4DFF855A866974502D52DCc82943F63F225
-        );
-        address shortSanta = payable(
-            0x18482A102Bd29A4b6aB16a1c210745F33BE10281
-        );
-
-        // @TODO: change this!!!
-        address catchAll = payable(0x0000000000000000000000000000000000000000);
-
-        bool success;
-        (success, ) = grumpySanta.call{value: ((sendAmount * 25) / 100)}("");
-        require(success, "Transaction Unsuccessful");
-        (success, ) = shortSanta.call{value: ((sendAmount * 25) / 100)}("");
-        require(success, "Transaction Unsuccessful");
-        (success, ) = catchAll.call{value: ((sendAmount * 50) / 100)}("");
-        require(success, "Transaction Unsuccessful");
     }
 
     function tokenURI(uint256 tokenId)
@@ -238,8 +239,8 @@ contract RagingSantas is ERC721, Ownable {
     ) internal virtual {
         // Write it down
         _giftsByTID[tokenId] = Gift(
-            tokenId,
             0,
+            tokenId,
             nftTokenId,
             nftAddress,
             from,

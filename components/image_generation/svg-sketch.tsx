@@ -80,7 +80,7 @@ const generateSanta = (seed:number, includeShadow: boolean): Array<Trait> => {
 }
 
 export const RagingSantaTraits = (seed: number, includeShadow: boolean): Array<Trait> => {
-  const rnd = new RND(166013 * seed);
+  const rnd = new RND(386013 * seed);
   let roll = rnd.rb(0, 1);
   let traits = [];
 

@@ -42,7 +42,7 @@ describe("SecretSanta - Large Claiming", async function () {
   });
 
   it("everyone claims", async () => {
-    const rn = 17261481202;
+    const rn = 17261402;
     await rs.connect(owner).activateClaim(rn);
 
     for (let i = 1; i < accounts.length; i++) {
