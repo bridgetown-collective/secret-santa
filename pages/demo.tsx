@@ -43,7 +43,7 @@ const WrappedSvgSketch = ({ svgMap }): JSX.Element => {
     }
   }, []);
 
-  const allElements = RagingSantaTraits(seed, true);
+  const allElements = RagingSantaTraits(seed, false);
 
   return (
     <>
