@@ -46,7 +46,7 @@ const traitPrefixMap = {
 const generateSanta = (seed:number, includeShadow: boolean): Array<Trait> => {
   const rnd = new RND(9971598 * seed);
   let roll = rnd.rb(0, 1);
-  const hasHat = roll < 0.9;
+  const hasHat = roll < 0.95;
   roll = rnd.rb(0, 1);
   const hasArms = roll < 0.2;
   roll = rnd.rb(0, 1);

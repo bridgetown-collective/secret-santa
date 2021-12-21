@@ -9,28 +9,30 @@ export default function Arms(seed: number): Trait {
   let variant = "toothpicks";
 
   switch (true) {
-    case roll <= 0.125:
+    case roll <= 0.111:
       variant = "match_sticks";
       break;
-    case roll <= 0.125 * 2:
+    case roll <= 0.111 * 2:
       variant = "one_popsicle_stick";
       break;
-    case roll <= 0.125 * 3:
+    case roll <= 0.111 * 3:
       variant = "pipe_cleaners_red";
       break;
-    case roll <= 0.125 * 4:
+    case roll <= 0.111 * 4:
       variant = "popsicle_stick_split";
       break;
-    case roll <= 0.125 * 5:
+    case roll <= 0.111 * 5:
       variant = "q_tips";
       break;
-    case roll <= 0.125 * 6:
+    case roll <= 0.111 * 6:
       variant = "toothpicks_black";
       break;
-    case roll <= 0.125 * 7:
+    case roll <= 0.111 * 7:
       variant = "wood_sticks";
       break;
-
+    case roll <= 0.111 * 8:
+      variant = "candy_canes";
+      break;
     default:
   }
 
