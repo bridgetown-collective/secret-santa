@@ -1,3 +1,4 @@
+import "styled-jsx";
 import fs from "fs";
 import path from "path";
 import Head from "next/head";
@@ -6,7 +7,9 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
 import { getSVGMap } from "../components/image_generation/common";
-import SvgSketch from "../components/image_generation/svg-sketch";
+import SvgSketch, {
+  RagingSantaTraits
+} from "../components/image_generation/svg-sketch";
 
 function getQueryVariable(variable: string): string {
   var query = window.location.search.substring(1);
@@ -24,8 +27,8 @@ export function getStaticProps() {
   return {
     props: {
       // @NOTE: this has to be done server side to leverage fs
-      svgMap: getSVGMap(fs, path),
-    },
+      svgMap: getSVGMap(fs, path)
+    }
   };
 }
 
@@ -40,8 +43,11 @@ const WrappedSvgSketch = ({ svgMap }): JSX.Element => {
     }
   }, []);
 
+  const allElements = RagingSantaTraits(seed, true);
+
   return (
     <>
+      <div className="inline-block">
       <label>Seed: {seed}</label>
       <Slider
         value={seed}
@@ -52,25 +58,38 @@ const WrappedSvgSketch = ({ svgMap }): JSX.Element => {
         style={{ marginBottom: "2rem" }}
       />
       <SvgSketch seed={seed} svgMap={svgMap} />
+      </div>
+      <div className="section flex flex-col ml-10">
+        {allElements.map(({trait_type, value}) => (
+          <div className="mb-5">
+            <div>{trait_type}</div>
+            <span className="pl-5 pt-5">{value}</span>
+          </div>
+        ))}
+      </div>
     </>
   );
 };
 
 export default function Demo({ svgMap }) {
   return (
-    <div
-      id="body"
-      className="flex flex-col items-center justify-center min-h-screen py-2"
-    >
-      <Head>
-        <title>Demo</title>
-      </Head>
-      <div>
-        <header>
-          <>
-            <WrappedSvgSketch svgMap={svgMap} />
-          </>
-        </header>
+    <div>
+      <div
+        id="body"
+        className=""
+      >
+        <Head>
+          <title>Demo</title>
+        </Head>
+        <div>
+          <header
+        className="flex flex-row mt-40"
+          >
+            <>
+              <WrappedSvgSketch svgMap={svgMap} />
+            </>
+          </header>
+        </div>
       </div>
     </div>
   );

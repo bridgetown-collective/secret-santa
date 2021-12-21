@@ -173,6 +173,24 @@ export default function App({ Component, pageProps }) {
           --color-red: #b51316;
           --color-brown: #7f3c10;
         }
+
+        .section {
+          display: flex;
+          margin: 2rem;
+          padding: 2rem 4rem;
+        }
+
+        .section {
+          background: url("/assets/cardboard.png");
+          background-color: #7f3c10;
+          border-radius: 1em;
+          color: #ffa;
+          box-shadow: var(--shadow-elevation-high-red);
+        }
+
+        .section:first-of-type {
+          margin-top: 8em;
+        }
       `}</style>
     </div>
   );
