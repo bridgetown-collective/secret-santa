@@ -19,7 +19,7 @@ export default function Glasses(seed: number): Trait {
       variant = "wire_square";
       break;
     case roll <= 0.8:
-      variant = "wayfarer";
+      variant = "classic_sunglasses";
       break;
     default:
   }
