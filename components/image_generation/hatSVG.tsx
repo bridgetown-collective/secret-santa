@@ -9,11 +9,8 @@ export default function Hat(seed: number): Trait {
 
   let variant = "traditional";
   switch (true) {
-    case roll <= 0.01:
+    case roll <= 0.02:
       variant = "camo_8_bit";
-      break;
-    case roll <= 0.01 * 2:
-      variant = "paper_towel_core";
       break;
     case roll <= 0.02 + 0.03 * 1:
       variant = "8_bit_face";
